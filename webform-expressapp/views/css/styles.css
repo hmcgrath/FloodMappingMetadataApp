@@ -1,0 +1,38 @@
+.tab {
+    display: none; 
+}
+
+.label:not(.form-check-label,.filelabel) {
+    font-weight: bold; 
+}
+
+
+.padme {
+    padding-top: 30px; 
+}
+
+
+input.invalid {
+    background-color:#ffdddd; 
+}
+
+select.invalid {
+    background-color:#ffdddd; 
+}
+
+.checkboxes.invalid {
+    background-color:#ffdddd; 
+}
+
+div.geocoder-control.leaflet-control {
+    width:40px; 
+}
+
+div.geocoder-control.leaflet-control.geocoder-control-expanded {
+    height:40px; 
+    width:300px; 
+}
+
+input.geocoder-control-input {
+    height:40px; 
+}

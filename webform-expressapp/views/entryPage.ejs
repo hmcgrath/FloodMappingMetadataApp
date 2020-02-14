@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flood Mapping Metadata Portal</title>
+
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">
+   
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/esri-leaflet-geocoder/2.3.2/esri-leaflet-geocoder.css">
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@2.3.2/dist/esri-leaflet.js"
+    integrity="sha512-6LVib9wGnqVKIClCduEwsCub7iauLXpwrd5njR2J507m3A2a4HXJDLMiSZzjcksag3UluIfuW1KzuWVI5n/cuQ=="
+    crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/esri-leaflet-geocoder/2.3.2/esri-leaflet-geocoder.js"></script>
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>
+    <script src="js/bootstrap/leaflet.shpfile.js"></script>
+
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand">Flood Mapping Metadata Portal</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapseNav" aria-controls="collapseNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="collapseNav">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" href="/">Submit Data</a>
+                    <a class="nav-item nav-link active" href="/analytics">View Data</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg">
+                <p><h1>Flood Mapping Metadata Submissions</h1></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg">
+                <div class="form-group">
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0"
+                        aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<form id="entryForm" method="post" action="/submit">
+    <!--TABS FOR NAVIGATION BETWEEN THE STEPS OF THE FORMS-->
+    <div class="tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <div class="form-group">
+                        <h3>General Project Information</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12"> 
+                    <div class="form-group">
+                        <label for="projectID">Project ID</label>
+                        <input type="text" maxlength="20" class="form-control" id="projectID" placeholder="Enter Project ID">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12"> 
+                    <div class="form-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" maxlength="50" class="form-control" id="projectName" placeholder="Enter Project Name">
+                    </div>   
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-lg">
+                    <div class="form-group">
+                        <label for="typeofrecord">Type of Record</label>
+                        <select class="browser-default custom-select" id="typeofrecord">
+                            <option value = "" disabled selected>----</option>
+                            <option value="hazard">Hazard</option>
+                            <option value="inundation">Inundation</option>
+                            <option value="awareness">Awareness</option>
+                            <option value="risk">Risk</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="projectcat">Project Category</label>
+                        <select class="browser-default custom-select" id="projectcat">
+                            <option value = "" disabled selected>----</option>
+                            <option value="watercourse">Watercourse</option>
+                            <option value="inland">Inland Waterbody</option>
+                            <option value="greatlakesshoreline">Great Lakes Shoreline</option>
+                            <option value="greatlakescc">Great Lakes Connecting Channel</option>
+                            <option value="other">Other Natural Hazard Project</option>
+                        </select>
+                    </div> 
+                </div> 
+            </div>
+        </div>
+    
+        <div class="container">
+
+            <label for="floodHzdStd">
+                Flood Hazard Standard
+            </label>
+            <div class="row checkboxes" id="floodHzdStd">
+                <div class="col-lg-4 col-md-12 col-sm-12">             
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="hazel" id="hazel">
+                            <label class="form-check-label" for="hazel">
+                                Hazel
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="timmins" id="timmins">
+                            <label class="form-check-label" for="timmins">
+                                Timmins
+                            </label>
+                        </div> 
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1000yr" id="1000yr">
+                            <label class="form-check-label" for="1000yr">
+                                1000 yr
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="500yr" id="500yr">
+                            <label class="form-check-label" for="500yr">
+                                500 yr
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="200yr" id="200yr">
+                            <label class="form-check-label" for="200yr">
+                                200 yr
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="100yr" id="100yr">
+                            <label class="form-check-label" for="100yr">
+                                100 yr
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="50yr" id="50yr">
+                            <label class="form-check-label" for="50yr">
+                                50 yr
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="20yr" id="20yr">
+                            <label class="form-check-label" for="20yr">
+                                20 yr
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="other" id="other">
+                            <label class="form-check-label" for="other">
+                                Other
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="extentmap">Extent</label>
+                        <p>Click on map to add a coordinate. Select or enter 2 coordinates or upload a SHP zip.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <input type="text" style="display:none" id="polycoordinates" class="form-control optional" readonly>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group">
+                            
+                        <input type="text" id="lat1" class="form-control" placeholder="Upper Latitude">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <input type="text" id="long1" class="form-control" placeholder="Left Longitude">
+                    </div>
+                </div>
+        
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <input type="text" id="lat2" class="form-control" placeholder="Lower Latitude">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group">
+                        <input type="text" id="long2" class="form-control" placeholder="Right Longitude">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label class="filelabel" for="shpfile">Upload a SHP file</label>
+                        <input type="file" class="form-control-file optional" id="shpfile">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <div id="extentmap" style="height:500px;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-danger" id="mapreset" onclick="resetMap()">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="officialWCName">Official Watercourse Name</label>
+                        <select class="browser-default custom-select" id="officialWCName">
+                            <option value = "" disabled selected>-----</option>
+                        </select>
+                    </div>
+                </div>
+    
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="watershed">Watershed Name</label>
+                        <input type="text" class="form-control" id="watershed" placeholder="Enter Watershed Name">
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+
+    <div class="tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="munundertaking">Financially Supported By</label>
+                        <select class="browser-default custom-select" id="munundertaking">
+                            <option value = "" disabled selected>Municipal</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div> 
+                </div>
+            </div>
+    
+            <div class="row">
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                        <select class="browser-default custom-select" id="caundertaking">
+                            <option value = "" disabled selected>Conservation Authority</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div> 
+                  </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <select class="browser-default custom-select" id="fedundertaking">
+                            <option value = "" disabled selected>Federal</option>
+                            <option value="fdrp">FDRP</option>
+                            <option value="ndmp">NDMP</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div> 
+                </div>
+            </div>
+    
+            <!--IF YES IS SELECTED ADD A TEXT FIELD TO SPECIFY-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <select class="browser-default custom-select" id="privundertaking" onchange="checkYesNoPriv(this);">
+                            <option value = "" disabled selected>Private</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                        <!--Initially hidden component-->
+                        <div id="ifYesPriv" style="display: none;">
+                            <label for="privateundertaking">Name of Organization</label>
+                            <input type="text" id="privateundertakingname" name="privateundertaking" class="form-control">
+                        </div>
+                    </div> 
+                </div> 
+            </div>
+                
+            <!--IF YES IS SELECTED ADD A TEXT FIELD TO SPECIFY-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <select class="browser-default custom-select" id="otherundertaking" onchange="checkYesNoOther(this);">
+                            <option value = "" disabled selected>Other</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                        <!--Initially hidden component-->
+                        <div id="ifYesOther" style="display: none;">
+                            <label for="otherundertaking">Name of Organization</label>
+                            <input type="text" id="otherundertakingname" name="otherundertaking" class="form-control">
+                        </div>
+                    </div> 
+                </div> 
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="datasetStatus">Floodline Dataset Status</label>
+                        <select class="browser-default custom-select" id="datasetStatus">
+                            <option value = "" disabled selected>----</option>
+                            <option value="complete">Complete</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="planned">Planned</option>
+                        </select>
+                    </div> 
+                </div> 
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="lastprojupdate">Last Project Update Year</label>
+                        <select class="browser-default custom-select yearinput" id="lastprojupdate">
+                            <option value = "" disabled selected>----</option>
+                        </select>
+                    </div> 
+                </div> 
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="partupdate">Partially Updated</label>
+                        <select class="browser-default custom-select" id="partupdate" onchange="checkPartUpdated(this)">
+                            <option value = "" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                        <div id="ifYesUpdate" style="display: none;">
+                            <label for="updatepurp" class="textarealabel">Purpose for Update</label>
+                             <!--MAKE SURE THAT THE CURSOR IS AUTOMATICALLY PLACED AT THE BEGINNING, NOT WHERE THE TEXT FIELD IS CLICKED-->
+                            <textarea class="form-control" id="updatepurp" rows="3"></textarea>
+                        </div>
+                    </div> 
+                </div> 
+            </div>            
+
+            <!--MUST USE form-control class for bootstrap styling-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="drainagearea">Drainage Area (sq km)</label>
+                        <input type="number" class="form-control" id="drainagearea" min="0" step=".01">        
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="summreportavail">Summary Report Available</label>
+                        <select class="browser-default custom-select" id="summreportavail">
+                            <option value = "" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="updatesinceorig">Update Since Original</label>
+                        <select class="browser-default custom-select" id="updatesinceorig">
+                            <option value = "" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="localwcname">Local Watercourse Name</label>
+                        <input type="text" maxlength="100" id="localwcname" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="wclength">Watercourse Length (km) </label>
+                        <input type="number" id="wclength" class="form-control" min="0" step=".01">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="widestcswidth">Widest Cross Section Width (m)</label>
+                        <input type="number" id="widestcswidth" class="form-control" min="0" step=".01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="maxfloodplain">Maximum Floodplain Extent (sq m)</label>
+                        <input type="number" id="maxfloodplain" class="form-control" min="0" step=".01">
+                    </div>
+                </div>
+            </div>
+
+            <!-- DO PERCENT HIGH HAZARD, PERCENT MEDIUM HAZARD, PERCENT LOW HAZARD AS A SLIDER-->
+            <!-- WRITE SCRIPT TO ENSURE THAT THESE SLIDERS ADD UP TO 100-->
+            <div class="row">
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="percenthighhzd">Percent High Hazard</label>
+                        <input type="number" class="form-control" id="percenthighhzd" min="0" max="100">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="percentmedhzd">Percent Medium Hazard</label>
+                        <input type="number" class="form-control" id="percentmedhzd" min="0" max="100">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="percentlowhzd">Percent Low Hazard</label>
+                        <input type="number" class="form-control" id="percentlowhzd" min="0" max="100">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="majorevent">Major Event Since 1996</label>
+                        <select class="browser-default custom-select" id="majorevent">
+                            <option value = "" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="coordsysproj">Coordinate System/Projection</label>
+                        <select class="browser-default custom-select coordsysproj" id="coordsysproj">
+                            <option value = "" disabled selected>----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="generalprojcomments" class="textarealabel">General Project Comments</label>
+                        <!--FIXED BY REMOVING SPACE BETWEEN <textarea> -->
+                        <textarea class="form-control" maxlength="250" id="generalprojcomments" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TO DO: ADD COORDINATE SYSTEM FIELD-->
+
+        </div>
+    </div>
+
+    <% if(imagery){ %>
+    <div class="tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <div class="form-group">
+                        <h3>Imagery Information</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row"> 
+                <div class="col-lg-12"> 
+                    <div class="form-group">
+                        <label for="imgprojid">Imagery Project ID</label>
+                        <input type="text" maxlength="20" class="form-control" id="imgprojid" placeholder="Enter Project ID">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="acquisitionseason">Season of Acquisition</label>
+                        <select class="browser-default custom-select" id="acquisitionseason">
+                            <option value= "" disabled selected>----</option>
+                            <option value="spring">Spring</option>
+                            <option value="summer">Summer</option>
+                            <option value="fall">Fall</option>
+                            <option value="winter">Winter</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12"> 
+                    <div class="form-group">
+                        <label for="acquisitionyear">Acquisition Year</label>
+                        <select class="browser-default custom-select yearinput" id="acquisitionyear">
+                            <option value = "" disabled selected>----</option>
+                        </select>          
+                    </div>
+                </div> 
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="datadescrip" class="textarealabel">Data Description</label>
+                        <textarea class="form-control" maxlength="250" id="datadescrip" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="imghref">Horizontal Reference</label>
+                        <select class="browser-default custom-select" id="imghref">
+                            <option value = "" disabled selected>----</option>
+                            <option value="nad27">NAD27</option>
+                            <option value="nad83">NAD83(CSRS)</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="imgvref">Vertical Reference</label>
+                        <select class="browser-default custom-select" id="imgvref">
+                            <option value = "" disabled selected>----</option>
+                            <option value="htv2.0">HTV2.0</option>
+                            <option value="cgvd2013">CGVD2013</option>
+                            <option value="cgvd28">CGVD28</option>
+                            <option value="cgvd28-pre1978">CGVD28-Pre1978</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class= "col-lg-12">
+                    <div class="form-group">
+                        <label for="imghozacc">Horizontal Accuracy (m)</label>
+                        <input type="number" class="form-control" id="imghozacc" min="0" step=".01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="imgderivmethod">Accuracy Derivation Method</label>
+                        <select class="browser-default custom-select" id="imgderivmethod">
+                            <option value="" disabled selected>----</option>
+                            <option value="rmse">RMSE</option>
+                            <option value="cmas">CMAS</option>
+                            <option value="lmas">LMAS</option>
+                            <option value="nmas">NMAS</option>
+                            <option value="nssda">NSSDA</option>
+                            <option value="fva">FVA</option>
+                            <option value="sva">SVA</option>
+                            <option value="cva">CVA</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <label for="imgspatialres">Spatial Resolution</label>
+                    <span id="imgspatialres"></span> 
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="spatialreshoz" class="filelabel">Horizontal (m)</label>
+                        <input type="number" class="form-control" id="spatialreshoz" min="0" step=".01">
+                    </div>
+
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="spatialresvert" class="filelabel">Vertical (m)</label>
+                        <input type="number" class="form-control" id="spatialresvert" min="0" step=".01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for= "imgpeerreview">Peer Reviewed</label>
+                        <select class="browser-default custom-select" id="imgpeerreview">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="imggeneralcomments" class="textarealabel">Imagery General Comments</label>
+                        <textarea class="form-control" maxlength="250" id="imggeneralcomments" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+    </div>
+    <% } %>
+
+    <% if(elevation){ %>
+    <div class="tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <div class="form-group">
+                        <h3>Elevation Information</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="elevprojid">Elevation Project ID</label>
+                        <input type="text" maxlength="20" class="form-control" id="elevprojid" placeholder="Enter Project ID">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="digitaldata">Digital Data</label>
+                        <select class="browser-default custom-select" id="digitaldata">
+                            <option value = "" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="dataformat">Data Format</label>
+                        <select class="browser-default custom-select" id="dataformat">
+                            <option value="" disabled selected>----</option>
+                            <option value="raster">Raster</option> 
+                            <option value="contour">Contour</option>
+                            <option value="tin">TIN</option>
+                            <option value="point">Point</option>
+                            <option value="hardcopy">Hardcopy</option>
+                            <option value="scanned">Scanned</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="primdatasource">Primary Data Source</label>
+                        <select class="browser-default custom-select" id="primdatasource">
+                            <option value="" disabled selected>----</option>
+                            <option value="lidar">LiDaR</option>
+                            <option value="photogrammetry">Photogrammetry</option>
+                            <option value="radar">Radar</option>
+                            <option value="sonar">Sonar</option>
+                            <option value='satelite'>Satelite</option>
+                            <option value="uav">UAV</option>
+                            <option value="gps">GPS</option>
+                            <option value="groundsurvey">Ground Survey</option>
+                        </select>
+                    </div>
+                </div>    
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="elevdataowner">Elevation Data Owner</label>
+                        <input type="text" maxlength="50" class="form-control" id="elevdataowner" placeholder="Elevation Data Owner">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="elevhref">Elevation Horizontal Reference</label>
+                        <select class="browser-default custom-select" id="elevhref">
+                            <option value="" disabled selected>----</option>
+                            <option value="nad27">NAD27</option>
+                            <option value="nad83">NAD83(CSRS)</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="elevvref">Elevation Vertical Reference</label>
+                        <select class="browser-default custom-select" id="elevvref">
+                            <option value="" disabled selected>----</option>
+                            <option value="htv2.0">HTV2.0</option>
+                            <option value="cgvd2013">CGVD2013</option>
+                            <option value="cgvd28">CGVD28</option>
+                            <option value="cgvd28-pre1978">CGVD28-Pre1978</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="elevhozacc">Elevation Horizontal Accuracy (m)</label>
+                        <input type="number" class="form-control" id="elevhozacc" min="0" step=".01">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="elevvertacc">Elevation Vertical Accuracy (m)</label>
+                        <input type="number" class="form-control" id="elevvertacc" min="0" step=".01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="elevderivmethod">Elevation Derivation Method</label>
+                        <select class="browser-default custom-select" id="elevderivmethod">
+                            <option value="" disabled selected>----</option>
+                            <option value="rmse">RMSE</option>
+                            <option value="cmas">CMAS</option>
+                            <option value="lmas">LMAS</option>
+                            <option value="nmas">NMAS</option>
+                            <option value="nssda">NSSDA</option>
+                            <option value="fva">FVA</option>
+                            <option value="sva">SVA</option>
+                            <option value="cva">CVA</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <label for="elevspatialres">Spatial Resolution</label>
+                    <span id="elevspatialres"></span> 
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="elevspatialreshoz" class="filelabel">Horizontal (m)</label>
+                        <input type="number" class="form-control" id="elevspatialreshoz" min="0" step=".01">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="elevspatialresvert" class="filelabel">Vertical (m)</label>
+                        <input type="number" class="form-control" id="elevspatialresvert" min="0" step=".01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="secdatasource">Secondary Data Source</label>
+                        <select class="browser-default custom-select" id="secdatasource">
+                            <option value="" disabled selected>----</option>
+                            <option value="lidar">LiDaR</option>
+                            <option value="photogrammetry">Photogrammetry</option>
+                            <option value="radar">Radar</option>
+                            <option value="sonar">Sonar</option>
+                            <option value='satelite'>Satelite</option>
+                            <option value="uav">UAV</option>
+                            <option value="gps">GPS</option>
+                            <option value="groundsurvey">Ground Survey</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="elevpeerreview">Peer Reviewed</label>
+                        <select class="browser-default custom-select" id="elevpeerreview">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="elevgeneralcomments" class="textarealabel">Elevation General Comments</label>
+                        <textarea class="form-control" maxlength="250" id="elevgeneralcomments" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <% if(hydrology) { %>
+    <div class="tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <div class="form-group">
+                        <h3>Hydrology Information</h3>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="hydroprojid">Hydrology Project ID</label>
+                        <input type="text" maxlength="20" class="form-control" id="hydroprojid" placeholder="Enter Project ID">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydromethod">Hydrology Method</label>
+                        <select class="browser-default custom-select" id="hydromethod">
+                            <option value = "" disabled selected>----</option>
+                            <option value="ssffa">SSFFA</option>
+                            <option value="rfa">RFA</option>
+                            <option value="ifm">IFM</option>
+                            <option value="mtomfim">MTOMFIM</option>
+                            <option value="waterlevelfa">Water Level FA</option>
+                            <option value="hymo">HYMO</option>
+                            <option value="swmm">SWMM</option>
+                            <option value="hechms">HEC-HMS</option>
+                            <option value="hecrms">HEC-RMS</option>
+                            <option value="h2d2">H2D2</option>
+                            <option value="mike">MIKE</option>
+                            <option value="gawser">GAWSER</option>
+                            <option value="miduss">MIDUSS</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydroyear">Hydrology Year</label>
+                        <select class="browser-default custom-select yearinput" id="hydroyear">
+                            <option value = "" disabled selected>----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="datasetyrs">Years in Dataset</label>
+                        <input type="number" class="form-control" id="datasetyrs" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="eventsmodeled">Number of Events Modelled</label>
+                        <input type="number" maxlength="20" class="form-control" id="eventsmodeled" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="modelcalib">Model Calibrated</label>
+                        <select class="browser-default custom-select" id="modelcalib">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="calibquality">Calibration Quality</label>
+                        <select class="browser-default custom-select" id="calibquality">
+                            <option value = "" disabled selected>----</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="inputparamquality">Input Parameters Quality</label>
+                        <select class="browser-default custom-select" id="inputparamquality">
+                            <option value = "" disabled selected>----</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="inputcomments" class="textarealabel">Quality of Input Comments</label>
+                        <textarea class="form-control" maxlength="250" id="inputcomments" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="hydromodelyear">Hydrology Model Year</label>
+                        <select class="browser-default custom-select yearinput" id="hydromodelyear">
+                            <option value = "" disabled selected>----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="smincorporated">Snowmelt Incorporated</label>
+                        <select class="browser-default custom-select" id="smincorporated">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="volreduction">Peak or Volume Reduction</label>
+                        <select class="browser-default custom-select" id="volreduction">
+                            <option value="" disabled selected>----</option>
+                            <option>Yes - Regulated Flow</option>
+                            <option>Yes - Unregulated Flow</option>
+                            <option>Yes - Flow Assuming Failure</option>
+                            <option>Yes - Other</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="catdiscretized">Catchments Discretized</label>
+                        <select class="browser-default custom-select" id="catdiscretized">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydrosupportingdoc">Adequate Supporting Documentation</label>
+                        <select class="browser-default custom-select" id="hydrosupportingdoc">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="ccconsidered">Climate Change Considered</label>
+                        <select class="browser-default custom-select" id="ccconsidered">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydropeerreview">Peer Reviewed</label>
+                        <select class="browser-default custom-select" id="hydropeerreview">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="hydrogeneralcomments" class="textarealabel">Hydrology General Comments</label>
+                        <textarea class="form-control" maxlength="250" id="hydrogeneralcomments" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <% if(hydraulics) { %>
+    <div class="tab">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <div class="form-group">
+                        <h3>Hydraulics Information</h3>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="hydraprojid">Hydraulics Project ID</label>
+                        <input type="text" maxlength="20" class="form-control" id="hydraprojid" placeholder="Enter Project ID">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydramethod">Hydraulic Model</label>
+                        <select class="browser-default custom-select" id="hydramethod">
+                            <option value = "" disabled selected>----</option>
+                            <option value="hec2">HEC-2</option>
+                            <option value="hecras">HEC-RAS</option>
+                            <option value="swmm">SWMM(PCSWMMM)</option>
+                            <option value="mike11">Mike 11</option>
+                            <option value="mike21">Mike 21</option>
+                            <option value="flood">Flood</option>
+                            <option value="estimated">Estimated</option>
+                            <option value="gauged">Gauged</option>
+                            <option value="FA">FA</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydrayear">Hydraulic Model Year</label>
+                        <select class="browser-default custom-select yearinput" id="hydrayear">
+                            <option value = "" disabled selected>----</option>
+                        </select>
+                    </div>
+                </div>            
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="flowcond">Flow Condition</label>
+                        <select class="browser-default custom-select" id="flowcond">
+                            <option value="" disabled selected>----</option>
+                            <option value="subcritical">Sub-critical</option>
+                            <option value="supercritical">Super-critical</option>
+                            <option value="mixed">Mixed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="hydracalib">Calibration Process</label>
+                        <select class="browser-default custom-select" id="hydracalib">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydracalibquality">Hydraulics Calibration Quality</label>
+                        <select class="browser-default custom-select" id="hydracalibquality">
+                            <option value = "" disabled selected>----</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydrainputparamquality">Hydraulics Input Parameters Quality</label>
+                        <select class="browser-default custom-select" id="hydrainputparamquality">
+                            <option value = "" disabled selected>----</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="hydrainputcomments" class="textarealabel">Hydraulics Quality of Input Comments</label>
+                        <textarea class="form-control" maxlength="250" id="hydrainputcomments" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="floodlineestimated">Floodline Estimated</label>
+                        <select class="browser-default custom-select" id="floodlineestimated">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydrasupportingdoc">Adequate Supporting Documentation</label>
+                        <select class="browser-default custom-select" id="hydrasupportingdoc">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="elevsource">Elevation Source</label>
+                        <select class="browser-default custom-select" id="elevsource">
+                            <option value="" disabled selected>----</option>
+                            <option>Ground Survey - GPS</option>
+                            <option>Ground Survey - Total Station</option>
+                            <option>Leveling</option>
+                            <option>Base Elevation</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <label for="hydrapeerreview">Peer Reviewed</label>
+                        <select class="browser-default custom-select" id="hydrapeerreview">
+                            <option value="" disabled selected>----</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="hydrageneralcomments">Hydraulics General Comments</label>
+                        <textarea class="form-control" maxlength="250" id="hydrageneralcomments" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</form>
+    
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="errorModalLabel">Error</h5>
+            <button type="button btn-warning" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                Please fill in all required fields on the form.
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="mapSelectModal" tabindex="-1" role="dialog" aria-labelledby="mapSelectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="mapSelectModalLabel">Error</h5>
+            <button type="button btn-warning" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                Please select an extent on the map, or upload a shapefile.
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-3"></div>
+            <div class="col-lg-3" id="prev">
+                <button type="button" class="btn btn-secondary btn-block" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+            </div>
+            <div class="col-lg-3" id="next">
+                <button type="button" class="btn btn-secondary btn-block" id="nextBtn" onclick="nextPrev(1)">Next</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6"></div>
+            <div class="col-lg-3"></div>
+            <div class="col-lg-3">
+                <br>
+                <button type="button" class="btn btn-secondary btn-block" id="submitSaveBtn">Submit and Save</button>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="help-links" style="display:none">
+
+        <p id="projectIDh">Used as a unique identifier to link the projects to a spatial database.</p>
+
+        <p id="projectNameh">Unique name given to each project.</p>
+
+        <p id="typeofrecordh"></p>
+
+        <p id="projectcath">Provides a description of why an update is currently required. Multiple reasons could be entered, with the following suggestions provided; Age-Mapping, Quality-Mapping, Age-Modeling, Quality-Modeling, Development, New Data or Other.</p>
+
+        <p id="floodHzdStdh">The regulatory zone and standard applied to a particular project.</p>
+
+        <p id="extentmaph"></p>
+
+        <p id="officialWCNameh">The name of the primary watercourse or waterbody.</p>
+
+        <p id="watershedh">The name of the primary watershed applicable to the project.</p>
+        
+        <p id="munundertakingh">Used to identify if the project was funded by the CA, Municipality, Federal, Private, or Other. If the response was yes, the name of the organization is entered.</p>
+
+        <p id="datasetStatush">Used to identify the status of the floodline mapping project, this allows for near complete projects to be entered.</p>
+
+        <p id="lastprojupdateh">This is the recorded year of the latest version of the report (if there was no report then the year of the mapping was entered).</p>
+
+        <p id="partupdateh">Provides an indication if portions of the project have been updated. This would only include small updates done for such things as culvert replacements, development, etc., that do not affect the majority of the project.</p>
+
+        <p id="updatepurph">Provides a description of why an updatewas performed.</p>
+
+        <p id="drainageareah">The total drainage area in square kilometers for the reported project from the downstream most point. If area was unknown, the OFAT III tool was used to estimate.</p>
+
+        <p id="summreportavailh">Used to identify if a project summary report is available for the study that provides pertinent background information.</p>
+
+        <p id="updatesinceorigh">Provides an indication if the floodplain mapping has been updated since the original mapping was created. Original generally defined as being the FDRP mapping. </p>
+
+        <p id="localwcnameh">An additional field to allow for the name of a watercourse or waterbody as it is locally known if it differs from the official watercourse name.</p>
+
+        <p id="wclengthh">Identifies the length in kilometers of mapped watercourse or shoreline within the hydraulic portion of the floodplain.</p>
+
+        <p id="widestcswidthh">The width of the widest mapped cross section in meters on the floodplain map. Can be used to estimate floodplain extent if digital data does not exist to estimate.</p>
+
+        <p id="maxfloodplainh">The actual mapped area (in square meters) or inundation area if known (area of the floodplain, not map sheet area). If the area is not known the watercourse length is multiplied by the widest cross section measurement (within reason).</p>
+        
+        <p id="percenthighhzdh">Provides an approximate percentage of the floodplain extent covering an area considered to be high hazard.</p>
+
+        <p id="percentmedhzdh">Provides an approximate percentage of the floodplain extent covering an area considered to be medium hazard.</p>
+
+        <p id="percentlowhzdh">Provides an approximate percentage of the floodplain extent covering an area considered to be low hazard.</p>
+
+        <p id="majoreventh">Indication of whether or not there has been a major flood event within this project area since the FDRP was completed.</p>
+
+        <p id="coordsysprojh"></p>
+
+        <p id="generalprojcommentsh">This is an open field where any additional information about the project or data can be provided.</p>
+
+        <p id="imgprojidh">Used as a unique identifier to link the projects to a spatial database.</p>
+
+        <p id="acquisitionseasonh">Used to indicate the season imagery data was actually captured.</p>
+
+        <p id="acquisitionyearh">This is the recorded year in which the imagery was obtained. </p>
+
+        <p id="datadescriph">Provides any descriptive information about the imagery data. (eg. orthophotography, RGB bands, GeoTiff, etc.).</p>
+
+        <p id="imghrefh">This field defines the horizontal reference system if known.</p>
+
+        <p id="imgvrefh">This field defines the horizontal reference system if known.</p>
+
+        <p id="imghozacch">This field defines the horizontal accuracy if known. Limited information was available from CAs to define the accuracy of imagery data.</p>
+
+        <p id="imgderivmethodh">This field provides the accuracy derivation method if known. Limited information was available from CAs to define the accuracy of imagery data.</p>
+
+        <p id="imgspatialresh">Used to provide the imagery data raster resolution. Typically this data was only available for data captured in the past ten years.</p>
+
+        <p id="imgpeerreviewh">Indication if the imagery products were independently verified (QA/QC) by an external entity.</p>
+
+        <p id="imggeneralcommentsh">This is an open field where any additional information about the imagery product can be provided.</p>
+
+        <p id="elevprojidh">Used as a unique identifier to link the projects to a spatial database.</p>
+
+        <p id="digitaldatah">This field provides an indication if the elevation data is available digitally. Digital elevation data does not include scanned map sheets or floodlines only.</p>
+
+        <p id="dataformath">Provides the format in which the data is available (elevation data only).</p>
+
+        <p id="primdatasourceh">Provides the data source of the primary base elevation data.</p>
+
+        <p id="elevdataownerh">Indicates the custodian of the elevation data, usually an organization who has complete usage rights for the data. If known, respondents entered the name of the organization.</p>
+        
+        <p id="elevhrefh">This field defines the horizontal reference system of the elevation data, if known.</p>
+
+        <p id="elevvrefh">This field defines the vertical reference system of the elevation data, if known.</p>
+
+        <p id="elevhozacch">This field defines the horizontal accuracy of the elevation data, if known. Horizontal accuracy of elevation data was typically unavailable from CAs.</p>
+
+        <p id="elevvertacch">This field defines the vertical accuracy of the elevation data, if known.</p>
+
+        <p id="elevderivmethodh">Used to provide a description of the method used to derive the accuracy of the elevation data (vertical). Typically, accuracy was derived using FDRP methods, which were not a selectable option for this survey.</p>
+
+        <p id="elevspatialresh">Provides the elevation data resolution, which is dependent on the type of data. Data entered can be a raster or point density, or a contour interval. Typically data entered was a contour interval.</p>
+
+        <p id="secdatasourceh">Where applicable, respondents provided the secondary data source used for the base mapping. This does not include ground surveys for hydraulic cross sections unless they have been fused with the primary underlying elevation data.</p>
+
+        <p id="elevpeerreviewh">Indication if the elevation products were independently verified (QA/QC) by an external entity.</p>
+
+        <p id="elevgeneralcommentsh">This is an open field where any additional information about the elevation product can be provided.</p>
+
+        <p id="hydroprojidh">Used as a unique identifier to link the projects to a spatial database.</p>
+
+        <p id="hydromethodh">Provides the name of the hydrology model or method used to derive the regulatory flow.</p>
+
+        <p id="hydroyearh">Indicates the latest year the model was run in determining regulatory flows for the project, or, the latest year in the dataset for a flood frequency type analysis.</p>
+
+        <p id="datasetyrsh">The total number of years in the dataset (eg. 27), applicable only to flood frequency type analysis or long term simulation.</p>
+
+        <p id="eventsmodelledh">Provides a description of other return period events that were modeled or analyzed as part of this project. (eg. 2, 5, 10, 25, 50, 100).</p>
+
+        <p id="modelcalibh">Provides a general indication if the hydrology model has been calibrated with rainfall/water level/flow measurements or other forms of verification.</p>
+
+        <p id="calibqualityh">Provides an indication of the quality of the calibration/verification. Provided examples include: High – Modeled flows were confirmed with gauged data during significant event, Medium – Small dataset of gauged flows/levels, Low – Model calibrated on similar watershed.</p>
+
+        <p id="inputparamqualityh">Provides a general indication of the quality of the input parameters, such as runoff coefficients, curve numbers, etc., or such things as rating curves for gauged stations. This is a subjective response, respondents entered ‘Low’ if not known.</p>
+
+        <p id="inputcommentsh">This field provides for any comments about the quality of the input parameters to support the selection above</p>
+
+        <p id="hydromodelyearh">If known, this field provides the year the model represents. This indicates if the model took into account proposed planning scenarios</p>
+
+        <p id="smincorporatedh">Provides an indication of whether or not the effect of snowmelt has been considered in determining peak flows for this project. </p>
+
+        <p id="volreductionh">Provides an Indication if there are any artificial structures such as dams, levees, berms, large SWM ponds, etc. that provide a reduction in the natural peak flow or volume of flood waters, and what type of flow is used for regulatory purposes.</p>
+
+        <p id="catdiscretizedh">Indicates if the model was properly discretized or if lumped catchments were used.</p>
+
+        <p id="hydrosupportingdoch">Indicates if there is adequate supporting documentation/reports to support the hydrology (ie. sufficient information that a qualified person could fully understand and reproduce the results).</p>
+
+        <p id="ccconsideredh">Provides an indication if any consideration for climate change was used in developing the hydrologic model or peak flows used for regulatory purposes.</p>
+
+        <p id="hydropeerreviewh">Indication if the hydrology products were independently verified (QA/QC) by an external entity.</p>
+
+        <p id="hydrogeneralcommentsh">This is an open field where any additional information about the hydrology product can be provided.</p>
+
+        <p id="hydraprojidh">Used as a unique identifier to link the projects to a spatial database.</p>
+
+        <p id="hydramethodh">Provides the name of the hydraulic model or method used to derive regulatory elevations.</p>
+
+        <p id="hydrayearh">Indicates the latest year the model was run in determining regulatory elevations for the project, or the date elevations were derived.</p>
+
+        <p id="flowcondh">Indicates the flow regime in which the hydraulic model was run.</p>
+
+        <p id="hydracalibh">Provides a general indication as to whether a process was undertaken to calibrate the model, perform sensitivity analysis or verify the model.</p>
+
+        <p id="hydracalibqualityh">If a calibration process was undertaken, this field represents the quality of that process. Example: High-calibrated with significant gauged data, Medium-Sensitivity analysis, with verification of high water marks, Low-Sensitivity analysis only.</p>
+
+        <p id="hydrainputparamqualityh">Provides a general indication of the quality of the input parameters, such as manning’s, reach lengths, etc. This is a subjective response, respondents entered ‘Low’ if not known.</p>
+
+        <p id="hydrainputcommentsh">This field provides for any comments about the quality of the input parameters to support the selection above.</p>
+
+        <p id="floodlineestimatedh">This field indicates if the regulatory floodline for this project is estimated. A floodline is considered to be estimated when it was derived using methods that do not meet the FDRP or 2002 MNRF standard.</p>
+
+        <p id="hydrasupportingdoch">Indicates if there is adequate supporting documentation/reports to support the hydraulics (ie. sufficient information that a qualified person could fully understand and reproduce the results).</p>
+
+        <p id="elevsourceh">Indicates the source of the elevation data used within the hydraulic model (ie. data for cross sections).</p>
+
+        <p id="hydrapeerreviewh">Indication if the hydraulic products were independently verified (QA/QC) by an external entity.</p>
+
+        <p id="hydrageneralcommentsh">This is an open field where any additional information about the hydraulics product can be provided.</p>
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="js/stepnav.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/utils.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="js/bootstrap/bootstrap.js"></script>
+
+</body>
+</html>
