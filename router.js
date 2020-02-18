@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const app = express(); 
 const FloodDataSummary = require("./flood-data-summary");
 const cors = require('cors');
+const path = require("path"); 
 
 const {Pool, Client} = require("pg");
 const client = new Client({
@@ -24,19 +25,18 @@ client.connect(function(err, res) {
 
 
 app.set("view engine", "ejs"); 
-app.use(express.static(__dirname + "/views"));
-app.use(express.static(__dirname + "/views/mapiframe"));
+app.use(express.static(__dirname + "/webform-expressapp/views"));
+app.use(express.static(__dirname + "/webform-expressapp/views/mapiframe"));
 app.use(bodyParser.urlencoded({extended: true})); 
 app.use(express.json()); 
 
 
 app.get("/", function(req,res) {
     //pass in another array of the checked checkboxes 
-	res.sendFile("selectionpage.html", {root:"views"}); 
+	res.sendFile("selectionpage.html", {root:"webform-expressapp/views"}); 
 });
 
 app.post("/entry", function(req, res) {
-    console.log(req.body);
     var imagery = false; 
     var elevation = false; 
     var hydrology = false; 
@@ -55,23 +55,18 @@ app.post("/entry", function(req, res) {
     }
 
     //send modified entry page
-    res.render("entryPage.ejs", {imagery: imagery, 
+    res.render(path.join(__dirname , "webform-expressapp", "views" ,"entryPage.ejs"), {imagery: imagery, 
                                     elevation: elevation, hydrology:hydrology,
                                     hydraulics:hydraulics}); 
-
 }); 
 
 
 app.get("/analytics", function(req, res) {
-    res.sendFile("analytics.html", {root:"views"}); 
-}); 
-
-app.get("/help", function(req, res) {
-    res.sendFile("help.html", {root: "views"}); 
+    res.sendFile(path.join(__dirname, "build", "index.html")); 
 }); 
 
 app.get("/embed", function(req, res) {
-    res.sendFile("map.html", {root: "views/mapiframe"});
+    res.sendFile("map.html", {root: "webform-expressapp/views/mapiframe"});
 });
 
 //we need to use cors to allow cross domain access to the API. 
