@@ -12,7 +12,7 @@ class FGPVmap extends Component {
     render() { 
         return (
             <React.Fragment>
-                <iframe src="http://localhost:3000/embed" title="FGPV" id="FGPV"
+                <iframe src="http://localhost:8080/embed" title="FGPV" id="FGPV"
                     height="600px" width="100%" allowFullScreen={false}/>
                 <div className="row">
                     <br></br>

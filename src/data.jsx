@@ -77,7 +77,7 @@ class DataProvider extends Component {
             var boundingbox = e.data.replace("coordinates selected ", "");
             console.log("selected message received");
             //axios call to local api
-            axios.get('http://localhost:3000/api', 
+            axios.get('http://localhost:8080/api', 
                         {params: {
                             "boundingbox" : boundingbox,
                             "formatted" : true
