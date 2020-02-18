@@ -30,6 +30,7 @@ window.select_coordinates = {
             }
             if(e.data == "load conservation") {
                 console.log("detected load conservation"); 
+                loadConservationLayers(); 
             }
             else {
                 return; 
@@ -107,7 +108,20 @@ window.select_coordinates = {
 
         function loadConservationLayers() {
             
+            //the order of coordinates are important....   
+            var count = 100000; 
+            $.getJSON("conservation-layers.json", (json) => {
+                json.forEach((elem) => {
+                    
+                    var testpolygon = new RAMP.GEO.Polygon(count, elem.geometry.rings.flat(), {outlineColor: [220,5,0], fillColor: [255, 0, 0], fillOpacity:0.5, outlineWidth: 3});
+                    count++; 
+                    markerLayer.addGeometry(testpolygon);
+                    
+                }) 
+                console.log("DONE!"); 
+            });
 
+            
         }
     }
 }

@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 apitest.js
-conservation-layers.json
+webform-expressapp/views/mapiframe/conservation-layers.json
 # testing
 /coverage
 
