@@ -80,7 +80,6 @@ app.get("/api", cors(), function(req, res) {
         const sql = "SELECT * FROM hazarddata WHERE boundingbox <@ $1"; 
         const val = [req.query.boundingbox];
         
-        console.log(req.query.boundingbox);
         //careful not to overwrite res 
         client.query(sql, val, function(err, result) {
             if (err) {
