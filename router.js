@@ -93,7 +93,6 @@ app.get("/api", cors(), function(req, res) {
                     
                     var formattedResponse = new FloodDataSummary(result.rows); 
 
-                    console.log(formattedResponse.getSummary());
                     res.json(formattedResponse.getSummary()); 
                 }
                 else {

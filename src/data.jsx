@@ -83,6 +83,7 @@ class DataProvider extends Component {
                             "formatted" : true
                         }
                     }).then((res) => {
+                        
                         //successfully fetching data, need to implement way to verify that entries exist
                         //console.log(res.data); 
                         //update the state
