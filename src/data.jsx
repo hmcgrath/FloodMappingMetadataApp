@@ -6,6 +6,8 @@ const DataContext = React.createContext();
 
 class DataProvider extends Component {
     state = {  
+        loadingCA: false,
+        loadedCA: false,
         dataLoaded: false,
         dataExists: false,
         data: {}, 
@@ -45,7 +47,7 @@ class DataProvider extends Component {
             resetCategories.forEach((category) => {
                 category.expanded = false; 
             }); 
-            this.setState({dataLoaded: false, dataExists: false, data:{}, graphTabs: [], categeories: resetCategories}, () => {
+            this.setState({loadedCA: false, dataLoaded: false, dataExists: false, data:{}, graphTabs: [], categeories: resetCategories}, () => {
                 console.log(this.state);
             });
         }, 
@@ -58,11 +60,12 @@ class DataProvider extends Component {
                 this.setState({graphTabs: newGraphTabs}, () => console.log(this.state)); 
             }
         }, 
-        
         loadConservationLayers: () => {
-            //LOAD ONTARIO CONSERVATION AUTHORITIES
-            var map = document.getElementById("FGPV");
-            map.contentWindow.postMessage("load conservation", "*"); 
+            //LOAD ONTARIO CONSERVATION AUTHORITIES (ONLY LOAD IF NOT LOADED ALREADY)
+            if (!this.state.loadedCA) {
+                var map = document.getElementById("FGPV");
+                map.contentWindow.postMessage("load conservation", "*"); 
+            }
         }
     }
 
@@ -102,9 +105,11 @@ class DataProvider extends Component {
         }
         if (e.data === "started conservation load") {
             console.log("started conservation load"); 
+            this.setState({loadingCA: true});
         }
         if (e.data === "finished conservation load") {
             console.log("finished conservation load"); 
+            this.setState({loadingCA: false, loadedCA:true}); 
         }
     }
 
