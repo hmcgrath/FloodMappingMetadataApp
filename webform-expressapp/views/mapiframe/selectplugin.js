@@ -29,14 +29,13 @@ window.select_coordinates = {
                 resetMap(); 
             }
             if(e.data == "load conservation") {
-                console.log("detected load conservation"); 
+                window.parent.postMessage("started conservation load", "*");  
                 loadConservationLayers(); 
             }
             else {
                 return; 
             }
         });
-
 
         const markerLayer = api.layers.getLayersById("markerlayer")[0]; 
         const icon = 'M 50 0 100 100 50 200 0 100 Z';
@@ -108,7 +107,6 @@ window.select_coordinates = {
 
         function loadConservationLayers() {
             
-            //the order of coordinates are important....   
             var count = 100000; 
             $.getJSON("conservation-layers.json", (json) => {
                 json.forEach((elem) => {
@@ -118,7 +116,7 @@ window.select_coordinates = {
                     markerLayer.addGeometry(testpolygon);
                     
                 }) 
-                console.log("DONE!"); 
+                window.parent.postMessage("finished conservation load", "*");  
             });
 
             
