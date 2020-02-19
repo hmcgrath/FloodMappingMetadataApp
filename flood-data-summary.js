@@ -101,6 +101,14 @@ class FloodDataSummary {
     updateDrainageArea() {
         var max = Math.max(...this.drainagearealist); 
         var min = Math.min(...this.drainagearealist); 
+
+        //if there's only one element present OR all elements are the same.... 
+        if (max === min) {
+            this.drainagearea[max.toString()] = this.drainagearealist.length; 
+            return; 
+        }
+
+        //does not work if there's only one element present or identical elements......
         for (var i = min - 1; i < max + (5 - ((max - min)% 5)) - 1; i += Math.round((max - min)/5)) {
             var interval_min = i + 1; 
             var interval_max = i + Math.round((max-min)/5); 
@@ -131,10 +139,10 @@ class FloodDataSummary {
             this.updateDatasetStatus(entry);
             this.updateSummReport(entry); 
             this.updateUpdateSinceOrig(entry); 
-            this.updateFloodHzdStd(entry); 
+            this.updateFloodHzdStd(entry);
             this.updateFinancialSupport(entry);
             this.updateDrainageAreaList(entry);
-            this.updateLastProjUpdateList(entry); 
+            this.updateLastProjUpdateList(entry);
         });
         this.updateDrainageArea(); 
         this.updateLastProjUpdate(); 

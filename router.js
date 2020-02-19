@@ -80,6 +80,7 @@ app.get("/api", cors(), function(req, res) {
         const sql = "SELECT * FROM hazarddata WHERE boundingbox <@ $1"; 
         const val = [req.query.boundingbox];
         
+        console.log(req.query.boundingbox);
         //careful not to overwrite res 
         client.query(sql, val, function(err, result) {
             if (err) {
@@ -89,7 +90,10 @@ app.get("/api", cors(), function(req, res) {
             else {
                 //route for returning formatted summary response for front end
                 if (req.query.formatted == "true") {
+                    
                     var formattedResponse = new FloodDataSummary(result.rows); 
+
+                    console.log(formattedResponse.getSummary());
                     res.json(formattedResponse.getSummary()); 
                 }
                 else {
