@@ -23,6 +23,7 @@ window.select_coordinates = {
 
     listenToClick() {
         api.layersObj.addLayer("markerlayer");  
+        console.log(api.ui.configLegend.children[0]);
         
         window.addEventListener("message", (e) => {
             if(e.data == "reset map") {

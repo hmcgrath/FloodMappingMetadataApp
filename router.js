@@ -4,6 +4,7 @@ const app = express();
 const FloodDataSummary = require("./flood-data-summary");
 const cors = require('cors');
 const path = require("path"); 
+const timeout = require("connect-timeout");
 
 const {Pool, Client} = require("pg");
 const client = new Client({
@@ -71,7 +72,7 @@ app.get("/embed", function(req, res) {
 
 //we need to use cors to allow cross domain access to the API. 
 //RESTful route to get database entries
-app.get("/api", cors(), function(req, res) {
+app.get("/api", timeout('5s'), cors(), function(req, res) {
     //FOR FUTURE-USE: IMPLEMENT A LIMIT PARAM?
     
     //if a bounding box is defined
