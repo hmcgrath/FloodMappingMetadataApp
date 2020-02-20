@@ -13,6 +13,7 @@
     "cors": "^2.8.5",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
+    "express-timeout-handler": "^2.2.0",
     "pg": "^7.18.1",
     "plotly.js": "^1.52.2",
     "react": "^16.12.0",
