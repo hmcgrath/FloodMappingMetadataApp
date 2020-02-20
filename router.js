@@ -4,6 +4,7 @@ const app = express();
 const FloodDataSummary = require("./flood-data-summary");
 const cors = require('cors');
 const path = require("path"); 
+const fs = require("fs"); 
 const timeout = require("express-timeout-handler");
 
 const options = {
@@ -133,11 +134,50 @@ app.get("/api", cors(), function(req, res) {
     
 });
 
+//making a separate route for conservation authority counts... may integrate into /api route
+app.get("/api/cacount", function(req, res) {
+    var jsonFile = fs.readFileSync("conservation-layers.json"); 
+    var jsonContent = JSON.parse(jsonFile); 
+
+    //counter to keep track of async client.queries completed
+    var completedQueries = 0;
+    //obj to store the number of records found for each conservation authority  
+    var countList = {};
+
+    jsonContent.forEach((ca) => {
+        var coordList = ca.geometry.rings.flat(); 
+        //swap lat-lng for all coordinates to match format in database... 
+        coordList.forEach((coordinate) => {
+            var tmp = coordinate[0]; 
+            coordinate[0] = coordinate[1]; 
+            coordinate[1] = tmp; 
+        });
+        //format the coordinates for db query
+        const polygon = coordList.join(","); 
+
+        const sql = "SELECT * FROM hazarddata WHERE $1 && polygon(boundingbox)";
+        const val = [polygon]; 
+        client.query(sql, val, function(err, result) {
+            //increment the number of completed queries 
+            completedQueries++; 
+            //check if all queries have been completed
+            if (completedQueries === jsonContent.length) {
+                //client.end(); 
+                res.json(countList); 
+            }
+
+            if (err) {
+                console.log(err.stack); 
+            }
+            else {
+                countList[ca.attributes.LEGAL_NAME] = result.rowCount; 
+            }
+        }); 
+    });
+});
+
 
 app.post("/submit/:action?", function (req,res) {
-    /*
-    YOU MUST HAVE A NAME ATTRIBUTE IN EACH OF YOUR INPUTS FOR THIS TO WORK!!!
-    */
 
     var action = req.params.action; 
 
