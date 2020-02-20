@@ -109,18 +109,17 @@ window.select_coordinates = {
         function loadConservationLayers() {
             
             var count = 100000; 
-            $.getJSON("conservation-layers.json", (json) => {
-                json.forEach((elem) => {
-                    
-                    var testpolygon = new RAMP.GEO.Polygon(count, elem.geometry.rings.flat(), {outlineColor: [220,5,0], fillColor: [255, 0, 0], fillOpacity:0.5, outlineWidth: 3});
+
+            $.getJSON("http://localhost:8080/api/cacount", (data) => {
+                for (const ca of Object.keys(data)) {
+                    //data[ca][0] is the list of coordinates
+                    var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: [255, 0, 0], fillOpacity:0.5, outlineWidth: 3});
                     count++; 
-                    markerLayer.addGeometry(testpolygon);
-                    
-                }) 
-                window.parent.postMessage("finished conservation load", "*");  
+                    markerLayer.addGeometry(capolygon); 
+                }
+                window.parent.postMessage("finished conservation load", "*"); 
             });
 
-            
         }
     }
 }

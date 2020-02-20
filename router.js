@@ -8,7 +8,7 @@ const fs = require("fs");
 const timeout = require("express-timeout-handler");
 
 const options = {
-    timeout:5000, 
+    timeout:10000, 
     onTimeout: function(req, res) {
         res.status(503).send("Service timed out.");
     },
@@ -145,7 +145,8 @@ app.get("/api/cacount", function(req, res) {
     var countList = {};
 
     jsonContent.forEach((ca) => {
-        var coordList = ca.geometry.rings.flat(); 
+        //copy values
+        var coordList = Array.from(ca.geometry.rings.flat()); 
         //swap lat-lng for all coordinates to match format in database... 
         coordList.forEach((coordinate) => {
             var tmp = coordinate[0]; 
@@ -170,6 +171,12 @@ app.get("/api/cacount", function(req, res) {
                 console.log(err.stack); 
             }
             else {
+                coordList.forEach((coordinate) => {
+                    var tmp = coordinate[0]; 
+                    coordinate[0] = coordinate[1]; 
+                    coordinate[1] = tmp; 
+                });
+                //returning the coordinates in (long, lat) to comply with FGPViewer
                 countList[ca.attributes.LEGAL_NAME] = [coordList, result.rowCount]; 
             }
         }); 
