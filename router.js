@@ -170,7 +170,7 @@ app.get("/api/cacount", function(req, res) {
                 console.log(err.stack); 
             }
             else {
-                countList[ca.attributes.LEGAL_NAME] = result.rowCount; 
+                countList[ca.attributes.LEGAL_NAME] = [coordList, result.rowCount]; 
             }
         }); 
     });
