@@ -111,9 +111,15 @@ window.select_coordinates = {
             var count = 100000; 
 
             $.getJSON("http://localhost:8080/api/cacount", (data) => {
+                var totalcount = 0; 
+                for (const ca of Object.keys(data)) {
+                    totalcount += data[ca][1]
+                }
+
                 for (const ca of Object.keys(data)) {
                     //data[ca][0] is the list of coordinates
-                    var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: [255, 0, 0], fillOpacity:0.5, outlineWidth: 3});
+                    var opacity = data[ca][1]/totalcount;  
+                    var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: [255, 0, 0], fillOpacity:opacity, outlineWidth: 3});
                     count++; 
                     markerLayer.addGeometry(capolygon); 
                 }

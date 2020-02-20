@@ -161,14 +161,9 @@ app.get("/api/cacount", function(req, res) {
         client.query(sql, val, function(err, result) {
             //increment the number of completed queries 
             completedQueries++; 
-            //check if all queries have been completed
-            if (completedQueries === jsonContent.length) {
-                //client.end(); 
-                res.json(countList); 
-            }
-
             if (err) {
                 console.log(err.stack); 
+                
             }
             else {
                 coordList.forEach((coordinate) => {
@@ -178,6 +173,13 @@ app.get("/api/cacount", function(req, res) {
                 });
                 //returning the coordinates in (long, lat) to comply with FGPViewer
                 countList[ca.attributes.LEGAL_NAME] = [coordList, result.rowCount]; 
+                 
+            }
+
+            //check if all queries have been completed
+            if (completedQueries === jsonContent.length) {
+                //client.end(); 
+                res.json(countList); 
             }
         }); 
     });
