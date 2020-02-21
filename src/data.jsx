@@ -28,7 +28,6 @@ class DataProvider extends Component {
             {name: "Local Watercourse Name", categoryId:"localwcname", type:"searchable", graphType:"none", expanded: false}
         ],
         toggleCategory: (categoryId) => {
-            console.log(categoryId); 
             var resetCategories = this.state.categories; 
             resetCategories.forEach((category) => {
                 if (category.categoryId === categoryId) {

@@ -57,7 +57,12 @@ class Category extends Component {
 
 function GraphButton(props) {
     return (
-        <button type="button" className="btn btn-primary btn-block" onClick={props.onClick} disabled={props.disabled}>Create Graph</button>
+        <React.Fragment>
+            <button type="button" className="btn btn-primary btn-block" onClick={props.onClick} disabled={props.disabled}>Create Graph</button>
+            
+            <button type="button" className="btn btn-primary btn-block" onClick="" disabled={props.disabled}>Show Heatmap</button>
+        </React.Fragment>
+        
     );
 }
 

@@ -22,9 +22,9 @@ window.select_coordinates = {
     },
 
     listenToClick() {
+        //console.log(api.panels.legend.body.append("test")); 
         api.layersObj.addLayer("markerlayer");  
-        console.log(api.ui.configLegend.children[0]);
-        
+        console.log($(".rv-legend-root"));
         window.addEventListener("message", (e) => {
             if(e.data == "reset map") {
                 resetMap(); 
@@ -115,7 +115,6 @@ window.select_coordinates = {
                 /* Create five even intervals (beginning from 0) for grouping
                     conservation authorities based on the number of records they hold
                 */
-
                 //get the maximum number of records
                 var maxCount = Math.max(...Object.values(data).map(x => x[1])); 
                 //round up to the nearest five 
