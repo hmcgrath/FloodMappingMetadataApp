@@ -5,10 +5,12 @@ var reqcoordslist;
 var coordsselected;
 
 window.select_coordinates = {
+    showCaLayer: true,
     init(rampApi) {
         api = rampApi; 
         this.listenToMapAdd(); 
         api.layersObj._identifyMode = []; 
+        
     },
 
     listenToMapAdd() {
@@ -23,22 +25,26 @@ window.select_coordinates = {
 
     listenToClick() {
         //console.log(api.panels.legend.body.append("test")); 
+        loadConservationLayers(); 
         api.layersObj.addLayer("markerlayer");  
-        console.log($(".rv-legend-root"));
+        //console.log($(".rv-legend-root"));
         window.addEventListener("message", (e) => {
             if(e.data == "reset map") {
                 resetMap(); 
             }
-            if(e.data == "load conservation") {
-                window.parent.postMessage("started conservation load", "*");  
-                loadConservationLayers(); 
+            if (e.data == "toggle conservation") {
+                const caLayer = api.layers.getLayersById("calayer")[0]; 
+                this.showCaLayer = !this.showCaLayer; 
+                caLayer.esriLayer.setVisibility(this.showCaLayer); 
             }
+
             else {
                 return; 
             }
         });
 
         const markerLayer = api.layers.getLayersById("markerlayer")[0]; 
+        //console.log(markerLayer.esriLayer.setVisibility); 
         const icon = 'M 50 0 100 100 50 200 0 100 Z';
         var click = api.click.subscribe((pointObject) => {
             addPointOnClick(pointObject);                 
@@ -107,9 +113,12 @@ window.select_coordinates = {
         }
 
         function loadConservationLayers() {
-            
-            var count = 100000; 
+            api.layersObj.addLayer("calayer");
+            const caLayer = api.layers.getLayersById("calayer")[0]; 
 
+
+            var count = 100000; 
+            window.parent.postMessage("started conservation load", "*");  
             $.getJSON("http://localhost:8080/api/cacount", (data) => {
                  
                 /* Create five even intervals (beginning from 0) for grouping
@@ -139,7 +148,7 @@ window.select_coordinates = {
                     var intervalNum = Math.floor((data[ca][1] - 1)/(intervalSize)); 
                     var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3});
                     count++; 
-                    markerLayer.addGeometry(capolygon); 
+                    caLayer.addGeometry(capolygon); 
                 }
                 window.parent.postMessage("finished conservation load", "*"); 
             });

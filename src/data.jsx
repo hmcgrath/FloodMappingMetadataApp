@@ -59,11 +59,11 @@ class DataProvider extends Component {
                 this.setState({graphTabs: newGraphTabs}, () => console.log(this.state)); 
             }
         }, 
-        loadConservationLayers: () => {
-            //LOAD ONTARIO CONSERVATION AUTHORITIES (ONLY LOAD IF NOT LOADED ALREADY)
-            if (!this.state.loadedCA) {
+        toggleConservationLayers: () => {
+            //SEND MESSAGE TO TOGGLE THE CONSERVATION AUTHORITY LAYERS
+            if (this.state.loadedCA) {
                 var map = document.getElementById("FGPV");
-                map.contentWindow.postMessage("load conservation", "*"); 
+                map.contentWindow.postMessage("toggle conservation", "*"); 
             }
         }
     }
