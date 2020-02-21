@@ -111,15 +111,34 @@ window.select_coordinates = {
             var count = 100000; 
 
             $.getJSON("http://localhost:8080/api/cacount", (data) => {
-                var totalcount = 0; 
-                for (const ca of Object.keys(data)) {
-                    totalcount += data[ca][1]
-                }
+                 
+                /* Create five even intervals (beginning from 0) for grouping
+                    conservation authorities based on the number of records they hold
+                */
 
+                //get the maximum number of records
+                var maxCount = Math.max(...Object.values(data).map(x => x[1])); 
+                //round up to the nearest five 
+                maxCount += (5 - (maxCount % 5));
+                //get the size of each interval  
+                var intervalSize = maxCount / 5; 
+                //enum of polygon colors
+                const colors = {
+                    //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
+                    "-1": [255, 255, 255],
+                    0: [235, 230, 223],
+                    1: [217, 194, 177],
+                    2: [175, 186, 196],
+                    3: [125, 154, 179],
+                    4: [67, 100, 128]
+                }
+                
                 for (const ca of Object.keys(data)) {
                     //data[ca][0] is the list of coordinates
-                    var opacity = data[ca][1]/totalcount;  
-                    var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: [255, 0, 0], fillOpacity:opacity, outlineWidth: 3});
+                    
+                    //determine what interval the CA falls under 
+                    var intervalNum = Math.floor((data[ca][1] - 1)/(intervalSize)); 
+                    var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3});
                     count++; 
                     markerLayer.addGeometry(capolygon); 
                 }

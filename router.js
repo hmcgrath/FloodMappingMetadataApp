@@ -146,7 +146,7 @@ app.get("/api/cacount", function(req, res) {
 
     jsonContent.forEach((ca) => {
         //copy values
-        var coordList = Array.from(ca.geometry.rings.flat()); 
+        var coordList = ca.geometry.rings.flat(); 
         //swap lat-lng for all coordinates to match format in database... 
         coordList.forEach((coordinate) => {
             var tmp = coordinate[0]; 
