@@ -34,6 +34,7 @@ class TabList extends Component {
 
     //function to create the graph 
     createGraph(graphType, graphId, graphName) {
+        //TO-DO: ADD SORTING METHOD FOR AGEOFMAPPING
         if(graphType === "pie") {
             return (
                 <Plot data={[

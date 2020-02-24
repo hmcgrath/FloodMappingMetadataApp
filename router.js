@@ -80,6 +80,10 @@ app.get("/embed", function(req, res) {
     res.sendFile("map.html", {root: "webform-expressapp/views/mapiframe"});
 });
 
+app.get("/embedheatmap", function(req, res) {
+    res.sendFile("heatmap.html", {root: "webform-expressapp/views/mapiframe"})
+})
+
 //we need to use cors to allow cross domain access to the API. 
 //RESTful route to get database entries
 app.get("/api", cors(), function(req, res) {
