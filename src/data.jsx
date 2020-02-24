@@ -46,7 +46,7 @@ class DataProvider extends Component {
             resetCategories.forEach((category) => {
                 category.expanded = false; 
             }); 
-            this.setState({loadedCA: false, dataLoaded: false, dataExists: false, data:{}, graphTabs: [], categeories: resetCategories}, () => {
+            this.setState({dataLoaded: false, dataExists: false, data:{}, graphTabs: [], categeories: resetCategories}, () => {
                 console.log(this.state);
             });
         }, 

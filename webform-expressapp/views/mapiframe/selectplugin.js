@@ -3,6 +3,7 @@ var countClicks;
 var coordslist; 
 var reqcoordslist; 
 var coordsselected;
+var click; 
 
 window.select_coordinates = {
     showCaLayer: true,
@@ -27,9 +28,13 @@ window.select_coordinates = {
         //console.log(api.panels.legend.body.append("test")); 
         loadConservationLayers(); 
         api.layersObj.addLayer("markerlayer");  
+        click = api.click.subscribe((pointObject) => {
+            addPointOnClick(pointObject); 
+        }); 
         //console.log($(".rv-legend-root"));
         window.addEventListener("message", (e) => {
             if(e.data == "reset map") {
+                //For now, only run the reset map function if the CA layer is not showing 
                 resetMap(); 
             }
             if (e.data == "toggle conservation") {
@@ -37,20 +42,21 @@ window.select_coordinates = {
                 this.showCaLayer = !this.showCaLayer; 
                 caLayer.esriLayer.setVisibility(this.showCaLayer); 
             }
-
             else {
                 return; 
             }
         });
 
         const markerLayer = api.layers.getLayersById("markerlayer")[0]; 
-        //console.log(markerLayer.esriLayer.setVisibility); 
-        const icon = 'M 50 0 100 100 50 200 0 100 Z';
+        
+        /*
         var click = api.click.subscribe((pointObject) => {
             addPointOnClick(pointObject);                 
-        }); 
+        });
+        */ 
 
         function addPointOnClick(pointObject) {
+            const icon = 'M 50 0 100 100 50 200 0 100 Z';
             var marker = new RAMP.GEO.Point(countClicks, [pointObject.xy.x,
                 pointObject.xy.y], {
                 style: 'ICON',
@@ -104,8 +110,8 @@ window.select_coordinates = {
             coordslist = []; 
             reqcoordslist = []; 
             countClicks = 0;
-
-            //unsubscribing prevents duplicate event handlers 
+            
+            //unsubscribe to prevent duplicate event handlers
             click.unsubscribe(); 
             click = api.click.subscribe((pointObject) => {
                 addPointOnClick(pointObject); 
@@ -116,7 +122,7 @@ window.select_coordinates = {
             api.layersObj.addLayer("calayer");
             const caLayer = api.layers.getLayersById("calayer")[0]; 
 
-
+            //used to generate unique ID numbers for the polygons
             var count = 100000; 
             window.parent.postMessage("started conservation load", "*");  
             $.getJSON("http://localhost:8080/api/cacount", (data) => {

@@ -143,7 +143,7 @@ $(document).ready(function () {
                 data: $("#entryForm").serialize(), 
                 url: '/submit/save',
             }).done(function() {
-                alert("Submission received.");
+                $("#submitSuccessModal").modal("show"); 
                 currentTab = 0; 
                 showTab(currentTab); 
             }).fail(function() {
