@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Collapse from 'react-bootstrap/Collapse';
-import DataContext from '../data';
+import DataContext from '../contexts/graphdata';
 
 class Category extends Component {
     // name: name of the category
@@ -52,21 +52,22 @@ class Category extends Component {
             </React.Fragment>
         );
     }
-
 }
 
-function GraphButton(props) {
+const GraphButton = (props) => {
     return (
-        <React.Fragment>
-            <button type="button" className="btn btn-primary btn-block" onClick={props.onClick} disabled={props.disabled}>Create Graph</button>
-            
-            <button type="button" className="btn btn-primary btn-block" onClick="" disabled={props.disabled}>Show Heatmap</button>
-        </React.Fragment>
-        
+        <button type="button" className="btn btn-primary btn-block" onClick={props.onClick} disabled={props.disabled}>Create Graph</button>
     );
 }
 
-function SearchBox() {
+const HeatmapButton = (props) => {
+    return(
+        <button type="button" className="btn btn-primary btn-block" onClick="" disabled={props.disabled}>Show Heatmap</button>
+    );
+}
+
+
+const SearchBox = () => {
     return (
         <input type="text" maxLength="20" className="form-control" placeholder="Search..."></input>
     );

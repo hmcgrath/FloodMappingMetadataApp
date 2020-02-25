@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DataContext from "../data";
+import DataContext from "../contexts/graphdata";
 
 class FGPVheatmap extends Component {
 

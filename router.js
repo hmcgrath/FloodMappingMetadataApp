@@ -92,7 +92,7 @@ app.get("/api", cors(), function(req, res) {
     //if a bounding box is defined
     if(typeof(req.query.boundingbox) !== 'undefined') {        
         //query database for any entries that are contained within boundingbox
-        const sql = "SELECT * FROM hazarddata WHERE boundingbox <@ $1"; 
+        const sql = "SELECT * FROM hazarddata WHERE boundingbox && $1"; 
         const val = [req.query.boundingbox];
         
         //careful not to overwrite res 

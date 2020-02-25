@@ -120,10 +120,11 @@ class FloodDataSummary {
     updateLastProjUpdate() {
         for (var i = 0; i < this.lastprojupdatelist.length; i++) {
             //get the decade 
+            //SORT THE DECADES
             var decade = Math.floor(this.lastprojupdatelist[i] / 10) * 10; 
             var decadeString = decade.toString() + "'s"; 
             if (this.lastprojupdate.hasOwnProperty(decadeString)) {
-                this.lastprojupdate[decadeString] += 1
+                this.lastprojupdate[decadeString] += 1;
             }
             else {
                 this.lastprojupdate[decadeString] = 1;

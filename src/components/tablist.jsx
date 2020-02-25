@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import FGPVmap from './FGPVmap';
-import DataContext from '../data';
+import DataContext from '../contexts/graphdata';
 import Plotly from 'plotly.js/dist/plotly-basic';
 import createPlotlyComponent from "react-plotly.js/factory";
 const Plot = createPlotlyComponent(Plotly);  

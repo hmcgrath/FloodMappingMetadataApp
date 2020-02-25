@@ -26,9 +26,9 @@ window.select_coordinates = {
 
     listenToClick() {
         //console.log(api.panels.legend.body.append("test")); 
-        loadConservationLayers(); 
+        this.loadConservationLayers(); 
         api.layersObj.addLayer("markerlayer");  
-        click = api.click.subscribe((pointObject) => {
+        var click = api.click.subscribe((pointObject) => {
             addPointOnClick(pointObject); 
         }); 
         //console.log($(".rv-legend-root"));
@@ -48,12 +48,6 @@ window.select_coordinates = {
         });
 
         const markerLayer = api.layers.getLayersById("markerlayer")[0]; 
-        
-        /*
-        var click = api.click.subscribe((pointObject) => {
-            addPointOnClick(pointObject);                 
-        });
-        */ 
 
         function addPointOnClick(pointObject) {
             const icon = 'M 50 0 100 100 50 200 0 100 Z';
@@ -88,7 +82,7 @@ window.select_coordinates = {
                     coordslist.push([coordslist[0][0], coordslist[1][1]]);
                     coordslist.push([coordslist[1][0], coordslist[0][1]]); 
 
-                    //TRY - swap the coordinates....
+                    //TRY - swap the coordinates to comply with FGPV....
                     let tmp = coordslist[2]; 
                     coordslist[2] = coordslist[1]; 
                     coordslist[1] = tmp; 
@@ -117,50 +111,49 @@ window.select_coordinates = {
                 addPointOnClick(pointObject); 
             }); 
         }
+    }, 
+    loadConservationLayers() {
+        api.layersObj.addLayer("calayer");
+        const caLayer = api.layers.getLayersById("calayer")[0]; 
 
-        function loadConservationLayers() {
-            api.layersObj.addLayer("calayer");
-            const caLayer = api.layers.getLayersById("calayer")[0]; 
-
-            //used to generate unique ID numbers for the polygons
-            var count = 100000; 
-            window.parent.postMessage("started conservation load", "*");  
-            $.getJSON("http://localhost:8080/api/cacount", (data) => {
-                 
-                /* Create five even intervals (beginning from 0) for grouping
-                    conservation authorities based on the number of records they hold
-                */
-                //get the maximum number of records
-                var maxCount = Math.max(...Object.values(data).map(x => x[1])); 
-                //round up to the nearest five 
-                maxCount += (5 - (maxCount % 5));
-                //get the size of each interval  
-                var intervalSize = maxCount / 5; 
-                //enum of polygon colors
-                const colors = {
-                    //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
-                    "-1": [255, 255, 255],
-                    0: [235, 230, 223],
-                    1: [217, 194, 177],
-                    2: [175, 186, 196],
-                    3: [125, 154, 179],
-                    4: [67, 100, 128]
-                }
+        //used to generate unique ID numbers for the polygons
+        var count = 100000; 
+        window.parent.postMessage("started conservation load", "*");  
+        $.getJSON("http://localhost:8080/api/cacount", (data) => {
+             
+            /* Create five even intervals (beginning from 0) for grouping
+                conservation authorities based on the number of records they hold
+            */
+            //get the maximum number of records
+            var maxCount = Math.max(...Object.values(data).map(x => x[1])); 
+            //round up to the nearest five 
+            maxCount += (5 - (maxCount % 5));
+            //get the size of each interval  
+            var intervalSize = maxCount / 5; 
+            //enum of polygon colors
+            const colors = {
+                //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
+                "-1": [255, 255, 255],
+                0: [235, 230, 223],
+                1: [217, 194, 177],
+                2: [175, 186, 196],
+                3: [125, 154, 179],
+                4: [67, 100, 128]
+            }
+            
+            for (const ca of Object.keys(data)) {
+                //data[ca][0] is the list of coordinates
                 
-                for (const ca of Object.keys(data)) {
-                    //data[ca][0] is the list of coordinates
-                    
-                    //determine what interval the CA falls under 
-                    var intervalNum = Math.floor((data[ca][1] - 1)/(intervalSize)); 
-                    var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3});
-                    count++; 
-                    caLayer.addGeometry(capolygon); 
-                }
-                window.parent.postMessage("finished conservation load", "*"); 
-            });
-
-        }
+                //determine what interval the CA falls under 
+                var intervalNum = Math.floor((data[ca][1] - 1)/(intervalSize)); 
+                var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3});
+                count++; 
+                caLayer.addGeometry(capolygon); 
+            }
+            window.parent.postMessage("finished conservation load", "*"); 
+        });
     }
+
 }
 
 
