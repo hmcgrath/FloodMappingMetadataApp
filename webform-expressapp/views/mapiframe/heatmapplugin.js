@@ -18,16 +18,6 @@ window.heatmap = {
         //console.log(api.panels.legend.body.append("test")); 
         this.loadConservationLayers(); 
         //console.log($(".rv-legend-root"));
-        window.addEventListener("message", (e) => {
-            if (e.data === "toggle conservation") {
-                const caLayer = api.layers.getLayersById("calayer")[0]; 
-                this.showCaLayer = !this.showCaLayer; 
-                caLayer.esriLayer.setVisibility(this.showCaLayer); 
-            }
-            else {
-                return; 
-            }
-        });
     }, 
     
     loadConservationLayers() {

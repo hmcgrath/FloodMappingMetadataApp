@@ -58,13 +58,6 @@ class DataProvider extends Component {
                 newGraphTabs.push({graphName: graphName, graphId: graphId, graphType: graphType});
                 this.setState({graphTabs: newGraphTabs}, () => console.log(this.state)); 
             }
-        }, 
-        toggleConservationLayers: () => {
-            //SEND MESSAGE TO TOGGLE THE CONSERVATION AUTHORITY LAYERS
-            if (this.state.loadedCA) {
-                var map = document.getElementById("FGPV");
-                map.contentWindow.postMessage("toggle conservation", "*"); 
-            }
         }
     }
 
@@ -101,14 +94,6 @@ class DataProvider extends Component {
                     }).catch((err) => {
                         console.log(err);
                     }); 
-        }
-        if (e.data === "started conservation load") {
-            console.log("started conservation load"); 
-            this.setState({loadingCA: true});
-        }
-        if (e.data === "finished conservation load") {
-            console.log("finished conservation load"); 
-            this.setState({loadingCA: false, loadedCA:true}); 
         }
     }
 

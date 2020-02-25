@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import {DataProvider} from './contexts/graphdata';
+import {HeatmapDataProvider} from './contexts/heatmapdata';
 import GraphApplication from './components/graphapplication'
-import {Form, FormControl, FormLabel, FormGroup} from 'react-bootstrap';
 import NavBar from './components/navbar';
+import HeatmapApplication from './components/heatmapapplication';
 class App extends Component{
   state = {
     mode:"graph"
@@ -19,15 +20,30 @@ class App extends Component{
     this.setState({mode: newMode}); 
   }
 
-  render() {
-    return (
+  renderMode() {
+    if (this.state.mode === "graph") {
+      return (
         <DataProvider>
-          <NavBar onButtonClick={this.changeMode}>
-            {(this.state.mode === "graph") ? "Change to Heatmap": "Change to Graph"}
-          </NavBar>
           <GraphApplication></GraphApplication>
         </DataProvider>
-    );
+      );
+    }
+    else {
+      return (
+        <HeatmapDataProvider>
+          <HeatmapApplication></HeatmapApplication>
+        </HeatmapDataProvider>
+      );
+    }
+  }
+
+  render() {
+    return (<React.Fragment>
+              <NavBar onButtonClick={this.changeMode}>
+                {(this.state.mode === "graph") ? "Change to Heatmap": "Change to Graph"}
+              </NavBar>
+              {this.renderMode()}
+            </React.Fragment>);
   }
 }
 

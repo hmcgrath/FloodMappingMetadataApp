@@ -60,13 +60,6 @@ const GraphButton = (props) => {
     );
 }
 
-const HeatmapButton = (props) => {
-    return(
-        <button type="button" className="btn btn-primary btn-block" onClick="" disabled={props.disabled}>Show Heatmap</button>
-    );
-}
-
-
 const SearchBox = () => {
     return (
         <input type="text" maxLength="20" className="form-control" placeholder="Search..."></input>

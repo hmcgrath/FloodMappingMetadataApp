@@ -9,16 +9,6 @@ class FGPVmap extends Component {
 
     };
 
-    //loads the conservation authority button if the layer is not already loaded
-    getToggleConservationButton() {
-        if (this.context.loadedCA) {
-            return (<button type="button" className="btn btn-primary btn-block" id="loadconservation" onClick={this.context.toggleConservationLayers}>Toggle Conservation Authority Layers</button>); 
-        }
-        else {
-            return ""; 
-        }
-    }
-
     render() { 
         return (
             <React.Fragment>
@@ -26,12 +16,7 @@ class FGPVmap extends Component {
                     height="600px" width="100%" allowFullScreen={false}/>
                 <div className="row">
                     <br></br>
-                    <div className="col-lg-6 col-md-12 col-sm-12">
-                        {this.getToggleConservationButton()}
-                    </div>
-                    <div className="col-lg-6 col-md-12 col-sm-12">
-                        <button type="button" className="btn btn-danger btn-block" id="resetmap" onClick={this.context.reset}>Reset Map</button>
-                    </div>    
+                    <button type="button" className="btn btn-danger btn-block" id="resetmap" onClick={this.context.reset}>Reset Map</button>
                 </div>
             </React.Fragment>
         );
