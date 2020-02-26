@@ -6,8 +6,6 @@ const DataContext = React.createContext();
 
 class DataProvider extends Component {
     state = {  
-        loadingCA: false,
-        loadedCA: false,
         dataLoaded: false,
         dataExists: false,
         data: {}, 
@@ -50,6 +48,10 @@ class DataProvider extends Component {
                 console.log(this.state);
             });
         }, 
+        toggleRecords: () => {
+            var map = document.getElementById("FGPV"); 
+            map.contentWindow.postMessage("toggle record", "*"); 
+        },
         //figure out params
         addGraphTab: (graphName, graphId, graphType) => {
             var newGraphTabs = this.state.graphTabs; 

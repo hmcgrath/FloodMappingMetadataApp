@@ -3,6 +3,7 @@ window.select_coordinates = {
     coordslist: [], 
     reqcoordslist: [],
     coordsselected: false,
+    showRecords: true,
     click: null,
     api: null,
     init(rampApi) {
@@ -13,6 +14,7 @@ window.select_coordinates = {
         this.coordslist = []; 
         this.reqcoordslist = []; 
         this.coordsselected = false; 
+        this.showRecords = true; 
         this.click = null; 
     },
     listenToMapAdd() {
@@ -34,7 +36,13 @@ window.select_coordinates = {
         //console.log($(".rv-legend-root"));
         window.addEventListener("message", (e) => {
             if(e.data == "reset map") {
+                this.showRecords = true; 
+                recordLayer.esriLayer.setVisibility(this.showRecords); 
                 this.resetMap(markerLayer, recordLayer); 
+            }
+            else if (e.data == "toggle record") {
+                this.showRecords = !this.showRecords; 
+                recordLayer.esriLayer.setVisibility(this.showRecords); 
             }
             else {
                 return; 
@@ -87,7 +95,9 @@ window.select_coordinates = {
                     for (var i = 0; i < stringlist.length; i+= 2) {
                         boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
                     } 
-                    var recordbox = new RAMP.GEO.Polygon(idcounter, boxlist, { outlineColor: [255, 130, 0], outlineWidth: 3 }); 
+                    var recordbox = new RAMP.GEO.Polygon(idcounter, boxlist, { outlineColor: [255, 130, 0], 
+                                                                            fillColor: [255, 130, 0], fillOpacity:0.6,
+                                                                            outlineWidth: 3 }); 
                     recordLayer.addGeometry(recordbox); 
                     idcounter++; 
                 }
