@@ -14,6 +14,7 @@ window.heatmap = {
     listenToClick() {
         //console.log(this.api.panels.legend.body.append("test")); 
         this.loadConservationLayers(); 
+        this.loadLegendPanel(); 
         //console.log($(".rv-legend-root"));
     }, 
     loadConservationLayers() {
@@ -56,6 +57,23 @@ window.heatmap = {
             }
             window.parent.postMessage("finished conservation load", "*"); 
         });
+    },
+    loadLegendPanel(body) {
+        const legendPanel = this.api.panels.create("legendpanel"); 
+        legendPanel.body = `<md-list>
+                                <md-list-item>
+                                    <div style="width:10px; height:10px; background-color:red;"></div>
+                                    <span style="padding-left:10px">Test</span>
+                                </md-list-item>
+                            </md-list>`;
+        console.log(legendPanel); 
+        legendPanel.element.css({
+            top: "80%", 
+            left: "80%",
+            right: "5%", 
+            bottom:"5%" 
+        });
+        legendPanel.open(); 
     }
 }
 
