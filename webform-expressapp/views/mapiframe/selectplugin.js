@@ -24,37 +24,29 @@ window.select_coordinates = {
         //console.log(this.api.panels.legend.body.append("test")); 
         this.api.layersObj.addLayer("markerlayer");  
         const markerLayer = this.api.layers.getLayersById("markerlayer")[0]; 
+
+        this.api.layersObj.addLayer("recordlayer");
+        const recordLayer = this.api.layers.getLayersById("recordlayer")[0]; 
+
         this.click = this.api.click.subscribe((pointObject) => {
-            this.addPointOnClick(pointObject, markerLayer); 
+            this.addPointOnClick(pointObject, markerLayer, recordLayer); 
         }); 
         //console.log($(".rv-legend-root"));
         window.addEventListener("message", (e) => {
             if(e.data == "reset map") {
-                this.resetMap(markerLayer); 
+                this.resetMap(markerLayer, recordLayer); 
             }
-            /*
-            if (e.data == "toggle conservation") {
-                const caLayer = this.api.layers.getLayersById("calayer")[0]; 
-                this.showCaLayer = !this.showCaLayer; 
-                caLayer.esriLayer.setVisibility(this.showCaLayer); 
-            }
-            */
             else {
                 return; 
             }
         });
     },
-    addPointOnClick(pointObject, markerLayer) {
+    addPointOnClick(pointObject, markerLayer, recordLayer) {
         const icon = 'M 50 0 100 100 50 200 0 100 Z';
-        var marker = new RAMP.GEO.Point(this.countClicks, [pointObject.xy.x,
-        pointObject.xy.y], {
+        var marker = new RAMP.GEO.Point(this.countClicks, [pointObject.xy.x, pointObject.xy.y], {
             style: 'ICON',
             icon: icon,
-            colour: [255,
-                0, 0,
-                0.75], width:
-                25
-        });
+            colour: [255, 0, 0, 0.75], width:25});
         markerLayer.addGeometry(marker);
         this.countClicks++;
         this.coordslist.push([pointObject.xy.x, pointObject.xy.y]);
@@ -85,16 +77,32 @@ window.select_coordinates = {
             var rectangle = new RAMP.GEO.Polygon(2342, this.coordslist, { outlineColor: [255, 0, 0], outlineWidth: 3 });
 
             markerLayer.addGeometry(rectangle);
+            
+            $.getJSON("http://localhost:8080/api?boundingbox=" + boundingcoords, (data) => {
+                var idcounter = 100;
+                for (const record of data) {
+                    var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
+                    var boxlist = []; 
 
-            //post a message
-            window.parent.postMessage("coordinates selected " + boundingcoords, "*");
-            //disable the event handler
-            this.click.unsubscribe();
+                    for (var i = 0; i < stringlist.length; i+= 2) {
+                        boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
+                    } 
+                    var recordbox = new RAMP.GEO.Polygon(idcounter, boxlist, { outlineColor: [255, 130, 0], outlineWidth: 3 }); 
+                    recordLayer.addGeometry(recordbox); 
+                    idcounter++; 
+                }
+            }).then(() => {
+                //post a message
+                //disable the event handler
+                window.parent.postMessage("coordinates selected " + boundingcoords, "*");
+                this.click.unsubscribe();
+            });
         }    
     },
-    resetMap(markerLayer) {
+    resetMap(markerLayer, recordLayer) {
         //remove all geometry OR pass in an array of String? geometry IDs as param....  
         markerLayer.removeGeometry(); 
+        recordLayer.removeGeometry(); 
         this.coordslist = []; 
         this.reqcoordslist = []; 
         this.countClicks = 0;
@@ -102,7 +110,7 @@ window.select_coordinates = {
         //unsubscribe to prevent duplicate event handlers
         this.click.unsubscribe(); 
         this.click = this.api.click.subscribe((pointObject) => {
-            this.addPointOnClick(pointObject, markerLayer); 
+            this.addPointOnClick(pointObject, markerLayer, recordLayer); 
         }); 
     }
 }

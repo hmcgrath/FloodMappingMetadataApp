@@ -82,9 +82,9 @@ app.get("/embed", function(req, res) {
 
 app.get("/embedheatmap", function(req, res) {
     res.sendFile("heatmap.html", {root: "webform-expressapp/views/mapiframe"})
-})
+}); 
 
-//we need to use cors to allow cross domain access to the API. 
+//we need to use cors to allow cross domain access to the API (Temporarily). 
 //RESTful route to get database entries
 app.get("/api", cors(), function(req, res) {
     //FOR FUTURE-USE: IMPLEMENT A LIMIT PARAM?
@@ -92,9 +92,8 @@ app.get("/api", cors(), function(req, res) {
     //if a bounding box is defined
     if(typeof(req.query.boundingbox) !== 'undefined') {        
         //query database for any entries that are contained within boundingbox
-        const sql = "SELECT * FROM hazarddata WHERE boundingbox && $1"; 
+        const sql = "SELECT *, polygon(boundingbox) AS fullbox FROM hazarddata WHERE boundingbox && $1"; 
         const val = [req.query.boundingbox];
-        
         //careful not to overwrite res 
         client.query(sql, val, function(err, result) {
             if (err) {
@@ -104,9 +103,7 @@ app.get("/api", cors(), function(req, res) {
             else {
                 //route for returning formatted summary response for front end
                 if (req.query.formatted == "true") {
-                    
                     var formattedResponse = new FloodDataSummary(result.rows); 
-
                     res.json(formattedResponse.getSummary()); 
                 }
                 else {
@@ -118,7 +115,7 @@ app.get("/api", cors(), function(req, res) {
 
     //otherwise get all the entries from the database
     else {
-        const sql = "SELECT * FROM hazarddata";
+        const sql = "SELECT *, polygon(boundingbox) FROM hazarddata";
         client.query(sql, function(err,result) {
             if (err) {
                 console.log(err.stack); 

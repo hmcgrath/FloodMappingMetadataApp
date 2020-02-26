@@ -1,5 +1,3 @@
-var api; 
-
 window.heatmap = {
     showCaLayer: true,
     api: null,
