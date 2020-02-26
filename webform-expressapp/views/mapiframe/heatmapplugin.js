@@ -2,27 +2,25 @@ var api;
 
 window.heatmap = {
     showCaLayer: true,
+    api: null,
     init(rampApi) {
-        api = rampApi; 
+        this.api = rampApi; 
         this.listenToMapAdd(); 
-        api.layersObj._identifyMode = []; 
+        this.api.layersObj._identifyMode = []; 
     },
-
     listenToMapAdd() {
         RAMP.mapAdded.subscribe(() => {
             this.listenToClick(); 
         }); 
     },
-
     listenToClick() {
-        //console.log(api.panels.legend.body.append("test")); 
+        //console.log(this.api.panels.legend.body.append("test")); 
         this.loadConservationLayers(); 
         //console.log($(".rv-legend-root"));
     }, 
-    
     loadConservationLayers() {
-        api.layersObj.addLayer("calayer");
-        const caLayer = api.layers.getLayersById("calayer")[0]; 
+        this.api.layersObj.addLayer("calayer");
+        const caLayer = this.api.layers.getLayersById("calayer")[0]; 
 
         //used to generate unique ID numbers for the polygons
         var count = 100000; 
