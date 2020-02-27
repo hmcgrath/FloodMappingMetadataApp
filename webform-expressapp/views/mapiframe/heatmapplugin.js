@@ -15,9 +15,13 @@ window.heatmap = {
             
             RAMP.GAPI.esriLoadApiClasses([["esri/tasks/GeometryService", "GeomService"]])
                          .then(() => this.loadConservationLayers()
-                         .then(() => console.log("All done!")));
+                         .then(() => {
+                            this.geometryService = RAMP.GAPI.esriBundle.GeometryService(); 
+                            this.api.click.subscribe((evt) => {
+                                this.polygonClick(evt); 
+                            }); 
+                         }));
             
-
             //this.loadConservationLayers();
         }); 
     },
@@ -95,8 +99,9 @@ window.heatmap = {
         });
         legendPanel.open(); 
     },
-    polygonClick() {
-
+    polygonClick(evt) {
+        console.log([evt.xy.x, evt.xy.y]); 
+        //TO-DO --- QUERY using geometryservice
     }
 }
 
