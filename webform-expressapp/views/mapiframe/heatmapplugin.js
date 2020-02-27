@@ -14,7 +14,6 @@ window.heatmap = {
     listenToClick() {
         //console.log(this.api.panels.legend.body.append("test")); 
         this.loadConservationLayers(); 
-        this.loadLegendPanel(); 
         //console.log($(".rv-legend-root"));
     }, 
     loadConservationLayers() {
@@ -45,30 +44,43 @@ window.heatmap = {
                 3: [125, 154, 179],
                 4: [67, 100, 128]
             }
-            
+            var intervals = [["Zero", "(255,255,255)"]]; 
+            //get interval strings (for legend)
+            for (var i = 1, j = 0; i <= maxCount; i+= intervalSize, j++) {
+                let intervalString = i.toString() + "-" + (i + intervalSize - 1).toString(); 
+                let colorString = colors[j].join(","); 
+                colorString = "(" + colorString + ")"; 
+                intervals.push([intervalString, colorString]); 
+            }
+            console.log(intervals); 
+            //panel body
+            var panelBody = $("<md-list>");
+            for (const interval of intervals) {
+                $(panelBody).append(
+                    `<md-list-item style="min-height:20px">\
+                        <div style="width:10px;height:10px;background-color:rgb${interval[1]}"></div>\
+                        <span style="padding-left:10px">${interval[0]}</span>\
+                    </md-list-item>`); 
+            }             
             for (const ca of Object.keys(data)) {
                 //data[ca][0] is the list of coordinates
-                
                 //determine what interval the CA falls under 
                 var intervalNum = Math.floor((data[ca][1] - 1)/(intervalSize)); 
                 var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3});
                 count++; 
                 caLayer.addGeometry(capolygon); 
             }
+            this.loadLegendPanel(panelBody); 
             window.parent.postMessage("finished conservation load", "*"); 
         });
     },
-    loadLegendPanel(body) {
+    loadLegendPanel(panelBody) {
         const legendPanel = this.api.panels.create("legendpanel"); 
-        legendPanel.body = `<md-list>
-                                <md-list-item>
-                                    <div style="width:10px; height:10px; background-color:red;"></div>
-                                    <span style="padding-left:10px">Test</span>
-                                </md-list-item>
-                            </md-list>`;
-        console.log(legendPanel); 
+        legendPanel.body = `<span>Number of Records</span>`; 
+        legendPanel.body.append(panelBody);
+        legendPanel.body.css("height", "100%"); 
         legendPanel.element.css({
-            top: "80%", 
+            top: "70%", 
             left: "80%",
             right: "5%", 
             bottom:"5%" 
