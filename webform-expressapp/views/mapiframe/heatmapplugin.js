@@ -8,14 +8,11 @@ window.heatmap = {
     },
     listenToMapAdd() {
         RAMP.mapAdded.subscribe(() => {
-            this.listenToClick(); 
+            //console.log(this.api.panels.legend.body.append("test")); 
+            //console.log($(".rv-legend-root"));
+            this.loadConservationLayers();
         }); 
     },
-    listenToClick() {
-        //console.log(this.api.panels.legend.body.append("test")); 
-        this.loadConservationLayers(); 
-        //console.log($(".rv-legend-root"));
-    }, 
     loadConservationLayers() {
         this.api.layersObj.addLayer("calayer");
         const caLayer = this.api.layers.getLayersById("calayer")[0]; 
@@ -58,7 +55,7 @@ window.heatmap = {
             for (const interval of intervals) {
                 $(panelBody).append(
                     `<md-list-item style="min-height:20px">\
-                        <div style="width:10px;height:10px;background-color:rgb${interval[1]}"></div>\
+                        <div style="width:10px;height:10px;border-style:solid;border-color:black;border-width:0.5px;background-color:rgb${interval[1]}"></div>\
                         <span style="padding-left:10px">${interval[0]}</span>\
                     </md-list-item>`); 
             }             
@@ -71,6 +68,7 @@ window.heatmap = {
                 caLayer.addGeometry(capolygon); 
             }
             this.loadLegendPanel(panelBody); 
+            console.log(caLayer); 
             window.parent.postMessage("finished conservation load", "*"); 
         });
     },
@@ -86,6 +84,9 @@ window.heatmap = {
             bottom:"5%" 
         });
         legendPanel.open(); 
+    },
+    polygonClick() {
+
     }
 }
 
