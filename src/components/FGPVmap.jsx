@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DataContext from "../data";
+import DataContext from "../contexts/graphdata";
 
 class FGPVmap extends Component {
 
@@ -9,16 +9,6 @@ class FGPVmap extends Component {
 
     };
 
-    //loads the conservation authority button if the layer is not already loaded
-    getToggleConservationButton() {
-        if (this.context.loadedCA) {
-            return (<button type="button" className="btn btn-primary btn-block" id="loadconservation" onClick={this.context.toggleConservationLayers}>Toggle Conservation Authority Layers</button>); 
-        }
-        else {
-            return ""; 
-        }
-    }
-
     render() { 
         return (
             <React.Fragment>
@@ -27,11 +17,12 @@ class FGPVmap extends Component {
                 <div className="row">
                     <br></br>
                     <div className="col-lg-6 col-md-12 col-sm-12">
-                        {this.getToggleConservationButton()}
+                        {(this.context.dataExists ?
+                        <button type="button" className="btn btn-primary btn-block" id="togglerecords" onClick={this.context.toggleRecords}>Toggle Record Display</button> : "")}
                     </div>
                     <div className="col-lg-6 col-md-12 col-sm-12">
                         <button type="button" className="btn btn-danger btn-block" id="resetmap" onClick={this.context.reset}>Reset Map</button>
-                    </div>    
+                    </div>
                 </div>
             </React.Fragment>
         );

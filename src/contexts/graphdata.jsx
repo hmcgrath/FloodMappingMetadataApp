@@ -6,8 +6,6 @@ const DataContext = React.createContext();
 
 class DataProvider extends Component {
     state = {  
-        loadingCA: false,
-        loadedCA: false,
         dataLoaded: false,
         dataExists: false,
         data: {}, 
@@ -19,7 +17,7 @@ class DataProvider extends Component {
             {name: "Financial Support", categoryId:"financialsupport", type:"graphable", graphType:"pie", expanded: false}, 
             {name: "Dataset Status", categoryId:"datasetstatus", type:"graphable", graphType:"bar", expanded: false}, 
             {name: "Drainage Area", categoryId:"drainagearea", type:"graphable", graphType:"bar", expanded: false},
-            {name: "Last Project Update", categoryId:"lastprojupdate", type:"graphable", graphType:"bar", expanded: false}, 
+            {name: "Age of Mapping", categoryId:"lastprojupdate", type:"graphable", graphType:"bar", expanded: false}, 
             {name: "Summary Report Available", categoryId:"summreportavail", type:"graphable", graphType:"pie", expanded: false}, 
             {name: "Updated Since Original", categoryId:"updatesinceorig", type:"graphable", graphType:"pie", expanded: false},
             {name: "Project ID", categoryId: "projectid", type:"searchable", graphType:"none", expanded: false},
@@ -50,6 +48,10 @@ class DataProvider extends Component {
                 console.log(this.state);
             });
         }, 
+        toggleRecords: () => {
+            var map = document.getElementById("FGPV"); 
+            map.contentWindow.postMessage("toggle record", "*"); 
+        },
         //figure out params
         addGraphTab: (graphName, graphId, graphType) => {
             var newGraphTabs = this.state.graphTabs; 
@@ -57,13 +59,6 @@ class DataProvider extends Component {
             if (newGraphTabs.filter(graphtab => graphtab.graphId == graphId).length === 0) {
                 newGraphTabs.push({graphName: graphName, graphId: graphId, graphType: graphType});
                 this.setState({graphTabs: newGraphTabs}, () => console.log(this.state)); 
-            }
-        }, 
-        toggleConservationLayers: () => {
-            //SEND MESSAGE TO TOGGLE THE CONSERVATION AUTHORITY LAYERS
-            if (this.state.loadedCA) {
-                var map = document.getElementById("FGPV");
-                map.contentWindow.postMessage("toggle conservation", "*"); 
             }
         }
     }
@@ -101,14 +96,6 @@ class DataProvider extends Component {
                     }).catch((err) => {
                         console.log(err);
                     }); 
-        }
-        if (e.data === "started conservation load") {
-            console.log("started conservation load"); 
-            this.setState({loadingCA: true});
-        }
-        if (e.data === "finished conservation load") {
-            console.log("finished conservation load"); 
-            this.setState({loadingCA: false, loadedCA:true}); 
         }
     }
 

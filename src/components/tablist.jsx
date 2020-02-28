@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import FGPVmap from './FGPVmap';
-import DataContext from '../data';
+import DataContext from '../contexts/graphdata';
 import Plotly from 'plotly.js/dist/plotly-basic';
 import createPlotlyComponent from "react-plotly.js/factory";
 const Plot = createPlotlyComponent(Plotly);  
@@ -34,6 +34,7 @@ class TabList extends Component {
 
     //function to create the graph 
     createGraph(graphType, graphId, graphName) {
+        //TO-DO: ADD SORTING METHOD FOR AGEOFMAPPING
         if(graphType === "pie") {
             return (
                 <Plot data={[

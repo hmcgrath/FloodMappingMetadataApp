@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Category from './category';
 import ListGroup from 'react-bootstrap/ListGroup';
-import DataContext from '../data';
+import DataContext from '../contexts/graphdata';
 
 class CategoryList extends Component {
     static contextType = DataContext; 
@@ -46,7 +46,7 @@ class CategoryList extends Component {
                                     expanded={category.expanded}>
                         </Category>
                     )}
-                </ListGroup>
+            </ListGroup>
         );
     }
 }
