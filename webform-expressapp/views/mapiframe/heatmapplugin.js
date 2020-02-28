@@ -122,9 +122,9 @@ window.heatmap = {
         transformparams.outSR = targetSR; 
         transformparams.transformation = transformation; 
         
+        const caLayer = this.api.layers.getLayersById("calayer")[0];
         //apply the transformation using geometryservice and use polygon.contains() to determine if click falls within a polygon
         this.geometryService.project(transformparams, function(outputpoint) {
-            const caLayer = this.api.layers.getLayersById("calayer")[0]; 
             for (const ca of caLayer.esriLayer.graphics) {
                 if (ca.geometry.contains(outputpoint[0])) {
                     console.log(ca.geometry); 
