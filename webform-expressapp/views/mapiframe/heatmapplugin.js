@@ -40,7 +40,7 @@ window.heatmap = {
             const caLayer = this.api.layers.getLayersById("calayer")[0]; 
 
             window.parent.postMessage("started conservation load", "*");  
-            $.getJSON("http://localhost:8080/api/cacount", (data) => {
+            $.getJSON("http://localhost:8080/api/cacount?countonly=true", (data) => {
                  
                 /* Create five even intervals (beginning from 0) for grouping
                     conservation authorities based on the number of records they hold

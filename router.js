@@ -145,6 +145,9 @@ app.get("/api/cacount", function(req, res) {
     //obj to store the number of records found for each conservation authority  
     var countList = {};
 
+    
+
+
     jsonContent.forEach((ca) => {
         //copy values
         var coordList = ca.geometry.rings.flat(); 
@@ -173,8 +176,15 @@ app.get("/api/cacount", function(req, res) {
                     coordinate[1] = tmp; 
                 });
                 //returning the coordinates in (long, lat) to comply with FGPViewer
-                countList[ca.attributes.LEGAL_NAME] = [coordList, result.rowCount]; 
-                 
+                //request parameter countonly -> true: returns only the number of records, false: returns all records 
+                if (req.query.countonly == "true") {
+                    countList[ca.attributes.LEGAL_NAME] = [coordList, result.rowCount]; 
+                }
+                
+                else {
+                    countList[ca.attributes.LEGAL_NAME] = result.rows; 
+                }
+
             }
 
             //check if all queries have been completed
