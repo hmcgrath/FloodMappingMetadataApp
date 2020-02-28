@@ -16,6 +16,7 @@ window.heatmap = {
             RAMP.GAPI.esriLoadApiClasses([["esri/tasks/GeometryService", "GeomService"]])
                          .then(() => this.loadConservationLayers()
                          .then(() => {
+                            //create object instance of geometry service
                             this.geometryService = RAMP.GAPI.esriBundle.GeometryService(); 
                             this.api.click.subscribe((evt) => {
                                 this.polygonClick(evt); 
@@ -29,9 +30,7 @@ window.heatmap = {
         return new Promise((resolve, reject) => {
             this.api.layersObj.addLayer("calayer");
             const caLayer = this.api.layers.getLayersById("calayer")[0]; 
-    
-            //used to generate unique ID numbers for the polygons
-            var count = 100000; 
+
             window.parent.postMessage("started conservation load", "*");  
             $.getJSON("http://localhost:8080/api/cacount", (data) => {
                  
@@ -76,8 +75,8 @@ window.heatmap = {
                     //data[ca][0] is the list of coordinates
                     //determine what interval the CA falls under 
                     var intervalNum = Math.floor((data[ca][1] - 1)/(intervalSize)); 
-                    var capolygon = new RAMP.GEO.Polygon(count, data[ca][0], {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3});
-                    count++; 
+                    //ID is now the conservation authority name
+                    var capolygon = new RAMP.GEO.Polygon(ca, data[ca][0], {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3});
                     caLayer.addGeometry(capolygon); 
                 }
                 this.loadLegendPanel(panelBody); 
@@ -101,6 +100,8 @@ window.heatmap = {
     },
     polygonClick(evt) {
         console.log([evt.xy.x, evt.xy.y]); 
+        const caLayer = this.api.layers.getLayersById("calayer")[0]; 
+        console.log(caLayer.geometry); 
         //TO-DO --- QUERY using geometryservice
     }
 }
