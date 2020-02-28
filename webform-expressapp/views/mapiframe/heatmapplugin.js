@@ -1,10 +1,14 @@
 window.heatmap = {
     showCaLayer: true,
     api: null,
+    esriAPI: null, 
+    geometryService: null,
+    serviceurl: null,
     init(rampApi) {
         this.api = rampApi; 
         this.listenToMapAdd(); 
         this.api.layersObj._identifyMode = []; 
+        this.serviceurl = "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"; 
     },
     listenToMapAdd() {
         RAMP.mapAdded.subscribe(() => {
@@ -12,18 +16,22 @@ window.heatmap = {
             //console.log($(".rv-legend-root"));
             
             //load esri API classes 
-            
-            RAMP.GAPI.esriLoadApiClasses([["esri/tasks/GeometryService", "GeomService"]])
-                         .then(() => this.loadConservationLayers()
-                         .then(() => {
-                            //create object instance of geometry service
-                            this.geometryService = RAMP.GAPI.esriBundle.GeometryService(); 
-                            this.api.click.subscribe((evt) => {
-                                this.polygonClick(evt); 
-                            }); 
-                         }));
-            
-            //this.loadConservationLayers();
+            const esriApi = RAMP.GAPI.esriLoadApiClasses([["esri/tasks/GeometryService", "GeomService"], 
+            ["esri/geometry/Polygon", "Polygon"], 
+            ["esri/geometry/Point", "Point"], 
+            ["esri/SpatialReference", "SpatialReference"], 
+            ["esri/tasks/ProjectParameters", "ProjectParameters"]
+            ]); 
+
+            esriApi.then(() => this.loadConservationLayers())
+                    .then(() => {
+                        this.esriApi = RAMP.GAPI.esriBundle; 
+                        //object property instance of a geometryservice
+                        this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
+                        this.api.click.subscribe((evt) => {
+                            this.polygonClick(evt); 
+                        });
+                    }); 
         }); 
     },
     loadConservationLayers() {
@@ -99,10 +107,31 @@ window.heatmap = {
         legendPanel.open(); 
     },
     polygonClick(evt) {
-        console.log([evt.xy.x, evt.xy.y]); 
-        const caLayer = this.api.layers.getLayersById("calayer")[0]; 
-        console.log(caLayer.geometry); 
-        //TO-DO --- QUERY using geometryservice
+        //convert to a point with same spatial reference..... 
+
+        //create point object from click event
+        const clickPoint = new this.esriApi.Point(evt.xy.x, evt.xy.y);
+        
+        //create projection parameters 
+        const geometries = [clickPoint]; 
+        const targetSR = this.esriApi.SpatialReference({wkid: 3978});
+        const transformation = {wkid: 1188}; 
+
+        const transformparams = new this.esriApi.ProjectParameters(); 
+        transformparams.geometries = geometries; 
+        transformparams.outSR = targetSR; 
+        transformparams.transformation = transformation; 
+        
+        //apply the transformation using geometryservice and use polygon.contains() to determine if click falls within a polygon
+        this.geometryService.project(transformparams, function(outputpoint) {
+            const caLayer = this.api.layers.getLayersById("calayer")[0]; 
+            for (const ca of caLayer.esriLayer.graphics) {
+                if (ca.geometry.contains(outputpoint[0])) {
+                    console.log(ca.geometry); 
+                }
+            }
+        });
+
     }
 }
 
