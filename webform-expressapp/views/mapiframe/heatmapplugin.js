@@ -4,6 +4,7 @@ window.heatmap = {
     esriAPI: null, 
     geometryService: null,
     serviceurl: null,
+    cadata: null,
     init(rampApi) {
         this.api = rampApi; 
         this.listenToMapAdd(); 
@@ -24,7 +25,9 @@ window.heatmap = {
             ]); 
 
             esriApi.then(() => this.loadConservationLayers())
+                    .then(() => this.loadConservationData())
                     .then(() => {
+                        console.log(this.cadata); 
                         this.esriApi = RAMP.GAPI.esriBundle; 
                         //object property instance of a geometryservice
                         this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
@@ -88,7 +91,6 @@ window.heatmap = {
                     caLayer.addGeometry(capolygon); 
                 }
                 this.loadLegendPanel(panelBody); 
-                window.parent.postMessage("finished conservation load", "*"); 
                 resolve(); 
             });
         }); 
@@ -106,6 +108,17 @@ window.heatmap = {
         });
         legendPanel.open(); 
     },
+    //loads all the flood record data for each CA. 
+    loadConservationData() {
+        return new Promise((resolve, reject) => {
+            $.getJSON("http://localhost:8080/api/cacount", (data) => {
+                this.cadata = data; 
+                //move postMessage here to ensure data is accessible
+                window.parent.postMessage("finished conservation load", "*"); 
+                resolve(); 
+            });
+        }); 
+    }, 
     polygonClick(evt) {
         //convert to a point with same spatial reference..... 
 
@@ -123,11 +136,13 @@ window.heatmap = {
         transformparams.transformation = transformation; 
         
         const caLayer = this.api.layers.getLayersById("calayer")[0];
+        const cadata = this.cadata; 
         //apply the transformation using geometryservice and use polygon.contains() to determine if click falls within a polygon
         this.geometryService.project(transformparams, function(outputpoint) {
             for (const ca of caLayer.esriLayer.graphics) {
                 if (ca.geometry.contains(outputpoint[0])) {
-                    console.log(ca.geometry); 
+                    console.log(cadata[ca.geometry.apiId]); 
+                    console.log(ca.geometry.apiId); 
                 }
             }
         });
