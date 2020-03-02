@@ -145,9 +145,6 @@ app.get("/api/cacount", function(req, res) {
     //obj to store the number of records found for each conservation authority  
     var countList = {};
 
-    
-
-
     jsonContent.forEach((ca) => {
         //copy values
         var coordList = ca.geometry.rings.flat(); 
@@ -189,7 +186,6 @@ app.get("/api/cacount", function(req, res) {
 
             //check if all queries have been completed
             if (completedQueries === jsonContent.length) {
-                //client.end(); 
                 res.json(countList); 
             }
         }); 

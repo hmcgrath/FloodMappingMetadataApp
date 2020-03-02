@@ -33,13 +33,12 @@ class HeatmapDataProvider extends Component {
             map.contentWindow.postMessage("reset map", "*"); 
 
             //reset the state (but be aware, this action is not instantaneous)
-            var resetCategories = this.state.categories; 
-            resetCategories.forEach((category) => {
-                category.expanded = false; 
-            }); 
-            this.setState({dataLoaded: false, dataExists: false, data:{}, graphTabs: [], categeories: resetCategories}, () => {
+
+            /*
+            this.setState({dataLoaded: false, dataExists: false, data:{}, graphTabs: []}, () => {
                 console.log(this.state);
             });
+            */
         }, 
         //figure out params
         addGraphTab: (graphName, graphId, graphType) => {
@@ -52,7 +51,8 @@ class HeatmapDataProvider extends Component {
         }, 
 
         heatmap: (categoryName) => {
-            console.log(categoryName); 
+            var map = document.getElementById("FGPVheatmap"); 
+            map.contentWindow.postMessage(categoryName, "*")
         }
 
     }

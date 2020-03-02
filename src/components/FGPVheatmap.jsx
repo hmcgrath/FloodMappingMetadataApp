@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import DataContext from "../contexts/graphdata";
+import HeatmapDataContext from "../contexts/heatmapdata"; 
 
 class FGPVheatmap extends Component {
 
-    static contextType = DataContext;
+    static contextType = HeatmapDataContext; 
 
     render() { 
         return (
@@ -13,7 +13,7 @@ class FGPVheatmap extends Component {
                         height="800px" width="100%" allowFullScreen={false}/>
                     <div className="row">
                         <br></br>
-                        <button type="button" className="btn btn-danger btn-block" id="resetheatmap" onClick="">Reset Map</button>
+                        <button type="button" className="btn btn-danger btn-block" id="resetheatmap" onClick={this.context.reset}>Reset Map</button>
                     </div>
                 </div>
             </React.Fragment>

@@ -6,6 +6,7 @@ window.heatmap = {
     serviceurl: null,
     cacount: null,
     cadata: null,
+    legendpanel: null,
     /**
      * Initializes the plugin
      * @param {any} rampApi - FGPV map instance
@@ -21,8 +22,7 @@ window.heatmap = {
      */
     listenToMapAdd() {
         RAMP.mapAdded.subscribe(() => {
-            //console.log(this.api.panels.legend.body.append("test")); 
-            //console.log($(".rv-legend-root"));
+            this.legendpanel = this.api.panels.create("legendpanel");
             
             //load esri API classes 
             const esriApi = RAMP.GAPI.esriLoadApiClasses([["esri/tasks/GeometryService", "GeomService"], 
@@ -119,7 +119,8 @@ window.heatmap = {
                 </md-list-item>`); 
         }
         //append the legend panel
-        this.loadLegendPanel(panelBody); 
+        var panelTitle = `<span>Number of Records</span>`
+        this.loadLegendPanel(panelTitle, panelBody); 
 
         for (const ca of caLayer.esriLayer.graphics) {
             var intervalNum = Math.floor((this.cacount[ca.geometry.apiId][1] - 1)/(intervalSize)); 
@@ -129,23 +130,85 @@ window.heatmap = {
             ); 
             ca.setSymbol(symbol);
         }
+    }, 
+    setDrainageAreaHeatmap() {
+        const caLayer = this.api.layers.getLayersById("calayer")[0];
+        var totalDrainageAreas = {}; 
+        for (const key of Object.keys(this.cadata)) {
+            let totaldrainagearea = 0; 
+            for (const record of this.cadata[key]) {
+                totaldrainagearea += parseFloat(record["drainagearea"])
+            }
+            totalDrainageAreas[key] = totaldrainagearea; 
+        }
+        console.log(totalDrainageAreas); 
+
+        //get the maximum number of records
+        var maxCount = Math.max(...Object.values(totalDrainageAreas)); 
+        //round up to the nearest five 
+        maxCount += (5 - (maxCount % 5));
+        //get the size of each interval  
+        var intervalSize = maxCount / 5; 
+        //enum of polygon colors
+        const colors = {
+            //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
+            "-1": [255, 255, 255],
+            0: [235, 230, 223],
+            1: [217, 194, 177],
+            2: [175, 186, 196],
+            3: [125, 154, 179],
+            4: [67, 100, 128]
+        }
+        var intervals = [["Zero", "(255,255,255)"]]; 
+
+        //get interval strings (for legend)
+        for (var i = 1, j = 0; i <= maxCount; i+= intervalSize, j++) {
+            let intervalString = i.toString() + "-" + (i + intervalSize - 1).toString(); 
+            let colorString = colors[j].join(","); 
+            colorString = "(" + colorString + ")"; 
+            intervals.push([intervalString, colorString]); 
+        }
+
+        //create the legend panel
+        var panelBody = $("<md-list>");
+        for (const interval of intervals) {
+            $(panelBody).append(
+                `<md-list-item style="min-height:20px">\
+                    <div style="width:10px;height:10px;border-style:solid;border-color:black;border-width:0.5px;background-color:rgb${interval[1]}"></div>\
+                    <span style="padding-left:10px">${interval[0]}</span>\
+                </md-list-item>`); 
+
+        }
+        var panelTitle = `<span>Drainage Area (sq m)</span>`
+        //append the legend panel
+        this.loadLegendPanel(panelTitle, panelBody); 
+
+        for (const ca of caLayer.esriLayer.graphics) {
+            var intervalNum = Math.floor((totalDrainageAreas[ca.geometry.apiId] - 1)/(intervalSize)); 
+            var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
+                new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
+                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(colors[intervalNum])
+            ); 
+            ca.setSymbol(symbol);
+        }
+        
     },
     /**
      * Creates a legend panel for the current heatmap being displayed
      * @param {any} panelBody - HTML element for the panel's body 
+     * @param {any} panelTitle - HTML element for Panel's title
      */
-    loadLegendPanel(panelBody) {
-        const legendPanel = this.api.panels.create("legendpanel"); 
-        legendPanel.body = `<span>Number of Records</span>`; 
-        legendPanel.body.append(panelBody);
-        legendPanel.body.css("height", "100%"); 
-        legendPanel.element.css({
+    loadLegendPanel(panelTitle, panelBody) {
+        this.legendpanel.body = panelTitle; 
+        this.legendpanel.body.append(panelBody);
+        this.legendpanel.body.css("height", "100%"); 
+        this.legendpanel.element.css({
             top: "70%", 
             left: "80%",
             right: "5%", 
             bottom:"5%" 
         });
-        legendPanel.open(); 
+        this.legendpanel.open(); 
     },
     //loads all the flood record data for each CA. 
     loadConservationData() {
@@ -165,6 +228,15 @@ window.heatmap = {
         console.log(this.cadata); 
         //this.esriApi = RAMP.GAPI.esriBundle; 
         //object property instance of a geometryservice
+        window.addEventListener("message", (e) => {
+            console.log(e.data);
+            if (e.data === "Drainage Area") {
+                this.setDrainageAreaHeatmap(); 
+            } 
+            if (e.data === "reset map") {
+                this.setDefaultHeatmap(); 
+            }
+        }); 
         this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
         this.api.click.subscribe((evt) => {
             this.polygonClick(evt); 
