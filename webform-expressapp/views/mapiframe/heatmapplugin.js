@@ -141,8 +141,7 @@ window.heatmap = {
         this.geometryService.project(transformparams, (outputpoint) => {
             for (const ca of caLayer.esriLayer.graphics) {
                 if (ca.geometry.contains(outputpoint[0])) {
-                    console.log(cadata[ca.geometry.apiId]); 
-                    console.log(ca.geometry.apiId); 
+                    console.log(cadata[ca.geometry.apiId]);  
                 }
             }
         });

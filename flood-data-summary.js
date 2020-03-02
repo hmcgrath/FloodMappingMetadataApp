@@ -118,18 +118,24 @@ class FloodDataSummary {
     }
 
     updateLastProjUpdate() {
+        var unordered = {}; 
+
         for (var i = 0; i < this.lastprojupdatelist.length; i++) {
             //get the decade 
-            //SORT THE DECADES
+           
             var decade = Math.floor(this.lastprojupdatelist[i] / 10) * 10; 
-            var decadeString = decade.toString() + "'s"; 
-            if (this.lastprojupdate.hasOwnProperty(decadeString)) {
-                this.lastprojupdate[decadeString] += 1;
+            if (unordered.hasOwnProperty(decade)) {
+                unordered[decade] += 1;
             }
             else {
-                this.lastprojupdate[decadeString] = 1;
+                unordered[decade] = 1;
             }
-
+        }
+        //sort the decades in ascending order
+        for (const key of Object.keys(unordered).sort()) {
+            console.log(key); 
+            const decadeString = key.toString() + "'s"; 
+            this.lastprojupdate[decadeString] = unordered[key]; 
         }
     }
 

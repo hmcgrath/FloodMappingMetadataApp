@@ -8,11 +8,13 @@ class FGPVheatmap extends Component {
     render() { 
         return (
             <React.Fragment>
-                <iframe src="http://localhost:8080/embedheatmap" title="FGPVheatmap" id="FGPV"
-                    height="800px" width="100%" allowFullScreen={false}/>
-                <div className="row">
-                    <br></br>
-                    <button type="button" className="btn btn-danger btn-block" id="resetheatmap" onClick="">Reset Map</button>
+                <div>
+                    <iframe src="http://localhost:8080/embedheatmap" title="FGPVheatmap" id="FGPVheatmap"
+                        height="800px" width="100%" allowFullScreen={false}/>
+                    <div className="row">
+                        <br></br>
+                        <button type="button" className="btn btn-danger btn-block" id="resetheatmap" onClick="">Reset Map</button>
+                    </div>
                 </div>
             </React.Fragment>
         );
