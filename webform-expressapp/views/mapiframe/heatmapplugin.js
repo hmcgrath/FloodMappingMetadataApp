@@ -1,9 +1,10 @@
 window.heatmap = {
     showCaLayer: true,
     api: null,
-    esriAPI: null, 
+    esriApi: null, 
     geometryService: null,
     serviceurl: null,
+    cacount: null,
     cadata: null,
     init(rampApi) {
         this.api = rampApi; 
@@ -22,14 +23,19 @@ window.heatmap = {
             ["esri/geometry/Point", "Point"], 
             ["esri/SpatialReference", "SpatialReference"], 
             ["esri/tasks/ProjectParameters", "ProjectParameters"], 
-            ["esri/InfoTemplate", "InfoTemplate"]
+            ["esri/InfoTemplate", "InfoTemplate"],
+            ["esri/symbols/SimpleFillSymbol"], 
+            ["esri/symbols/SimpleLineSymbol"], 
+            ["esri/Color"]
             ]); 
 
-            esriApi.then(() => this.loadConservationLayers())
+            esriApi.then(() => this.esriApi = RAMP.GAPI.esriBundle)
+                    .then(() => this.loadConservationLayers())
+                    .then(() => this.setDefaultHeatmap())
                     .then(() => this.loadConservationData())
                     .then(() => {
                         console.log(this.cadata); 
-                        this.esriApi = RAMP.GAPI.esriBundle; 
+                        //this.esriApi = RAMP.GAPI.esriBundle; 
                         //object property instance of a geometryservice
                         this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
                         this.api.click.subscribe((evt) => {
@@ -42,59 +48,24 @@ window.heatmap = {
         return new Promise((resolve, reject) => {
             this.api.layersObj.addLayer("calayer");
             const caLayer = this.api.layers.getLayersById("calayer")[0]; 
-
             window.parent.postMessage("started conservation load", "*");  
             $.getJSON("http://localhost:8080/api/cacount?countonly=true", (data) => {
-                 
+                //create object instance of the conservation authority record count data
+                this.cacount = data; 
                 /* Create five even intervals (beginning from 0) for grouping
                     conservation authorities based on the number of records they hold
-                */
-                //get the maximum number of records
-                var maxCount = Math.max(...Object.values(data).map(x => x[1])); 
-                //round up to the nearest five 
-                maxCount += (5 - (maxCount % 5));
-                //get the size of each interval  
-                var intervalSize = maxCount / 5; 
-                //enum of polygon colors
-                const colors = {
-                    //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
-                    "-1": [255, 255, 255],
-                    0: [235, 230, 223],
-                    1: [217, 194, 177],
-                    2: [175, 186, 196],
-                    3: [125, 154, 179],
-                    4: [67, 100, 128]
-                }
-                var intervals = [["Zero", "(255,255,255)"]]; 
-                //get interval strings (for legend)
-                for (var i = 1, j = 0; i <= maxCount; i+= intervalSize, j++) {
-                    let intervalString = i.toString() + "-" + (i + intervalSize - 1).toString(); 
-                    let colorString = colors[j].join(","); 
-                    colorString = "(" + colorString + ")"; 
-                    intervals.push([intervalString, colorString]); 
-                }
-                console.log(intervals); 
-                //panel body
-                var panelBody = $("<md-list>");
-                for (const interval of intervals) {
-                    $(panelBody).append(
-                        `<md-list-item style="min-height:20px">\
-                            <div style="width:10px;height:10px;border-style:solid;border-color:black;border-width:0.5px;background-color:rgb${interval[1]}"></div>\
-                            <span style="padding-left:10px">${interval[0]}</span>\
-                        </md-list-item>`); 
-                }             
+                */      
                 for (const ca of Object.keys(data)) {
-                    //data[ca][0] is the list of coordinates
-                    //determine what interval the CA falls under 
-                    var intervalNum = Math.floor((data[ca][1] - 1)/(intervalSize)); 
                     //ID is now the conservation authority name
-                    var capolygon = new RAMP.GEO.Polygon(ca, data[ca][0], {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3});
+                    var capolygon = new RAMP.GEO.Polygon(ca, data[ca][0] /*, {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3}*/);
                     caLayer.addGeometry(capolygon); 
                 }
-                this.loadLegendPanel(panelBody); 
+                //this.loadLegendPanel(panelBody); 
+                console.log(caLayer.esriLayer.graphics); 
                 for (const ca of caLayer.esriLayer.graphics) {
                     /*
                     console.log(RAMP.GAPI.esriBundle); 
+                    console.log(ca.setInfoTemplate); 
                     var infoTemplate = new RAMP.GAPI.esriBundle.InfoTemplate(); 
                     infoTemplate.setTitle("<h1>Test<h1>"); 
                     infoTemplate.setContent("test"); 
@@ -104,6 +75,55 @@ window.heatmap = {
                 resolve(); 
             });
         }); 
+    },
+    setDefaultHeatmap() {
+        const caLayer = this.api.layers.getLayersById("calayer")[0]; 
+        //get the maximum number of records
+        var maxCount = Math.max(...Object.values(this.cacount).map(x => x[1])); 
+        //round up to the nearest five 
+        maxCount += (5 - (maxCount % 5));
+        //get the size of each interval  
+        var intervalSize = maxCount / 5; 
+        //enum of polygon colors
+        const colors = {
+            //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
+            "-1": [255, 255, 255],
+            0: [235, 230, 223],
+            1: [217, 194, 177],
+            2: [175, 186, 196],
+            3: [125, 154, 179],
+            4: [67, 100, 128]
+        }
+        var intervals = [["Zero", "(255,255,255)"]]; 
+
+        //get interval strings (for legend)
+        for (var i = 1, j = 0; i <= maxCount; i+= intervalSize, j++) {
+            let intervalString = i.toString() + "-" + (i + intervalSize - 1).toString(); 
+            let colorString = colors[j].join(","); 
+            colorString = "(" + colorString + ")"; 
+            intervals.push([intervalString, colorString]); 
+        }
+
+        //create the legend panel
+        var panelBody = $("<md-list>");
+        for (const interval of intervals) {
+            $(panelBody).append(
+                `<md-list-item style="min-height:20px">\
+                    <div style="width:10px;height:10px;border-style:solid;border-color:black;border-width:0.5px;background-color:rgb${interval[1]}"></div>\
+                    <span style="padding-left:10px">${interval[0]}</span>\
+                </md-list-item>`); 
+        }
+        //append the legend panel
+        this.loadLegendPanel(panelBody); 
+
+        for (const ca of caLayer.esriLayer.graphics) {
+            var intervalNum = Math.floor((this.cacount[ca.geometry.apiId][1] - 1)/(intervalSize)); 
+            var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
+                new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
+                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(colors[intervalNum])
+            ); 
+            ca.setSymbol(symbol);
+        }
     },
     loadLegendPanel(panelBody) {
         const legendPanel = this.api.panels.create("legendpanel"); 
@@ -147,11 +167,13 @@ window.heatmap = {
         
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         const cadata = this.cadata; 
+        const esriBundle = this.esriApi; 
+        console.log(esriBundle); 
         //apply the transformation using geometryservice and use polygon.contains() to determine if click falls within a polygon
         this.geometryService.project(transformparams, (outputpoint) => {
             for (const ca of caLayer.esriLayer.graphics) {
                 if (ca.geometry.contains(outputpoint[0])) {
-                    console.log(cadata[ca.geometry.apiId]);  
+                    console.log(cadata[ca.geometry.apiId]); 
                 }
             }
         });
