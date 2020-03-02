@@ -92,14 +92,14 @@ window.heatmap = {
         //enum of polygon colors
         const colors = {
             //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
-            "-1": [255, 255, 255],
-            0: [235, 230, 223],
-            1: [217, 194, 177],
-            2: [175, 186, 196],
-            3: [125, 154, 179],
-            4: [67, 100, 128]
+            "-1": [237, 81, 81],
+            0: [20, 158, 206],
+            1: [167, 198, 54],
+            2: [158, 85, 156],
+            3: [252, 146, 41],
+            4: [255, 222, 62]
         }
-        var intervals = [["Zero", "(255,255,255)"]]; 
+        var intervals = [["Zero", "(237,81,81)"]];  
 
         //get interval strings (for legend)
         for (var i = 1, j = 0; i <= maxCount; i+= intervalSize, j++) {
@@ -124,13 +124,18 @@ window.heatmap = {
 
         for (const ca of caLayer.esriLayer.graphics) {
             var intervalNum = Math.floor((this.cacount[ca.geometry.apiId][1] - 1)/(intervalSize)); 
+            const color = colors[intervalNum];
+            color.push(0.7); 
             var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
                 new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
-                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(colors[intervalNum])
+                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(color)
             ); 
             ca.setSymbol(symbol);
         }
     }, 
+    /**
+     * Loads Heatmap for Drainage Area
+     */
     setDrainageAreaHeatmap() {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         var totalDrainageAreas = {}; 
@@ -152,14 +157,14 @@ window.heatmap = {
         //enum of polygon colors
         const colors = {
             //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
-            "-1": [255, 255, 255],
-            0: [235, 230, 223],
-            1: [217, 194, 177],
-            2: [175, 186, 196],
-            3: [125, 154, 179],
-            4: [67, 100, 128]
+            "-1": [237, 81, 81],
+            0: [20, 158, 206],
+            1: [167, 198, 54],
+            2: [158, 85, 156],
+            3: [252, 146, 41],
+            4: [255, 222, 62]
         }
-        var intervals = [["Zero", "(255,255,255)"]]; 
+        var intervals = [["Zero", "(237,81,81)"]]; 
 
         //get interval strings (for legend)
         for (var i = 1, j = 0; i <= maxCount; i+= intervalSize, j++) {
@@ -185,13 +190,19 @@ window.heatmap = {
 
         for (const ca of caLayer.esriLayer.graphics) {
             var intervalNum = Math.floor((totalDrainageAreas[ca.geometry.apiId] - 1)/(intervalSize)); 
+            const color = colors[intervalNum];
+            color.push(0.7); 
             var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
                 new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
-                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(colors[intervalNum])
+                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(color
+                    )
             ); 
             ca.setSymbol(symbol);
         }
         
+    },
+    setAgeHeatmap() {
+
     },
     /**
      * Creates a legend panel for the current heatmap being displayed

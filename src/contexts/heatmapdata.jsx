@@ -52,7 +52,7 @@ class HeatmapDataProvider extends Component {
 
         heatmap: (categoryName) => {
             var map = document.getElementById("FGPVheatmap"); 
-            map.contentWindow.postMessage(categoryName, "*")
+            map.contentWindow.postMessage(categoryName, "*");
         }
 
     }
