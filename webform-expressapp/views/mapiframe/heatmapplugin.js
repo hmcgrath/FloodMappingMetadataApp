@@ -138,7 +138,7 @@ window.heatmap = {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         const cadata = this.cadata; 
         //apply the transformation using geometryservice and use polygon.contains() to determine if click falls within a polygon
-        this.geometryService.project(transformparams, function(outputpoint) {
+        this.geometryService.project(transformparams, (outputpoint) => {
             for (const ca of caLayer.esriLayer.graphics) {
                 if (ca.geometry.contains(outputpoint[0])) {
                     console.log(cadata[ca.geometry.apiId]); 
