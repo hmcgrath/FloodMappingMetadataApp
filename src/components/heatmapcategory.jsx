@@ -15,7 +15,7 @@ class HeatmapCategory extends Component {
         }
         if (this.props.type === "heatmappable") {
             return (
-                <button type="button" className="btn btn-primary btn-block" onClick="">Heatmap</button>
+                <button type="button" className="btn btn-primary btn-block" onClick={() => this.context.heatmap(this.props.categoryName)}>Heatmap</button>
             );
         }
         else {

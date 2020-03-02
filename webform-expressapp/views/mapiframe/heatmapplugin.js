@@ -21,7 +21,8 @@ window.heatmap = {
             ["esri/geometry/Polygon", "Polygon"], 
             ["esri/geometry/Point", "Point"], 
             ["esri/SpatialReference", "SpatialReference"], 
-            ["esri/tasks/ProjectParameters", "ProjectParameters"]
+            ["esri/tasks/ProjectParameters", "ProjectParameters"], 
+            ["esri/InfoTemplate", "InfoTemplate"]
             ]); 
 
             esriApi.then(() => this.loadConservationLayers())
@@ -91,6 +92,15 @@ window.heatmap = {
                     caLayer.addGeometry(capolygon); 
                 }
                 this.loadLegendPanel(panelBody); 
+                for (const ca of caLayer.esriLayer.graphics) {
+                    /*
+                    console.log(RAMP.GAPI.esriBundle); 
+                    var infoTemplate = new RAMP.GAPI.esriBundle.InfoTemplate(); 
+                    infoTemplate.setTitle("<h1>Test<h1>"); 
+                    infoTemplate.setContent("test"); 
+                    ca.setInfoTemplate(infoTemplate); 
+                    */
+                }
                 resolve(); 
             });
         }); 

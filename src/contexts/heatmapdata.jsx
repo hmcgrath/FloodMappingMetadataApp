@@ -49,7 +49,12 @@ class HeatmapDataProvider extends Component {
                 newGraphTabs.push({graphName: graphName, graphId: graphId, graphType: graphType});
                 this.setState({graphTabs: newGraphTabs}, () => console.log(this.state)); 
             }
+        }, 
+
+        heatmap: (categoryName) => {
+            console.log(categoryName); 
         }
+
     }
 
     componentDidMount() {
