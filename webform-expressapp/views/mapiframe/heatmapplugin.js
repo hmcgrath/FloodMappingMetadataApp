@@ -6,12 +6,19 @@ window.heatmap = {
     serviceurl: null,
     cacount: null,
     cadata: null,
+    /**
+     * Initializes the plugin
+     * @param {any} rampApi - FGPV map instance
+     */
     init(rampApi) {
         this.api = rampApi; 
         this.listenToMapAdd(); 
         this.api.layersObj._identifyMode = []; 
         this.serviceurl = "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer"; 
     },
+    /**
+     * Performs additional initializations upon the map instance loading
+     */
     listenToMapAdd() {
         RAMP.mapAdded.subscribe(() => {
             //console.log(this.api.panels.legend.body.append("test")); 
@@ -33,17 +40,12 @@ window.heatmap = {
                     .then(() => this.loadConservationLayers())
                     .then(() => this.setDefaultHeatmap())
                     .then(() => this.loadConservationData())
-                    .then(() => {
-                        console.log(this.cadata); 
-                        //this.esriApi = RAMP.GAPI.esriBundle; 
-                        //object property instance of a geometryservice
-                        this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
-                        this.api.click.subscribe((evt) => {
-                            this.polygonClick(evt); 
-                        });
-                    }); 
+                    .then(() => this.addEventListeners()); 
         }); 
     },
+    /**
+     * Loads the base polygons for all conservation authorities in ontario 
+     */
     loadConservationLayers() {
         return new Promise((resolve, reject) => {
             this.api.layersObj.addLayer("calayer");
@@ -76,6 +78,9 @@ window.heatmap = {
             });
         }); 
     },
+    /**
+     * Loads the default heatmap layer (a heatmap for the number of records each conservation authority has)
+     */
     setDefaultHeatmap() {
         const caLayer = this.api.layers.getLayersById("calayer")[0]; 
         //get the maximum number of records
@@ -125,6 +130,10 @@ window.heatmap = {
             ca.setSymbol(symbol);
         }
     },
+    /**
+     * Creates a legend panel for the current heatmap being displayed
+     * @param {any} panelBody - HTML element for the panel's body 
+     */
     loadLegendPanel(panelBody) {
         const legendPanel = this.api.panels.create("legendpanel"); 
         legendPanel.body = `<span>Number of Records</span>`; 
@@ -149,6 +158,23 @@ window.heatmap = {
             });
         }); 
     }, 
+    /**
+     * Adds all the event listeners for the plugin 
+     */
+    addEventListeners() {
+        console.log(this.cadata); 
+        //this.esriApi = RAMP.GAPI.esriBundle; 
+        //object property instance of a geometryservice
+        this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
+        this.api.click.subscribe((evt) => {
+            this.polygonClick(evt); 
+        });
+    },
+
+    /**
+     * Determines if a conservation authority polygon was clicked on
+     * @param {any} evt - the click event  
+     */
     polygonClick(evt) {
         //convert to a point with same spatial reference..... 
 
@@ -167,8 +193,6 @@ window.heatmap = {
         
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         const cadata = this.cadata; 
-        const esriBundle = this.esriApi; 
-        console.log(esriBundle); 
         //apply the transformation using geometryservice and use polygon.contains() to determine if click falls within a polygon
         this.geometryService.project(transformparams, (outputpoint) => {
             for (const ca of caLayer.esriLayer.graphics) {
