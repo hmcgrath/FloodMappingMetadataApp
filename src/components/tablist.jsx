@@ -11,27 +11,38 @@ class TabList extends Component {
     static contextType = DataContext; 
     
     state = {
+        key: "FGPV"
     }
     
-    
+
+    setKey = (key) => {
+        this.setState({key: key}, () => console.log(this.state.key)); 
+    }
+
     //move FGPV component to the first tab and dynamically render rest of tabs
     render() { 
         
         
-        return (<Tabs defaultActiveKey="FGPV">
+        return (<Tabs defaultActiveKey="FGPV" activeKey={this.state.key} onSelect={(key) => this.setKey(key)}>
             <Tab title="FGPV" eventKey="FGPV">
                 <FGPVmap></FGPVmap>
             </Tab>
             {this.context.graphTabs.map(graph =>
                 <Tab key={graph.graphId}
                     eventKey={graph.graphId}
+                    onClick = {(evt) => this.handleClick(evt)}
                     title={<span>
                             {graph.graphName}
                             <button className="close" 
                                     aria-label="Close"
                                     style={{paddingLeft: "5px"}} 
                                     type="button"
-                                    onClick={() => this.context.removeGraphTab(graph.graphId)}>×</button> 
+                                    onClick={(evt) => {
+                                        //prevents parent onclick event from registering
+                                        evt.stopPropagation(); 
+                                        this.context.removeGraphTab(graph.graphId); 
+                                        this.setKey("FGPV"); 
+                                    }}>×</button> 
                           </span>}>
                     {this.createGraph(graph.graphType, graph.graphId, graph.graphName)}
                 </Tab>
@@ -42,7 +53,6 @@ class TabList extends Component {
 
     //function to create the graph 
     createGraph(graphType, graphId, graphName) {
-        //TO-DO: ADD SORTING METHOD FOR AGEOFMAPPING
         if(graphType === "pie") {
             return (
                 <Plot data={[
