@@ -194,15 +194,15 @@ window.heatmap = {
             color.push(0.7); 
             var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
                 new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
-                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(color
-                    )
+                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(color)
             ); 
             ca.setSymbol(symbol);
         }
         
     },
     setAgeHeatmap() {
-
+        const caLayer = this.api.layers.getLayersById("calayer")[0];
+        
     },
     /**
      * Creates a legend panel for the current heatmap being displayed
@@ -246,6 +246,12 @@ window.heatmap = {
             } 
             if (e.data === "reset map") {
                 this.setDefaultHeatmap(); 
+            }
+            if (e.data === "Age of Mapping") {
+                this.setAgeHeatmap();
+            }
+            else {
+                return; 
             }
         }); 
         this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
