@@ -16,7 +16,7 @@ class TabList extends Component {
     
 
     setKey = (key) => {
-        this.setState({key: key}, () => console.log(this.state.key)); 
+        this.setState({key: key}); 
     }
 
     //move FGPV component to the first tab and dynamically render rest of tabs
@@ -30,7 +30,6 @@ class TabList extends Component {
             {this.context.graphTabs.map(graph =>
                 <Tab key={graph.graphId}
                     eventKey={graph.graphId}
-                    onClick = {(evt) => this.handleClick(evt)}
                     title={<span>
                             {graph.graphName}
                             <button className="close" 
