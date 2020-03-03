@@ -52,7 +52,6 @@ class DataProvider extends Component {
             var map = document.getElementById("FGPV"); 
             map.contentWindow.postMessage("toggle record", "*"); 
         },
-        //figure out params
         addGraphTab: (graphName, graphId, graphType) => {
             var newGraphTabs = this.state.graphTabs; 
             //prevent duplicate tabs
@@ -60,6 +59,11 @@ class DataProvider extends Component {
                 newGraphTabs.push({graphName: graphName, graphId: graphId, graphType: graphType});
                 this.setState({graphTabs: newGraphTabs}, () => console.log(this.state)); 
             }
+        }, 
+        removeGraphTab: (graphId) => {
+            console.log(graphId); 
+            var newGraphTabs = this.state.graphTabs.filter(graphTab => graphTab.graphId !== graphId); 
+            this.setState({graphTabs: newGraphTabs}); 
         }
     }
 

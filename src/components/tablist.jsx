@@ -17,6 +17,7 @@ class TabList extends Component {
     //move FGPV component to the first tab and dynamically render rest of tabs
     render() { 
         
+        
         return (<Tabs defaultActiveKey="FGPV">
             <Tab title="FGPV" eventKey="FGPV">
                 <FGPVmap></FGPVmap>
@@ -24,12 +25,19 @@ class TabList extends Component {
             {this.context.graphTabs.map(graph =>
                 <Tab key={graph.graphId}
                     eventKey={graph.graphId}
-                    title={graph.graphName}>
+                    title={<span>
+                            {graph.graphName}
+                            <button className="close" 
+                                    aria-label="Close"
+                                    style={{paddingLeft: "5px"}} 
+                                    type="button"
+                                    onClick={() => this.context.removeGraphTab(graph.graphId)}>×</button> 
+                          </span>}>
                     {this.createGraph(graph.graphType, graph.graphId, graph.graphName)}
                 </Tab>
             )}  
-
         </Tabs>);
+        
     }
 
     //function to create the graph 
