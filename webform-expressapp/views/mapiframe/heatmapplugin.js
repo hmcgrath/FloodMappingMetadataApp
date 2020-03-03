@@ -54,15 +54,11 @@ window.heatmap = {
             $.getJSON("http://localhost:8080/api/cacount?countonly=true", (data) => {
                 //create object instance of the conservation authority record count data
                 this.cacount = data; 
-                /* Create five even intervals (beginning from 0) for grouping
-                    conservation authorities based on the number of records they hold
-                */      
                 for (const ca of Object.keys(data)) {
                     //ID is now the conservation authority name
                     var capolygon = new RAMP.GEO.Polygon(ca, data[ca][0] /*, {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3}*/);
                     caLayer.addGeometry(capolygon); 
                 }
-                //this.loadLegendPanel(panelBody); 
                 console.log(caLayer.esriLayer.graphics); 
                 for (const ca of caLayer.esriLayer.graphics) {
                     /*
@@ -125,6 +121,7 @@ window.heatmap = {
         for (const ca of caLayer.esriLayer.graphics) {
             var intervalNum = Math.floor((this.cacount[ca.geometry.apiId][1] - 1)/(intervalSize)); 
             const color = colors[intervalNum];
+            //set opacity of 0.7 for polygon fill 
             color.push(0.7); 
             var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
                 new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
@@ -191,6 +188,7 @@ window.heatmap = {
         for (const ca of caLayer.esriLayer.graphics) {
             var intervalNum = Math.floor((totalDrainageAreas[ca.geometry.apiId] - 1)/(intervalSize)); 
             const color = colors[intervalNum];
+            //set opacity of 0.7 for polygon fill 
             color.push(0.7); 
             var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
                 new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
@@ -200,9 +198,79 @@ window.heatmap = {
         }
         
     },
+    /**
+     * Loads Heatmap for Age of Mapping
+     */
     setAgeHeatmap() {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         
+        //color ramp for decades
+        const colors = {
+            "No Data": [255, 255, 255],
+            "Before 1960": [255, 0, 0], 
+            "1960s": [255, 85, 0],
+            "1970s": [255, 170, 0], 
+            "1980s": [255, 255, 0], 
+            "1990s": [170, 255, 0], 
+            "2000s": [0, 255, 85], 
+            "2010s": [0, 255, 255], 
+            "After 2010": [0, 170, 255]
+        }; 
+        //object containing the most common age of mapping decade for each CA
+        var meanAgeOfMapping = {}; 
+
+        //AVERAGE (MEAN) THE YEARS (NOT DECADES) OUT AND SIMPLY ROUND THE AVERAGE TO A NEAREST DECADE!!!
+        for (const key of Object.keys(this.cadata)) {
+            var avgYear = 0; 
+            //if records exist
+            if (this.cadata[key].length > 0) {
+                for (const record of this.cadata[key]) {
+                    avgYear += record["lastprojupdate"]; 
+                }
+                avgYear = Math.floor(avgYear/this.cadata[key].length); 
+            }
+            var avgDecade = Math.floor(avgYear / 10) * 10; 
+            if (avgDecade === 0) {
+                meanAgeOfMapping[key] = "No Data";
+            }
+            else if(avgDecade < 1960) {
+                meanAgeOfMapping[key] = "Before 1960";
+            }
+            else if (avgDecade > 2010) {
+                meanAgeOfMapping[key] = "After 2010";
+            }
+            else {
+                meanAgeOfMapping[key] = avgDecade.toString() + "s";
+            }
+        }
+
+        //prepare legend panel
+        var panelBody = $("<md-list>");
+        for (const decade of Object.keys(colors)) {
+            //format colors for HTML attribute 
+            const htmlColor = "(" + colors[decade].join(",") + ")";
+            $(panelBody).append(
+                `<md-list-item style="min-height:20px">\
+                    <div style="width:10px;height:10px;border-style:solid;border-color:black;border-width:0.5px;background-color:rgb${htmlColor}"></div>\
+                    <span style="padding-left:10px">${decade}</span>\
+                </md-list-item>`); 
+        }
+        var panelTitle = `<span>Age of Mapping</span>`; 
+
+        //load legend panel
+        this.loadLegendPanel(panelTitle, panelBody); 
+
+        //change polygon colors 
+        for (const ca of caLayer.esriLayer.graphics) {
+            const color = colors[meanAgeOfMapping[ca.geometry.apiId]]
+            //set opacity of 0.7 for polygon fill 
+            color.push(0.7); 
+            var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
+                new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
+                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(color)
+            ); 
+            ca.setSymbol(symbol);
+        }
     },
     /**
      * Creates a legend panel for the current heatmap being displayed
