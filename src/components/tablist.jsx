@@ -40,7 +40,9 @@ class TabList extends Component {
                                         //prevents parent onclick event from registering
                                         evt.stopPropagation(); 
                                         this.context.removeGraphTab(graph.graphId); 
-                                        this.setKey("FGPV"); 
+                                        //if another tab (not the one being closed) is open, stay in that tab
+                                        var newKey = this.state.key === graph.graphId ? "FGPV" : this.state.key; 
+                                        this.setKey(newKey); 
                                     }}>×</button> 
                           </span>}>
                     {this.createGraph(graph.graphType, graph.graphId, graph.graphName)}

@@ -31,12 +31,17 @@ window.heatmap = {
             ["esri/SpatialReference", "SpatialReference"], 
             ["esri/tasks/ProjectParameters", "ProjectParameters"], 
             ["esri/InfoTemplate", "InfoTemplate"],
+            ["esri/InfoWindowBase", "InfoWindowBase"], 
             ["esri/symbols/SimpleFillSymbol"], 
             ["esri/symbols/SimpleLineSymbol"], 
             ["esri/Color"]
             ]); 
 
-            esriApi.then(() => this.esriApi = RAMP.GAPI.esriBundle)
+            esriApi.then((bundle) => {
+                                this.esriApi = RAMP.GAPI.esriBundle; 
+                                this.infoTemplate = bundle.InfoTemplate; 
+                                //add other necessary classes..... 
+                            })
                     .then(() => this.loadConservationLayers())
                     .then(() => this.setDefaultHeatmap())
                     .then(() => this.loadConservationData())
@@ -61,14 +66,10 @@ window.heatmap = {
                 }
                 console.log(caLayer.esriLayer.graphics); 
                 for (const ca of caLayer.esriLayer.graphics) {
-                    /*
-                    console.log(RAMP.GAPI.esriBundle); 
-                    console.log(ca.setInfoTemplate); 
-                    var infoTemplate = new RAMP.GAPI.esriBundle.InfoTemplate(); 
+                    var infoTemplate = new this.infoTemplate(); 
                     infoTemplate.setTitle("<h1>Test<h1>"); 
                     infoTemplate.setContent("test"); 
                     ca.setInfoTemplate(infoTemplate); 
-                    */
                 }
                 resolve(); 
             });
