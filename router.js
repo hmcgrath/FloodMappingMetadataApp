@@ -17,12 +17,23 @@ const options = {
 
 
 const {Pool, Client} = require("pg");
+/*
 const client = new Client({
 	user: 'defaultuser', 
 	host: 'localhost', 
 	database: 'floodmapping', 
 	password: 'default', 
 	port: 5432,
+});
+*/
+
+//new connection up and running
+const client = new Client({
+    user: "floodmapping_admin",
+    host: "v-she-olrik.cits.rncan.gc.ca", 
+    database: "floodmapping_dev", 
+    password: "floodmappingadm4dev", 
+    port: 14180
 });
 
 client.connect(function(err, res) {
