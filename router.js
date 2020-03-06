@@ -92,7 +92,7 @@ app.get("/embed", function(req, res) {
 });
 
 app.get("/embedheatmap", function(req, res) {
-    res.sendFile("heatmap.html", {root: "webform-expressapp/views/mapiframe"})
+    res.sendFile("heatmap.html", {root: "webform-expressapp/views/mapiframe"});
 }); 
 
 //we need to use cors to allow cross domain access to the API (Temporarily). 
@@ -216,8 +216,7 @@ app.post("/submit/:action?", function (req,res) {
                                         privundertaking, privateundertakingname, otherundertaking, otherundertakingname, datasetstatus, \
                                         lastprojupdate, partupdate, updatepurp, drainagearea, \
                                         summreportavail, updatesinceorig, localwcname, wclength, \
-                                        widestcswidth, maxfloodplain, percenthighhzd, percentmedhzd, \
-                                        percentlowhzd, majorevent, coordinatesysproj, \
+                                        widestcswidth, maxfloodplain, majorevent, coordinatesysproj, \
                                         generalprojcomments, imgprojid, acquisitionyear, datadescrip, \
                                         acquisitionseason, imghref, imgvref, imghozacc, imgderivmethod, \
                                         spatialreshoz, spatialresvert, imgpeerreview, imggeneralcomments, \
@@ -225,11 +224,11 @@ app.post("/submit/:action?", function (req,res) {
                                         elevhref, elevvref, elevhozacc, elevvertacc, elevderivmethod, \
                                         elevspatialreshoz, elevspatialresvert, secdatasource, elevpeerreview, \
                                         elevgeneralcomments, hydroprojid, hydromethod, hydroyear, datasetyrs, \
-                                        eventsmodelled, modelcalib, calibquality, inputparamquality, \
+                                        eventsmodelled,\
                                         inputcomments, hydromodelyear, smincorporated, volreduction, \
                                         catdiscretized, hydrosupportingdoc, ccconsidered, hydropeerreview, \
                                         hydrogeneralcomments, hydraprojid, hydrayear, hydramethod, \
-                                        flowcond, hydracalib, hydracalibquality, hydrainputparamquality, \
+                                        flowcond, hydracalib, \
                                         hydrainputcomments, floodlineestimated, hydrasupportingdoc, \
                                         elevsource, hydrapeerreview, hydrageneralcomments, boundingbox) VALUES \
                                         ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, \
@@ -237,28 +236,33 @@ app.post("/submit/:action?", function (req,res) {
                                         $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, \
                                         $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, \
                                         $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, \
-                                        $73, $74, $75, $76, $77, $78, $79, $80, $81, $82, $83, $84, $85, $86, $87, $88)"; 
+                                        $73, $74, $75, $76, $77, $78, $79, $80)"; 
     
     var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
                     req.body.otherundertakingname, req.body.datasetStatus, req.body.lastprojupdate, req.body.partupdate, req.body.updatepurp, req.body.drainagearea, 
-                    req.body.summreportavail, req.body.updatesinceorig, req.body.localwcname, req.body.wclength, req.body.widestcswidth, req.body.maxfloodplain, req.body.percenthighhzd, 
-                    req.body.percentmedhzd, req.body.percentlowhzd, req.body.majorevent, req.body.coordsysproj, req.body.generalprojcomments, req.body.imgprojid, req.body.acquisitionyear,
+                    req.body.summreportavail, req.body.updatesinceorig, req.body.localwcname, req.body.wclength, req.body.widestcswidth, req.body.maxfloodplain, req.body.majorevent, req.body.coordsysproj, req.body.generalprojcomments, req.body.imgprojid, req.body.acquisitionyear,
                     req.body.datadescrip, req.body.acquisitionseason, req.body.imghref, req.body.imgvref, req.body.imghozacc, req.body.imgderivmethod, req.body.spatialreshoz, 
                     req.body.spatialresvert, req.body.imgpeerreview, req.body.imggeneralcomments, req.body.elevprojid, req.body.digitaldata, req.body.dataformat, req.body.primdatasource, 
                     req.body.elevdataowner, req.body.elevhref, req.body.elevvref, req.body.elevhozacc, req.body.elevvertacc, req.body.elevderivmethod, req.body.elevspatialreshoz, 
                     req.body.elevspatialresvert, req.body.secdatasource, req.body.elevpeerreview, req.body.elevgeneralcomments, req.body.hydroprojid, req.body.hydromethod, req.body.hydroyear,
-                    req.body.datasetyrs, req.body.eventsmodeled, req.body.modelcalib, req.body.calibquality, req.body.inputparamquality, req.body.inputcomments, req.body.hydromodelyear, 
+                    req.body.datasetyrs, req.body.eventsmodeled, req.body.inputcomments, req.body.hydromodelyear, 
                     req.body.smincorporated, req.body.volreduction, req.body.catdiscretized, req.body.hydrosupportingdoc, req.body.ccconsidered, req.body.hydropeerreview, 
-                    req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, req.body.hydracalib, req.body.hydracalibquality, 
+                    req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, 
                     req.body.hydrainputparamquality, req.body.hydrainputcomments, req.body.floodlineestimated, req.body.hydrasupportingdoc, req.body.elevsource, req.body.hydrapeerreview, 
                     req.body.hydrageneralcomments, getBoundingBox(req.body)]; 
-
+    
+    //replace any empty strings with null
+    for (var val of values) {
+        if (val === '') {
+            val = undefined; 
+        }
+    }
     
     //if an extent file is uploaded
     if (req.body.polycoordinates !== "") {
         console.log("Detected an extent"); 
-        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$88", "$88, $89"); 
+        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$80", "$80, $81"); 
         values.push(req.body.polycoordinates); 
     }
 
@@ -273,7 +277,7 @@ app.post("/submit/:action?", function (req,res) {
 
     //if no params are included 
     if(!action) {
-        res.sendFile("thankyou.html", {root: "views"}); 
+        res.sendFile("thankyou.html", {root: "webform-expressapp/views"}); 
     }   
     
     //if any param is included it will save form data.

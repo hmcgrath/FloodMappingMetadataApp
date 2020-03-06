@@ -479,30 +479,6 @@
                 </div>
             </div>
 
-            <!-- DO PERCENT HIGH HAZARD, PERCENT MEDIUM HAZARD, PERCENT LOW HAZARD AS A SLIDER-->
-            <!-- WRITE SCRIPT TO ENSURE THAT THESE SLIDERS ADD UP TO 100-->
-            <div class="row">
-                <div class="col-lg-4 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="percenthighhzd">Percent High Hazard</label>
-                        <input type="number" class="form-control" id="percenthighhzd" min="0" max="100">
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="percentmedhzd">Percent Medium Hazard</label>
-                        <input type="number" class="form-control" id="percentmedhzd" min="0" max="100">
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="percentlowhzd">Percent Low Hazard</label>
-                        <input type="number" class="form-control" id="percentlowhzd" min="0" max="100">
-                    </div>
-                </div>
-            </div>
-
-
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
@@ -942,8 +918,6 @@
                             <option value="waterlevelfa">Water Level FA</option>
                             <option value="hymo">HYMO</option>
                             <option value="swmm">SWMM</option>
-                            <option value="hechms">HEC-HMS</option>
-                            <option value="hecrms">HEC-RMS</option>
                             <option value="h2d2">H2D2</option>
                             <option value="mike">MIKE</option>
                             <option value="gawser">GAWSER</option>
@@ -976,44 +950,6 @@
                     <div class="form-group">
                         <label for="eventsmodeled">Number of Events Modelled</label>
                         <input type="number" maxlength="20" class="form-control" id="eventsmodeled" min="1">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <label for="modelcalib">Model Calibrated</label>
-                        <select class="browser-default custom-select" id="modelcalib">
-                            <option value="" disabled selected>----</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="calibquality">Calibration Quality</label>
-                        <select class="browser-default custom-select" id="calibquality">
-                            <option value = "" disabled selected>----</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="inputparamquality">Input Parameters Quality</label>
-                        <select class="browser-default custom-select" id="inputparamquality">
-                            <option value = "" disabled selected>----</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -1194,31 +1130,6 @@
                             <option value="" disabled selected>----</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="hydracalibquality">Hydraulics Calibration Quality</label>
-                        <select class="browser-default custom-select" id="hydracalibquality">
-                            <option value = "" disabled selected>----</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="hydrainputparamquality">Hydraulics Input Parameters Quality</label>
-                        <select class="browser-default custom-select" id="hydrainputparamquality">
-                            <option value = "" disabled selected>----</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
                         </select>
                     </div>
                 </div>
