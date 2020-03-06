@@ -3,6 +3,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Collapse from 'react-bootstrap/Collapse';
 import DataContext from '../contexts/graphdata';
 
+// you could use hooks and state management through the context api
 class Category extends Component {
     // name: name of the category
     // type: type of the category (searchable, graphable)

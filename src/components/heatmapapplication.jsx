@@ -6,6 +6,7 @@ import LoadingOverlay from 'react-loading-overlay';
 
 class HeatmapApplication extends Component {
     static contextType = HeatmapDataContext; 
+    // not needed
     state = {  }
     render() { 
         return (<LoadingOverlay active={this.context.loadingCA}

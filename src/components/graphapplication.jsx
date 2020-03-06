@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DataContext from '../contexts/graphdata';
+//unused component
 import NavBar from './navbar';
 import CategoryList from './categorylist';
 import TabList from './tablist';

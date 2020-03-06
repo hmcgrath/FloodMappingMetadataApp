@@ -5,6 +5,7 @@ class FGPVmap extends Component {
 
     static contextType = DataContext;
 
+    // not needed
     state = {
 
     };

@@ -1,3 +1,7 @@
+// have you figured our the deployment strategy?
+// the project structure needs to be cleaned up i.e.: 
+// src is on the same directory level as webform-express app -> fe and be are not very well separated. For instance router.js is not the higher level of the dir which is rather confusing.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
