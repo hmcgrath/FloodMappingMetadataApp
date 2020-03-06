@@ -16,7 +16,7 @@ class DataProvider extends Component {
             {name: "Flood Hazard Standard", categoryId: "floodhzdstd", type:"graphable", graphType:"bar", expanded: false},
             {name: "Financial Support", categoryId:"financialsupport", type:"graphable", graphType:"pie", expanded: false}, 
             {name: "Dataset Status", categoryId:"datasetstatus", type:"graphable", graphType:"bar", expanded: false}, 
-            {name: "Drainage Area", categoryId:"drainagearea", type:"graphable", graphType:"bar", expanded: false},
+            {name: "Drainage Area (sq km)", categoryId:"drainagearea", type:"graphable", graphType:"bar", expanded: false},
             {name: "Age of Mapping", categoryId:"lastprojupdate", type:"graphable", graphType:"bar", expanded: false}, 
             {name: "Summary Report Available", categoryId:"summreportavail", type:"graphable", graphType:"pie", expanded: false}, 
             {name: "Updated Since Original", categoryId:"updatesinceorig", type:"graphable", graphType:"pie", expanded: false},
