@@ -111,6 +111,7 @@
                             <option value="inland">Inland Waterbody</option>
                             <option value="greatlakesshoreline">Great Lakes Shoreline</option>
                             <option value="greatlakescc">Great Lakes Connecting Channel</option>
+                            <option value="oceanmapping">Ocean Mapping Project</option>
                             <option value="other">Other Natural Hazard Project</option>
                         </select>
                     </div> 
@@ -458,7 +459,7 @@
             <div class="row">
                 <div class="col-lg-6 col-md-12 col-sm-12">
                     <div class="form-group">
-                        <label for="wclength">Watercourse Length (km) </label>
+                        <label for="wclength">Watercourse Length Mapped (km)</label>
                         <input type="number" id="wclength" class="form-control" min="0" step=".01">
                     </div>
                 </div>
@@ -478,30 +479,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- DO PERCENT HIGH HAZARD, PERCENT MEDIUM HAZARD, PERCENT LOW HAZARD AS A SLIDER-->
-            <!-- WRITE SCRIPT TO ENSURE THAT THESE SLIDERS ADD UP TO 100-->
-            <div class="row">
-                <div class="col-lg-4 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="percenthighhzd">Percent High Hazard</label>
-                        <input type="number" class="form-control" id="percenthighhzd" min="0" max="100">
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="percentmedhzd">Percent Medium Hazard</label>
-                        <input type="number" class="form-control" id="percentmedhzd" min="0" max="100">
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="percentlowhzd">Percent Low Hazard</label>
-                        <input type="number" class="form-control" id="percentlowhzd" min="0" max="100">
-                    </div>
-                </div>
-            </div>
-
 
             <div class="row">
                 <div class="col-lg-12">
@@ -941,9 +918,7 @@
                             <option value="mtomfim">MTOMFIM</option>
                             <option value="waterlevelfa">Water Level FA</option>
                             <option value="hymo">HYMO</option>
-                            <option value="swmm">SWMM</option>
-                            <option value="hechms">HEC-HMS</option>
-                            <option value="hecrms">HEC-RMS</option>
+                            <option value="swmm">SWMM(PCSWMM)</option>
                             <option value="h2d2">H2D2</option>
                             <option value="mike">MIKE</option>
                             <option value="gawser">GAWSER</option>
@@ -976,44 +951,6 @@
                     <div class="form-group">
                         <label for="eventsmodeled">Number of Events Modelled</label>
                         <input type="number" maxlength="20" class="form-control" id="eventsmodeled" min="1">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <label for="modelcalib">Model Calibrated</label>
-                        <select class="browser-default custom-select" id="modelcalib">
-                            <option value="" disabled selected>----</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="calibquality">Calibration Quality</label>
-                        <select class="browser-default custom-select" id="calibquality">
-                            <option value = "" disabled selected>----</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="inputparamquality">Input Parameters Quality</label>
-                        <select class="browser-default custom-select" id="inputparamquality">
-                            <option value = "" disabled selected>----</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -1158,7 +1095,7 @@
                             <option value="flood">Flood</option>
                             <option value="estimated">Estimated</option>
                             <option value="gauged">Gauged</option>
-                            <option value="FA">FA</option>
+                            <option value="frequencyanalysis">Frequency Analysis</option>
                         </select>
                     </div>
                 </div>
@@ -1194,31 +1131,6 @@
                             <option value="" disabled selected>----</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="hydracalibquality">Hydraulics Calibration Quality</label>
-                        <select class="browser-default custom-select" id="hydracalibquality">
-                            <option value = "" disabled selected>----</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="form-group">
-                        <label for="hydrainputparamquality">Hydraulics Input Parameters Quality</label>
-                        <select class="browser-default custom-select" id="hydrainputparamquality">
-                            <option value = "" disabled selected>----</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
                         </select>
                     </div>
                 </div>
@@ -1381,7 +1293,11 @@
 
         <p id="projectNameh">Unique name given to each project.</p>
 
-        <p id="typeofrecordh"></p>
+        <p id="typeofrecordh">Inundation Maps: Maps that show the floodwater extent of real flood events, or that show potential floodwater coverage for flood events of different magnitudes (e.g. annual exceedance prilities). They are intended to aid in the management of emergency preparedness plans for communities situated within floodplains and flood hazard zones. 
+            Flood Hazard Maps: Engineering maps that display the results of hydrologic and hydraulic investigations that show areas that coulde flooded under different likelihoods. These maps are used for regulatory planning purposes related to land use planning and flood mitigation. 
+            Flood Risk Maps: Maps that indicate the potential adverse consequences associated with floods, includingut not limited to social, economic, environmental and cultural consequences to communities during a specific potential flood event and the overall risks to the community from a range of potential flood scenarios. 
+            Flood Awareness Maps: Communication maps that serve to inform members of the public regarding the history of flooding in their communities, as well as the potential for future flooding and the risks that such flooding would pose to residential properties, businesses, cultural assets, infrastructure and human life. These interactive web maps or printed poster-style maps include a range of additional content types, such as photographs, descriptive text and graphics.
+        </p>
 
         <p id="projectcath">Provides a description of why an update is currently required. Multiple reasons could be entered, with the following suggestions provided; Age-Mapping, Quality-Mapping, Age-Modeling, Quality-Modeling, Development, New Data or Other.</p>
 

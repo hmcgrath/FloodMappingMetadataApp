@@ -5,7 +5,6 @@
 /.pnp
 .pnp.js
 apitest.js
-conservation-layers.json
 conservation-authority-info.js
 webform-expressapp/views/mapiframe/conservation-layers.json
 /retired

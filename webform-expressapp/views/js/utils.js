@@ -1,3 +1,8 @@
+window.addEventListener("beforeunload", function(e) {
+    e.preventDefault(); 
+    e.returnValue = "Are you sure? All progress will be lost";  
+});
+
 function checkYesNoPriv(select) {
     if (select.value == "yes") {
         document.getElementById("ifYesPriv").style.display = "block"; 

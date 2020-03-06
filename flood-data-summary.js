@@ -4,7 +4,7 @@ class FloodDataSummary {
     constructor(data) {
         this.data = data;
         this.projectcat = {"Watercourse" : 0, "Inland": 0, "Great Lakes Shoreline": 0, 
-                            "Great Lakes Connecting Channel": 0, "Other": 0}; 
+                            "Great Lakes Connecting Channel": 0, "Ocean Mapping": 0, "Other": 0}; 
 
         this.typeofrecord = {"Hazard" : 0, "Inundation": 0, "Awareness": 0, "Risk": 0}; 
         this.datasetstatus = {"Complete" : 0, "Ongoing": 0, "Planned": 0}; 
@@ -35,6 +35,9 @@ class FloodDataSummary {
         }
         else if (entry["projectcat"] == "greatlakescc") {
             this.projectcat["Great Lakes Connecting Channel"]++;
+        }
+        else if (entry["projectcat"] == "oceanmapping") {
+            this.projectcat["Ocean Mapping"]++; 
         }
         else {
             this.projectcat["Other"]++; 
@@ -118,18 +121,23 @@ class FloodDataSummary {
     }
 
     updateLastProjUpdate() {
+        var unordered = {}; 
+
         for (var i = 0; i < this.lastprojupdatelist.length; i++) {
             //get the decade 
-            //SORT THE DECADES
+           
             var decade = Math.floor(this.lastprojupdatelist[i] / 10) * 10; 
-            var decadeString = decade.toString() + "'s"; 
-            if (this.lastprojupdate.hasOwnProperty(decadeString)) {
-                this.lastprojupdate[decadeString] += 1;
+            if (unordered.hasOwnProperty(decade)) {
+                unordered[decade] += 1;
             }
             else {
-                this.lastprojupdate[decadeString] = 1;
+                unordered[decade] = 1;
             }
-
+        }
+        //sort the decades in ascending order
+        for (const key of Object.keys(unordered).sort()) {
+            const decadeString = key.toString() + "'s"; 
+            this.lastprojupdate[decadeString] = unordered[key]; 
         }
     }
 

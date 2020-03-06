@@ -31,7 +31,8 @@ class Category extends Component {
         //moved all categories to context.
         return (
             <React.Fragment>
-                <ListGroup.Item action onClick={() => this.context.toggleCategory(this.props.categoryId)} 
+                <ListGroup.Item style={{backgroundColor: "rgb(212, 212, 212)"}}
+                                action onClick={() => this.context.toggleCategory(this.props.categoryId)} 
                                 aria-controls="collapse-content" 
                                 aria-expanded={(expanded)} 
                                 disabled={!this.context.dataLoaded}>

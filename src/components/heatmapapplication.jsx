@@ -12,7 +12,7 @@ class HeatmapApplication extends Component {
                                 spinner
                                 text="Loading Conservation Authorities....">
                     <div className="App" style={{marginBottom:"0px", marginTop:"0px"}}>
-                        <div className="wrapper" style={{marginLeft:"40px", paddingTop:"15px", marginRight:"30px"}}> 
+                        <div className="wrapper" style={{marginLeft:"40px", paddingTop:"15px", marginRight:"30px", paddingBottom:"15px"}}> 
                             <div className="headers text-left" style={{alignItems:"left"}}>
                                 <p><h1>Flood Hazard Mapping Analytics</h1></p>
                                 <p><h4>Filter By</h4></p>

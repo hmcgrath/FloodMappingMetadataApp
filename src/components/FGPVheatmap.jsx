@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
-import DataContext from "../contexts/graphdata";
+import HeatmapDataContext from "../contexts/heatmapdata"; 
 
 class FGPVheatmap extends Component {
 
-    static contextType = DataContext;
+    static contextType = HeatmapDataContext; 
 
     render() { 
         return (
             <React.Fragment>
-                <iframe src="http://localhost:8080/embedheatmap" title="FGPVheatmap" id="FGPV"
-                    height="800px" width="100%" allowFullScreen={false}/>
-                <div className="row">
-                    <br></br>
-                    <button type="button" className="btn btn-danger btn-block" id="resetheatmap" onClick="">Reset Map</button>
+                <div style={{height: "100%"}}>
+                    <iframe src="http://localhost:8080/embedheatmap" title="FGPVheatmap" id="FGPVheatmap"
+                        height="820px" width="100%" allowFullScreen={false}/>
+                    <div className="row">
+                        <br></br>
+                        <button type="button" className="btn btn-danger btn-block" id="resetheatmap" onClick={this.context.reset}>Reset Map</button>
+                    </div>
                 </div>
             </React.Fragment>
         );
