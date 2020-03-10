@@ -7,6 +7,7 @@ window.heatmap = {
     cacount: null,
     cadata: null,
     legendpanel: null,
+    bundle: null,
     /**
      * Initializes the plugin
      * @param {any} rampApi - FGPV map instance
@@ -31,6 +32,8 @@ window.heatmap = {
             ["esri/SpatialReference", "SpatialReference"], 
             ["esri/tasks/ProjectParameters", "ProjectParameters"], 
             ["esri/InfoTemplate", "InfoTemplate"],
+            ["esri/dijit/PopupTemplate", "PopupTemplate"],
+            ["esri/dijit/InfoWindow", "InfoWindow"],
             ["esri/InfoWindowBase", "InfoWindowBase"], 
             ["esri/symbols/SimpleFillSymbol"], 
             ["esri/symbols/SimpleLineSymbol"], 
@@ -39,6 +42,7 @@ window.heatmap = {
 
             esriApi.then((bundle) => {
                                 this.esriApi = RAMP.GAPI.esriBundle; 
+                                this.bundle = bundle; 
                                 this.infoTemplate = bundle.InfoTemplate; 
                                 //add other necessary classes..... 
                             })
@@ -66,10 +70,18 @@ window.heatmap = {
                 }
                 console.log(caLayer.esriLayer.graphics); 
                 for (const ca of caLayer.esriLayer.graphics) {
+                    /*
                     var infoTemplate = new this.infoTemplate(); 
                     infoTemplate.setTitle("<h1>Test<h1>"); 
                     infoTemplate.setContent("test"); 
+                    console.log(infoTemplate); 
                     ca.setInfoTemplate(infoTemplate); 
+                    */
+                   var popupTemplate = new this.bundle.PopupTemplate({
+                        title: "Test",
+                        description: "Test Test Test Test Test Test Test", 
+                   });
+                   ca.setInfoTemplate(popupTemplate); 
                 }
                 resolve(); 
             });
@@ -306,6 +318,8 @@ window.heatmap = {
      */
     addEventListeners() {
         console.log(this.cadata); 
+        this.api.esriMap.showInfoWindowOnClick = true; 
+        this.api.esriMap.setInfoWindowOnClick = true; 
         //this.esriApi = RAMP.GAPI.esriBundle; 
         //object property instance of a geometryservice
         window.addEventListener("message", (e) => {
@@ -323,6 +337,25 @@ window.heatmap = {
                 return; 
             }
         }); 
+
+        this.api.esriMap.on("click", (e) => {
+            console.log(e); 
+            /*
+            this.api.esriMap.infoWindow.setTitle("Test"); 
+            this.api.esriMap.infoWindow.setContent("Test"); 
+            this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint));
+            */
+            if (e.graphic) {
+                console.log(e.graphic.getContent()); 
+                this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
+                this.api.esriMap.infoWindow.setTitle(e.graphic.getTitle()); 
+                console.log(this.api.esriMap.infoWindow);
+                this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
+                console.log(this.api.esriMap.infoWindow.isShowing); 
+                console.log(this.api.esriMap.infoWindow.domNode); 
+            }
+        });
+
         this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
         this.api.click.subscribe((evt) => {
             this.polygonClick(evt); 
