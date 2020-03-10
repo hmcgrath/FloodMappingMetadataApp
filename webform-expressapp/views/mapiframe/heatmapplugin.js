@@ -70,18 +70,14 @@ window.heatmap = {
                 }
                 console.log(caLayer.esriLayer.graphics); 
                 for (const ca of caLayer.esriLayer.graphics) {
-                    /*
-                    var infoTemplate = new this.infoTemplate(); 
-                    infoTemplate.setTitle("<h1>Test<h1>"); 
-                    infoTemplate.setContent("test"); 
-                    console.log(infoTemplate); 
-                    ca.setInfoTemplate(infoTemplate); 
-                    */
-                   var popupTemplate = new this.bundle.PopupTemplate({
-                        title: "Test",
-                        description: "Test Test Test Test Test Test Test", 
-                   });
-                   ca.setInfoTemplate(popupTemplate); 
+                    console.log(ca.geometry.apiId);
+                    var popupTemplate = new this.bundle.PopupTemplate({
+                        title: ca.geometry.apiId,
+                        description: `Number of Records: ${this.cacount[ca.geometry.apiId][1]}\
+                                    <button type="button">Show Records On Map</button><br>
+                                    <button type="button">Download CSV of Records</button>`, 
+                    });
+                    ca.setInfoTemplate(popupTemplate); 
                 }
                 resolve(); 
             });
@@ -340,27 +336,21 @@ window.heatmap = {
 
         this.api.esriMap.on("click", (e) => {
             console.log(e); 
-            /*
-            this.api.esriMap.infoWindow.setTitle("Test"); 
-            this.api.esriMap.infoWindow.setContent("Test"); 
-            this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint));
-            */
             if (e.graphic) {
                 console.log(e.graphic.getContent()); 
                 this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
-                this.api.esriMap.infoWindow.setTitle(e.graphic.getTitle()); 
-                console.log(this.api.esriMap.infoWindow);
-                console.log(e.screenPoint); 
                 this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
-                console.log(this.api.esriMap.infoWindow.isShowing); 
-                console.log(this.api.esriMap.infoWindow.domNode); 
+                console.log(e.graphic.geometry); 
+                console.log(this.cadata[e.graphic.geometry.apiId]); 
             }
         });
 
+        /*
         this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
         this.api.click.subscribe((evt) => {
             this.polygonClick(evt); 
         });
+        */
     },
 
     /**
