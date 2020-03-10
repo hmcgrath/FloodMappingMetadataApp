@@ -303,8 +303,7 @@ window.heatmap = {
         return new Promise((resolve, reject) => {
             $.getJSON("http://localhost:8080/api/cacount", (data) => {
                 this.cadata = data; 
-                //move postMessage here to ensure data is accessible
-                window.parent.postMessage("finished conservation load", "*"); 
+                //move postMessage here to ensure data is accessible 
                 resolve(); 
             });
         }); 
@@ -313,9 +312,11 @@ window.heatmap = {
      * Adds all the event listeners for the plugin 
      */
     addEventListeners() {
-        console.log(this.cadata); 
-        this.api.esriMap.showInfoWindowOnClick = true; 
-        this.api.esriMap.setInfoWindowOnClick = true; 
+        
+        //console.log(this.cadata); 
+        //this.api.esriMap.showInfoWindowOnClick = true; 
+        //this.api.esriMap.setInfoWindowOnClick = true; 
+
         //this.esriApi = RAMP.GAPI.esriBundle; 
         //object property instance of a geometryservice
         window.addEventListener("message", (e) => {
@@ -335,15 +336,22 @@ window.heatmap = {
         }); 
 
         this.api.esriMap.on("click", (e) => {
-            console.log(e); 
+            //e.preventDefault(); 
+            //e.stopPropagation(); 
+            //console.log(e); 
             if (e.graphic) {
-                console.log(e.graphic.getContent()); 
                 this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
                 this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
+                alert($(".esriPopupWrapper").height()); 
+
                 console.log(e.graphic.geometry); 
                 console.log(this.cadata[e.graphic.geometry.apiId]); 
             }
         });
+        
+        //post finished loading message
+        
+        window.parent.postMessage("finished conservation load", "*");
 
         /*
         this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
@@ -383,6 +391,8 @@ window.heatmap = {
                 }
             }
         });
+
+        
 
     }
 }
