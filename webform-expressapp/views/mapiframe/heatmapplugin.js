@@ -350,6 +350,7 @@ window.heatmap = {
                 this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
                 this.api.esriMap.infoWindow.setTitle(e.graphic.getTitle()); 
                 console.log(this.api.esriMap.infoWindow);
+                console.log(e.screenPoint); 
                 this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
                 console.log(this.api.esriMap.infoWindow.isShowing); 
                 console.log(this.api.esriMap.infoWindow.domNode); 
