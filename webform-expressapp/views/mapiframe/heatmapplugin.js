@@ -70,14 +70,46 @@ window.heatmap = {
                 }
                 console.log(caLayer.esriLayer.graphics); 
                 for (const ca of caLayer.esriLayer.graphics) {
-                    console.log(ca.geometry.apiId);
                     var popupTemplate = new this.bundle.PopupTemplate({
                         title: ca.geometry.apiId,
                         description: `Number of Records: ${this.cacount[ca.geometry.apiId][1]}\
                                     <button type="button">Show Records On Map</button><br>
-                                    <button type="button">Download CSV of Records</button>`, 
+                                    <button type="button" id="${ca.geometry.apiId}" onClick=downloadCSV(this.id)>Download CSV of Records</button>`, 
                     });
                     ca.setInfoTemplate(popupTemplate); 
+                    /**
+                     * Downloads a CSV of records 
+                     */
+                    downloadCSV = (caName) => {
+                        var data = this.cadata[caName]; 
+                        var csvContent = "data:text/csv;charset=utf-8,"; 
+                        if (data.length > 0) {
+                            //write the fields first
+                            var fieldsRow = Object.keys(data[0]).join(","); 
+                            csvContent += fieldsRow + "\r\n";
+                            for (const record of data){
+                                for (const entry of Object.values(record)) {
+                                    let content = entry; 
+                                    if (typeof(content) === "string" && content.includes(",")) {
+                                        content = "\"" + content + "\""; 
+                                    }
+                                    csvContent += content + ","
+                                }
+                                //let contentRow = Object.values(record).join(","); 
+                                csvContent += "\r\n";
+                            }
+                            var encodedUri = encodeURI(csvContent); 
+                            var download = document.createElement("a"); 
+                            download.href = encodedUri; 
+                            download.target = "_blank"; 
+                            download.download = `${caName}.csv`; 
+                            download.click(); 
+                        }
+
+                        else {
+                            alert("No data exists for this CA."); 
+                        }
+                    };
                 }
                 resolve(); 
             });
@@ -336,14 +368,15 @@ window.heatmap = {
         }); 
 
         this.api.esriMap.on("click", (e) => {
+            //alert($("link[href='https://js.arcgis.com/3.31/esri/css/esri.css']").length); 
             //e.preventDefault(); 
             //e.stopPropagation(); 
             //console.log(e); 
+            //alert(e.mapPoint.y); 
             if (e.graphic) {
                 this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
                 this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
-                alert($(".esriPopupWrapper").height()); 
-
+                //alert(this.api.esriMap.infoWindow.domNode.innerHTML); 
                 console.log(e.graphic.geometry); 
                 console.log(this.cadata[e.graphic.geometry.apiId]); 
             }
