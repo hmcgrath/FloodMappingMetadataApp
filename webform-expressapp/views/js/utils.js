@@ -68,7 +68,9 @@ function () {
 
         anchor.attr("data-content", $("#" + $(this).attr("for") + "h").html()); 
         anchor.html($("<img>", {height: "20", width:"20", src:"./images/helpicon.png"}))
-        $(this).append(' <span style="color:red">*</span>'); 
+        if (!$("#" + $(this).attr("for")).hasClass("optional")) {
+            $(this).append(' <span style="color:red">*</span>'); 
+        }
         $(this).append(" "); 
         $(this).append(anchor);         
     });

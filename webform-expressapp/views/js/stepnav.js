@@ -49,6 +49,7 @@ function nextPrev(n) {
 
     if (currentTab >= tabs.length) {
         //handle submission
+        window.onbeforeunload = null; 
         document.getElementById("entryForm").submit(); 
         return false; 
     }
@@ -138,6 +139,7 @@ $(document).ready(function () {
 
     $("#submitSaveBtn").click(function() {
         if (validateStep()) {
+            $(window).unbind("beforeunload"); 
             $.ajax({
                 type: 'POST', 
                 data: $("#entryForm").serialize(), 
