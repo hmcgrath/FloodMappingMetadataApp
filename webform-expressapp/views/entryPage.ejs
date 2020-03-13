@@ -122,7 +122,7 @@
         <div class="container">
 
             <label for="floodHzdStd">
-                Flood Hazard Standard
+                Flood Hazard Event Evaluated
             </label>
             <div class="row checkboxes" id="floodHzdStd">
                 <div class="col-lg-4 col-md-12 col-sm-12">             
@@ -514,9 +514,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- TO DO: ADD COORDINATE SYSTEM FIELD-->
-
         </div>
     </div>
 
@@ -969,8 +966,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="hydromodelyear">Hydrology Model Year</label>
-                        <select class="browser-default custom-select yearinput" id="hydromodelyear">
+                        <label for="hydromodelyear">Hydrology Future Model Year</label>
+                        <select class="browser-default custom-select futureyearinput" id="hydromodelyear">
                             <option value = "" disabled selected>----</option>
                         </select>
                     </div>
@@ -1030,7 +1027,7 @@
                 <div class="col-lg-6 col-md-12 col-sm-12">
                     <div class="form-group">
                         <label for="ccconsidered">Climate Change Considered</label>
-                        <select class="browser-default custom-select" id="ccconsidered">
+                        <select class="browser-default custom-select" id="ccconsidered" onchange="checkClimateChange(this)">
                             <option value="" disabled selected>----</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
@@ -1045,6 +1042,15 @@
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="ifYesClimateChange" style="display: none">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="climatechangecomments">How is Climate Change Considered?</label>
+                        <textarea class="form-control" maxlength="250" id="climatechangecomments" rows="3"></textarea>
                     </div>
                 </div>
             </div>
