@@ -3,6 +3,18 @@ window.addEventListener("beforeunload", function(e) {
     e.returnValue = "Are you sure? All progress will be lost";  
 });
 
+function checkOtherFloodHzd(checkbox) {
+    if (checkbox.checked) {
+        document.getElementById("ifOtherFloodHzd").style.display = "block";
+        document.getElementById("otherfloodhzd").classList.remove("optional");  
+    }
+    else {
+        document.getElementById("ifOtherFloodHzd").style.display = "none"; 
+        document.getElementById("otherfloodhzd").classList.add("optional"); 
+    }
+}
+
+
 function checkClimateChange(select) {
     if (select.value == "yes") {
         document.getElementById("ifYesClimateChange").style.display = "block"; 
@@ -48,6 +60,8 @@ function checkPartUpdated(select) {
         document.getElementById("ifYesUpdate").style.display = "none"; 
     }
 }
+
+
 
 //function to populate year dropdown
 var populateYear = 

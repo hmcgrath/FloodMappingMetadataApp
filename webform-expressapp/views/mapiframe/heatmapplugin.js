@@ -366,7 +366,7 @@ window.heatmap = {
             }
         }); 
 
-        /*
+        
         this.api.esriMap.on("click", (e) => {
             //alert($("link[href='https://js.arcgis.com/3.31/esri/css/esri.css']").length); 
             //e.preventDefault(); 
@@ -376,13 +376,13 @@ window.heatmap = {
             if (e.graphic) {
                 this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
                 this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
-                alert(this.api.esriMap.infoWindow.count); 
+                //alert(this.api.esriMap.infoWindow.count); 
                 //alert(this.api.esriMap.infoWindow.domNode.innerHTML); 
                 console.log(e.graphic.geometry); 
                 console.log(this.cadata[e.graphic.geometry.apiId]); 
             }
         });
-        */
+    
         
         //post finished loading message
         

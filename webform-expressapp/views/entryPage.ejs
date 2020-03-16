@@ -192,7 +192,7 @@
                         </div>
     
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="other" id="other">
+                            <input class="form-check-input" type="checkbox" value="other" id="other" onclick="checkOtherFloodHzd(this)">
                             <label class="form-check-label" for="other">
                                 Other
                             </label>
@@ -200,7 +200,16 @@
                     </div>
                 </div>
             </div>
-            
+
+            <div class="row" id="ifOtherFloodHzd" style="display:none">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="otherfloodhzd">Other Flood Hazard Event Evaluated</label>
+                        <input type="text" id="otherfloodhzd" class="form-control optional">
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
