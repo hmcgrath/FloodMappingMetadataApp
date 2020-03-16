@@ -17,17 +17,18 @@ const options = {
 
 
 const {Pool, Client} = require("pg");
-/*
+
 const client = new Client({
-	user: 'defaultuser', 
+	user: 'postgres', 
 	host: 'localhost', 
 	database: 'floodmapping', 
-	password: 'default', 
+	password: 'Toasty1337', 
 	port: 5432,
 });
-*/
+
 
 //new connection up and running
+/*
 const client = new Client({
     user: "floodmapping_admin",
     host: "v-she-olrik.cits.rncan.gc.ca", 
@@ -35,6 +36,7 @@ const client = new Client({
     password: "floodmappingadm4dev", 
     port: 14180
 });
+*/
 
 client.connect(function(err, res) {
     if (err) {
@@ -149,14 +151,16 @@ app.get("/api", cors(), function(req, res) {
 //making a separate route for conservation authority counts... may integrate into /api route
 app.get("/api/cacount", function(req, res) {
     var jsonFile = fs.readFileSync("conservation-layers.json"); 
-    var jsonContent = JSON.parse(jsonFile); 
 
+    var jsonContent = JSON.parse(jsonFile); 
+    //console.log(jsonContent);
     //counter to keep track of async client.queries completed
     var completedQueries = 0;
     //obj to store the number of records found for each conservation authority  
     var countList = {};
 
     jsonContent.forEach((ca) => {
+        //console.log(ca.geometry.rings); 
         //copy values
         var coordList = ca.geometry.rings.flat(); 
         //swap lat-lng for all coordinates to match format in database... 
@@ -230,13 +234,13 @@ app.post("/submit/:action?", function (req,res) {
                                         hydrogeneralcomments, hydraprojid, hydrayear, hydramethod, \
                                         flowcond, hydracalib, \
                                         hydrainputcomments, floodlineestimated, hydrasupportingdoc, \
-                                        elevsource, hydrapeerreview, hydrageneralcomments, boundingbox, climatechangecomments) VALUES \
+                                        elevsource, hydrapeerreview, hydrageneralcomments, boundingbox, climatechangecomments, otherfloodhzd) VALUES \
                                         ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, \
                                         $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, \
                                         $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, \
                                         $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, \
                                         $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, \
-                                        $73, $74, $75, $76, $77, $78, $79, $80, $81)"; 
+                                        $73, $74, $75, $76, $77, $78, $79, $80, $81, $82)"; 
     
     var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
@@ -250,7 +254,7 @@ app.post("/submit/:action?", function (req,res) {
                     req.body.smincorporated, req.body.volreduction, req.body.catdiscretized, req.body.hydrosupportingdoc, req.body.ccconsidered, req.body.hydropeerreview, 
                     req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, 
                     req.body.hydrainputparamquality, req.body.hydrainputcomments, req.body.floodlineestimated, req.body.hydrasupportingdoc, req.body.elevsource, req.body.hydrapeerreview, 
-                    req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.climatechangecomments]; 
+                    req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.climatechangecomments, req.body.otherfloodhzd]; 
     
     //replace any empty strings with null
     for (var val of values) {
@@ -262,7 +266,7 @@ app.post("/submit/:action?", function (req,res) {
     //if an extent file is uploaded
     if (req.body.polycoordinates !== "") {
         console.log("Detected an extent"); 
-        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$81", "$81, $82"); 
+        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$82", "$82, $83"); 
         values.push(req.body.polycoordinates); 
     }
 
