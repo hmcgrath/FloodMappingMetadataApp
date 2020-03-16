@@ -230,13 +230,13 @@ app.post("/submit/:action?", function (req,res) {
                                         hydrogeneralcomments, hydraprojid, hydrayear, hydramethod, \
                                         flowcond, hydracalib, \
                                         hydrainputcomments, floodlineestimated, hydrasupportingdoc, \
-                                        elevsource, hydrapeerreview, hydrageneralcomments, boundingbox) VALUES \
+                                        elevsource, hydrapeerreview, hydrageneralcomments, boundingbox, climatechangecomments) VALUES \
                                         ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, \
                                         $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, \
                                         $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, \
                                         $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, \
                                         $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, \
-                                        $73, $74, $75, $76, $77, $78, $79, $80)"; 
+                                        $73, $74, $75, $76, $77, $78, $79, $80, $81)"; 
     
     var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
@@ -250,7 +250,7 @@ app.post("/submit/:action?", function (req,res) {
                     req.body.smincorporated, req.body.volreduction, req.body.catdiscretized, req.body.hydrosupportingdoc, req.body.ccconsidered, req.body.hydropeerreview, 
                     req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, 
                     req.body.hydrainputparamquality, req.body.hydrainputcomments, req.body.floodlineestimated, req.body.hydrasupportingdoc, req.body.elevsource, req.body.hydrapeerreview, 
-                    req.body.hydrageneralcomments, getBoundingBox(req.body)]; 
+                    req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.climatechangecomments]; 
     
     //replace any empty strings with null
     for (var val of values) {
@@ -262,7 +262,7 @@ app.post("/submit/:action?", function (req,res) {
     //if an extent file is uploaded
     if (req.body.polycoordinates !== "") {
         console.log("Detected an extent"); 
-        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$80", "$80, $81"); 
+        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$81", "$81, $82"); 
         values.push(req.body.polycoordinates); 
     }
 

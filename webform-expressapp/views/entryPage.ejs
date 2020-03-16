@@ -122,7 +122,7 @@
         <div class="container">
 
             <label for="floodHzdStd">
-                Flood Hazard Standard
+                Flood Hazard Event Evaluated
             </label>
             <div class="row checkboxes" id="floodHzdStd">
                 <div class="col-lg-4 col-md-12 col-sm-12">             
@@ -514,9 +514,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- TO DO: ADD COORDINATE SYSTEM FIELD-->
-
         </div>
     </div>
 
@@ -537,7 +534,7 @@
                 <div class="col-lg-12"> 
                     <div class="form-group">
                         <label for="imgprojid">Imagery Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="imgprojid" placeholder="Enter Project ID">
+                        <input type="text" maxlength="20" class="form-control optional" id="imgprojid" placeholder="Enter Project ID">
                     </div>
                 </div>
             </div>
@@ -596,6 +593,7 @@
                             <option value="cgvd2013">CGVD2013</option>
                             <option value="cgvd28">CGVD28</option>
                             <option value="cgvd28-pre1978">CGVD28-Pre1978</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                 </div>
@@ -696,7 +694,7 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="elevprojid">Elevation Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="elevprojid" placeholder="Enter Project ID">
+                        <input type="text" maxlength="20" class="form-control optional" id="elevprojid" placeholder="Enter Project ID">
                     </div>
                 </div>
             </div>
@@ -778,6 +776,7 @@
                             <option value="cgvd2013">CGVD2013</option>
                             <option value="cgvd28">CGVD28</option>
                             <option value="cgvd28-pre1978">CGVD28-Pre1978</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                 </div>
@@ -901,7 +900,7 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="hydroprojid">Hydrology Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="hydroprojid" placeholder="Enter Project ID">
+                        <input type="text" maxlength="20" class="form-control optional" id="hydroprojid" placeholder="Enter Project ID">
                     </div>
                 </div>
             </div>
@@ -958,7 +957,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="inputcomments" class="textarealabel">Quality of Input Comments</label>
+                        <label for="inputcomments" class="textarealabel">Quality of Input and Calibration Comments</label>
                         <textarea class="form-control" maxlength="250" id="inputcomments" rows="3"></textarea>
                     </div>
                 </div>
@@ -967,8 +966,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="hydromodelyear">Hydrology Model Year</label>
-                        <select class="browser-default custom-select yearinput" id="hydromodelyear">
+                        <label for="hydromodelyear">Hydrology Future Model Year</label>
+                        <select class="browser-default custom-select futureyearinput" id="hydromodelyear">
                             <option value = "" disabled selected>----</option>
                         </select>
                     </div>
@@ -1028,7 +1027,7 @@
                 <div class="col-lg-6 col-md-12 col-sm-12">
                     <div class="form-group">
                         <label for="ccconsidered">Climate Change Considered</label>
-                        <select class="browser-default custom-select" id="ccconsidered">
+                        <select class="browser-default custom-select" id="ccconsidered" onchange="checkClimateChange(this)">
                             <option value="" disabled selected>----</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
@@ -1043,6 +1042,15 @@
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="ifYesClimateChange" style="display: none">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="climatechangecomments">How is Climate Change Considered?</label>
+                        <textarea class="form-control" maxlength="250" id="climatechangecomments" rows="3"></textarea>
                     </div>
                 </div>
             </div>
@@ -1076,7 +1084,7 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="hydraprojid">Hydraulics Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="hydraprojid" placeholder="Enter Project ID">
+                        <input type="text" maxlength="20" class="form-control optional" id="hydraprojid" placeholder="Enter Project ID">
                     </div>
                 </div>
             </div>
@@ -1139,7 +1147,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="hydrainputcomments" class="textarealabel">Hydraulics Quality of Input Comments</label>
+                        <label for="hydrainputcomments" class="textarealabel">Hydraulics Quality of Input and Calibration Comments</label>
                         <textarea class="form-control" maxlength="250" id="hydrainputcomments" rows="3"></textarea>
                     </div>
                 </div>
