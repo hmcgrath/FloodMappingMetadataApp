@@ -43,7 +43,7 @@ function nextPrev(n) {
         //exit the function 
         return false; 
     }
-
+    
     tabs[currentTab].style.display="none"; 
     currentTab = currentTab + n; 
 
@@ -54,10 +54,6 @@ function nextPrev(n) {
         return false; 
     }
     showTab(currentTab); 
-}
-
-function submitSaveBtn() {
-    //TO-DO
 }
 
 //this is used for updating the progress bar
@@ -145,7 +141,9 @@ $(document).ready(function () {
                 data: $("#entryForm").serialize(), 
                 url: '/submit/save',
             }).done(function() {
-                $("#submitSuccessModal").modal("show"); 
+                $("#submitSuccessModal").modal("show");
+                var tabs = document.getElementsByClassName("tab");  
+                tabs[currentTab].style.display="none"; 
                 currentTab = 0; 
                 showTab(currentTab); 
             }).fail(function() {

@@ -242,14 +242,18 @@ app.post("/submit/:action?", function (req,res) {
                                         $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, \
                                         $73, $74, $75, $76, $77, $78, $79, $80, $81, $82)"; 
     
-    var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(req.body), req.body.officialWCName, 
+    var floodhzdstd = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
+    var secdatasource = ["lidar", "photogrammetry", "radar", "sonar", 
+                        "satelite", "uav", "gps", "groundsurvey"]; 
+
+    var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(floodhzdstd, req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
                     req.body.otherundertakingname, req.body.datasetStatus, req.body.lastprojupdate, req.body.partupdate, req.body.updatepurp, req.body.drainagearea, 
                     req.body.summreportavail, req.body.updatesinceorig, req.body.localwcname, req.body.wclength, req.body.widestcswidth, req.body.maxfloodplain, req.body.majorevent, req.body.coordsysproj, req.body.generalprojcomments, req.body.imgprojid, req.body.acquisitionyear,
                     req.body.datadescrip, req.body.acquisitionseason, req.body.imghref, req.body.imgvref, req.body.imghozacc, req.body.imgderivmethod, req.body.spatialreshoz, 
                     req.body.spatialresvert, req.body.imgpeerreview, req.body.imggeneralcomments, req.body.elevprojid, req.body.digitaldata, req.body.dataformat, req.body.primdatasource, 
                     req.body.elevdataowner, req.body.elevhref, req.body.elevvref, req.body.elevhozacc, req.body.elevvertacc, req.body.elevderivmethod, req.body.elevspatialreshoz, 
-                    req.body.elevspatialresvert, req.body.secdatasource, req.body.elevpeerreview, req.body.elevgeneralcomments, req.body.hydroprojid, req.body.hydromethod, req.body.hydroyear,
+                    req.body.elevspatialresvert, getCheckboxes(secdatasource, req.body), req.body.elevpeerreview, req.body.elevgeneralcomments, req.body.hydroprojid, req.body.hydromethod, req.body.hydroyear,
                     req.body.datasetyrs, req.body.eventsmodeled, req.body.inputcomments, req.body.hydromodelyear, 
                     req.body.smincorporated, req.body.volreduction, req.body.catdiscretized, req.body.hydrosupportingdoc, req.body.ccconsidered, req.body.hydropeerreview, 
                     req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, 
@@ -301,9 +305,14 @@ app.listen(process.env.PORT || 8080, process.env.IP, function() {
 
 
 //HELPER FUNCTIONS
+/**
+ * Gets the selected checkboxes for a group of checkboxes
+ * @param {Array} checkboxes - The checkbox names to search for
+ * @param {Object} dict - The request body object 
+ */
 
-function getCheckboxes(dict) {
-    var checkboxes = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
+function getCheckboxes(checkboxes, dict) {
+    //var checkboxes = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
     var checked = []; 
     checkboxes.forEach(function(elem) {
         if (elem in dict){
@@ -322,6 +331,8 @@ function getCheckboxes(dict) {
     stringver += "}"
     return stringver; 
 }
+
+
 
 function getBoundingBox(dict) {
     return dict.lat1 + "," + dict.long1 + "," + dict.lat2 + "," + dict.long2; 
