@@ -343,7 +343,6 @@ window.heatmap = {
      * Adds all the event listeners for the plugin 
      */
     addEventListeners() {
-        
         //console.log(this.cadata); 
         //this.api.esriMap.showInfoWindowOnClick = true; 
         //this.api.esriMap.setInfoWindowOnClick = true; 
@@ -376,10 +375,11 @@ window.heatmap = {
             if (e.graphic) {
                 this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
                 this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
+                console.log(this.api.esriMap.infoWindow.domNode); 
                 //alert(this.api.esriMap.infoWindow.count); 
                 //alert(this.api.esriMap.infoWindow.domNode.innerHTML); 
-                console.log(e.graphic.geometry); 
-                console.log(this.cadata[e.graphic.geometry.apiId]); 
+                //console.log(e.graphic.geometry); 
+                //console.log(this.cadata[e.graphic.geometry.apiId]); 
             }
         });
     
