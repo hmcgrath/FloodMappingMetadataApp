@@ -172,7 +172,7 @@ app.get("/api/cacount", function(req, res) {
         //format the coordinates for db query
         const polygon = coordList.join(","); 
 
-        const sql = "SELECT * FROM hazarddata WHERE $1 && polygon(boundingbox)";
+        const sql = "SELECT *, polygon(boundingbox) AS fullbox FROM hazarddata WHERE $1 && polygon(boundingbox)";
         const val = [polygon]; 
         client.query(sql, val, function(err, result) {
             //increment the number of completed queries 

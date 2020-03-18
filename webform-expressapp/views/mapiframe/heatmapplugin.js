@@ -47,6 +47,7 @@ window.heatmap = {
                                 //add other necessary classes..... 
                             })
                     .then(() => this.loadConservationLayers())
+                    .then(() => this.loadInfoPanel())
                     .then(() => this.setDefaultHeatmap())
                     .then(() => this.loadConservationData())
                     .then(() => this.addEventListeners()); 
@@ -57,7 +58,10 @@ window.heatmap = {
      */
     loadConservationLayers() {
         return new Promise((resolve, reject) => {
+            //layer for conservation authorities
             this.api.layersObj.addLayer("calayer");
+            //layer for individual records
+            this.api.layersObj.addLayer("recordlayer");
             const caLayer = this.api.layers.getLayersById("calayer")[0]; 
             window.parent.postMessage("started conservation load", "*");  
             $.getJSON("http://localhost:8080/api/cacount?countonly=true", (data) => {
@@ -68,52 +72,81 @@ window.heatmap = {
                     var capolygon = new RAMP.GEO.Polygon(ca, data[ca][0] /*, {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3}*/);
                     caLayer.addGeometry(capolygon); 
                 }
-                console.log(caLayer.esriLayer.graphics); 
-                for (const ca of caLayer.esriLayer.graphics) {
-                    var popupTemplate = new this.bundle.PopupTemplate({
-                        title: ca.geometry.apiId,
-                        description: `Number of Records: ${this.cacount[ca.geometry.apiId][1]}\
-                                    <button type="button">Show Records On Map</button><br>
-                                    <button type="button" id="${ca.geometry.apiId}" onClick=downloadCSV(this.id)>Download CSV of Records</button>`, 
-                    });
-                    ca.setInfoTemplate(popupTemplate); 
-                    /**
-                     * Downloads a CSV of records 
-                     */
-                    downloadCSV = (caName) => {
-                        var data = this.cadata[caName]; 
-                        var csvContent = "data:text/csv;charset=utf-8,"; 
-                        if (data.length > 0) {
-                            //write the fields first
-                            var fieldsRow = Object.keys(data[0]).join(","); 
-                            csvContent += fieldsRow + "\r\n";
-                            for (const record of data){
-                                for (const entry of Object.values(record)) {
-                                    let content = entry; 
-                                    if (typeof(content) === "string" && content.includes(",")) {
-                                        content = "\"" + content + "\""; 
-                                    }
-                                    csvContent += content + ","
-                                }
-                                //let contentRow = Object.values(record).join(","); 
-                                csvContent += "\r\n";
-                            }
-                            var encodedUri = encodeURI(csvContent); 
-                            var download = document.createElement("a"); 
-                            download.href = encodedUri; 
-                            download.target = "_blank"; 
-                            download.download = `${caName}.csv`; 
-                            download.click(); 
-                        }
-                        else {
-                            alert("No data exists for this CA."); 
-                        }
-                    };
-                }
+                //console.log(caLayer.esriLayer.graphics); 
                 resolve(); 
             });
         }); 
     },
+
+    /**
+     * Load the Info Panels
+     */
+    loadInfoPanel() {
+        const caLayer = this.api.layers.getLayersById("calayer")[0]; 
+        const recordLayer = this.api.layers.getLayersById("recordlayer")[0]; 
+        for (const ca of caLayer.esriLayer.graphics) {
+            var popupTemplate = new this.bundle.PopupTemplate({
+                title: ca.geometry.apiId,
+                description:(this.cacount[ca.geometry.apiId][1] === 0 ? "" :
+                            `Number of Records: ${this.cacount[ca.geometry.apiId][1]}\
+                            <button type="button" id="${ca.geometry.apiId}" onClick=showDataOnMap(this.id)>Show Records On Map</button><br>
+                            <button type="button" id="${ca.geometry.apiId}" onClick=downloadCSV(this.id)>Download CSV of Records</button>`), 
+            });
+            ca.setInfoTemplate(popupTemplate); 
+            /**
+             * Downloads a CSV of records 
+             */
+            downloadCSV = (caName) => {
+                var data = this.cadata[caName]; 
+                var csvContent = "data:text/csv;charset=utf-8,"; 
+                if (data.length > 0) {
+                    //write the fields first
+                    var fieldsRow = Object.keys(data[0]).join(","); 
+                    csvContent += fieldsRow + "\r\n";
+                    for (const record of data){
+                        for (const entry of Object.values(record)) {
+                            let content = entry; 
+                            if (typeof(content) === "string" && content.includes(",")) {
+                                content = "\"" + content + "\""; 
+                            }
+                            csvContent += content + ","
+                        }
+                        //let contentRow = Object.values(record).join(","); 
+                        csvContent += "\r\n";
+                    }
+                    var encodedUri = encodeURI(csvContent); 
+                    var download = document.createElement("a"); 
+                    download.href = encodedUri; 
+                    download.target = "_blank"; 
+                    download.download = `${caName}.csv`; 
+                    download.click(); 
+                }
+                else {
+                    alert("No data exists for this CA."); 
+                }
+            };
+
+            showDataOnMap = (caName) => {
+                //hide the conservation authority layer
+                caLayer.esriLayer.setVisibility(false); 
+                console.log(this.cadata[caName]); 
+                for (const record of this.cadata[caName]) {
+                    var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
+                    var boxlist = []; 
+                    for (var i = 0; i < stringlist.length; i+= 2) {
+                        boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
+                    } 
+                    var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { outlineColor: [255, 130, 0], 
+                        fillColor: [255, 130, 0], fillOpacity:0.6,
+                        outlineWidth: 3 }); 
+                    recordLayer.addGeometry(recordbox); 
+                }
+            }; 
+
+        }
+    },
+
+
     /**
      * Loads the default heatmap layer (a heatmap for the number of records each conservation authority has)
      */
@@ -343,18 +376,17 @@ window.heatmap = {
      * Adds all the event listeners for the plugin 
      */
     addEventListeners() {
-        //console.log(this.cadata); 
-        //this.api.esriMap.showInfoWindowOnClick = true; 
-        //this.api.esriMap.setInfoWindowOnClick = true; 
-
-        //this.esriApi = RAMP.GAPI.esriBundle; 
-        //object property instance of a geometryservice
+        const caLayer = this.api.layers.getLayersById("calayer")[0];
+        const recordLayer = this.api.layers.getLayersById("recordlayer")[0];
         window.addEventListener("message", (e) => {
             console.log(e.data);
             if (e.data === "Drainage Area") {
                 this.setDrainageAreaHeatmap(); 
             } 
+            //make sure the layer is visible again
             if (e.data === "reset map") {
+                caLayer.esriLayer.setVisibility(true); 
+                recordLayer.removeGeometry(); 
                 this.setDefaultHeatmap(); 
             }
             if (e.data === "Age of Mapping") {
@@ -367,19 +399,10 @@ window.heatmap = {
 
         
         this.api.esriMap.on("click", (e) => {
-            //alert($("link[href='https://js.arcgis.com/3.31/esri/css/esri.css']").length); 
-            //e.preventDefault(); 
-            //e.stopPropagation(); 
-            //console.log(e); 
-            //alert(e.mapPoint.y); 
             if (e.graphic) {
                 this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
                 this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
                 console.log(this.api.esriMap.infoWindow.domNode); 
-                //alert(this.api.esriMap.infoWindow.count); 
-                //alert(this.api.esriMap.infoWindow.domNode.innerHTML); 
-                //console.log(e.graphic.geometry); 
-                //console.log(this.cadata[e.graphic.geometry.apiId]); 
             }
         });
     
