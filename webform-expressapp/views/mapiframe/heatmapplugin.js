@@ -37,7 +37,9 @@ window.heatmap = {
             ["esri/InfoWindowBase", "InfoWindowBase"], 
             ["esri/symbols/SimpleFillSymbol"], 
             ["esri/symbols/SimpleLineSymbol"], 
-            ["esri/Color"]
+            ["esri/Color"],
+            ["dojox/charting/Chart2D", "Chart2D"], 
+            ["dojo/dom-construct", "domConstruct"]
             ]); 
 
             esriApi.then((bundle) => {
@@ -85,12 +87,30 @@ window.heatmap = {
         const caLayer = this.api.layers.getLayersById("calayer")[0]; 
         const recordLayer = this.api.layers.getLayersById("recordlayer")[0]; 
         for (const ca of caLayer.esriLayer.graphics) {
+            
+            var testdiv = document.createElement("div"); 
+            testdiv.id = "testgraph"; 
+            testdiv.style.height = "100%"; 
+            testdiv.style.width = "100%";
+
+            Plotly.newPlot( testdiv, [{
+                x: [1, 2, 3, 4, 5],
+                y: [1, 2, 4, 8, 16] }], {
+                margin: { t: 0 } } );
+
+            var testTemplate = new this.bundle.InfoTemplate(); 
+            testTemplate.setTitle("test");
+            testTemplate.setContent(testdiv); 
+
+
             var popupTemplate = new this.bundle.PopupTemplate({
                 title: ca.geometry.apiId,
+                
                 description:(this.cacount[ca.geometry.apiId][1] === 0 ? "" :
                             `Number of Records: ${this.cacount[ca.geometry.apiId][1]}\
                             <button type="button" id="${ca.geometry.apiId}" onClick=showDataOnMap(this.id)>Show Records On Map</button><br>
                             <button type="button" id="${ca.geometry.apiId}" onClick=downloadCSV(this.id)>Download CSV of Records</button>`), 
+                
             });
             ca.setInfoTemplate(popupTemplate); 
             /**
@@ -129,6 +149,7 @@ window.heatmap = {
             showDataOnMap = (caName) => {
                 //hide the conservation authority layer
                 caLayer.esriLayer.setVisibility(false); 
+                this.api.esriMap.infoWindow.hide();  
                 console.log(this.cadata[caName]); 
                 for (const record of this.cadata[caName]) {
                     var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
@@ -137,7 +158,6 @@ window.heatmap = {
                         boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
                     } 
                     var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { outlineColor: [255, 130, 0], 
-                        fillColor: [255, 130, 0], fillOpacity:0.6,
                         outlineWidth: 3 }); 
                     recordLayer.addGeometry(recordbox); 
                 }
@@ -372,12 +392,18 @@ window.heatmap = {
             });
         }); 
     }, 
+
+    getChart() {
+
+    },
     /**
      * Adds all the event listeners for the plugin 
      */
     addEventListeners() {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         const recordLayer = this.api.layers.getLayersById("recordlayer")[0];
+        
+
         window.addEventListener("message", (e) => {
             console.log(e.data);
             if (e.data === "Drainage Area") {
@@ -397,7 +423,7 @@ window.heatmap = {
             }
         }); 
 
-        
+        /*        
         this.api.esriMap.on("click", (e) => {
             if (e.graphic) {
                 this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
@@ -405,8 +431,7 @@ window.heatmap = {
                 console.log(this.api.esriMap.infoWindow.domNode); 
             }
         });
-    
-        
+        */
         //post finished loading message
         
         window.parent.postMessage("finished conservation load", "*");
