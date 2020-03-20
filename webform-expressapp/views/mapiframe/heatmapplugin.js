@@ -6,6 +6,7 @@ window.heatmap = {
     serviceurl: null,
     cacount: null,
     cadata: null,
+    casummary: null,
     legendpanel: null,
     bundle: null,
     /**
@@ -49,9 +50,9 @@ window.heatmap = {
                                 //add other necessary classes..... 
                             })
                     .then(() => this.loadConservationLayers())
+                    .then(() => this.loadConservationData())
                     .then(() => this.loadInfoPanel())
                     .then(() => this.setDefaultHeatmap())
-                    .then(() => this.loadConservationData())
                     .then(() => this.addEventListeners()); 
         }); 
     },
@@ -88,19 +89,9 @@ window.heatmap = {
         const recordLayer = this.api.layers.getLayersById("recordlayer")[0]; 
         for (const ca of caLayer.esriLayer.graphics) {
             
-            var testdiv = document.createElement("div"); 
-            testdiv.id = "testgraph"; 
-            testdiv.style.height = "100%"; 
-            testdiv.style.width = "100%";
-
-            Plotly.newPlot( testdiv, [{
-                x: [1, 2, 3, 4, 5],
-                y: [1, 2, 4, 8, 16] }], {
-                margin: { t: 0 } } );
-
-            var testTemplate = new this.bundle.InfoTemplate(); 
-            testTemplate.setTitle("test");
-            testTemplate.setContent(testdiv); 
+            var graphTemplate = new this.bundle.InfoTemplate(); 
+            graphTemplate.setTitle("Test Pie Graph"); 
+            graphTemplate.setContent(this.getChart(ca.geometry.apiId, "projectcat")); 
 
 
             var popupTemplate = new this.bundle.PopupTemplate({
@@ -112,7 +103,7 @@ window.heatmap = {
                             <button type="button" id="${ca.geometry.apiId}" onClick=downloadCSV(this.id)>Download CSV of Records</button>`), 
                 
             });
-            ca.setInfoTemplate(popupTemplate); 
+            ca.setInfoTemplate(graphTemplate); 
             /**
              * Downloads a CSV of records 
              */
@@ -386,15 +377,53 @@ window.heatmap = {
     loadConservationData() {
         return new Promise((resolve, reject) => {
             $.getJSON("http://localhost:8080/api/cacount", (data) => {
-                this.cadata = data; 
-                //move postMessage here to ensure data is accessible 
-                resolve(); 
-            });
+                this.cadata = data;
+                console.log("test1"); 
+                $.getJSON("http://localhost:8080/api/cacount?formatted=true", (summarydata) => {
+                    this.casummary = summarydata; 
+                    console.log(this.cadata); 
+                    console.log(this.casummary); 
+                    resolve();
+                });               
+            })
+            .catch((err) => console.log(err));
         }); 
     }, 
 
-    getChart() {
-
+    /**
+     * Gets the plotly graph for the corresponding category name, returns the HTMLDivElement with the chart.
+     * @param {string} caName - name of conservation authority
+     * @param {string} categoryName - name of category
+     * 
+     */
+    getChart(caName, categoryName) {    
+        //get the data required for graph
+        const payload = this.casummary[caName][categoryName]; 
+        //plotly graph test
+        var testdiv = document.createElement("div"); 
+        testdiv.id = "testgraph"; 
+        testdiv.style.width = "250px"; 
+        testdiv.style.height = "150px";
+         //make pie graph
+        Plotly.newPlot(testdiv, [{
+            values: Object.values(payload), 
+            labels: Object.keys(payload), 
+            type: "pie",
+            textinfo: "label+percent", 
+            textposition: "outside", 
+            automargin: true
+        }, {
+            autosize: false, 
+            width: 250, 
+            height: 150,
+            margin: {
+                l: 0, 
+                r: 0, 
+                b: 0,
+                t: 0
+            } 
+        }]);
+        return testdiv;
     },
     /**
      * Adds all the event listeners for the plugin 

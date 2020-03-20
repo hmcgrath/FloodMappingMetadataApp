@@ -192,7 +192,12 @@ app.get("/api/cacount", function(req, res) {
                 if (req.query.countonly == "true") {
                     countList[ca.attributes.LEGAL_NAME] = [coordList, result.rowCount]; 
                 }
-                
+                //get summaries for each conservation authority
+                else if (req.query.formatted == "true") {
+                    var formattedResponse = new FloodDataSummary(result.rows); 
+                    countList[ca.attributes.LEGAL_NAME] = formattedResponse.getSummary(); 
+                }
+                //get all detailed records for each conservation authority
                 else {
                     countList[ca.attributes.LEGAL_NAME] = result.rows; 
                 }
