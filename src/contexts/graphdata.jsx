@@ -20,10 +20,6 @@ class DataProvider extends Component {
             {name: "Age of Mapping", categoryId:"lastprojupdate", type:"graphable", graphType:"bar", expanded: false}, 
             {name: "Summary Report Available", categoryId:"summreportavail", type:"graphable", graphType:"pie", expanded: false}, 
             {name: "Updated Since Original", categoryId:"updatesinceorig", type:"graphable", graphType:"pie", expanded: false},
-            {name: "Project ID", categoryId: "projectid", type:"searchable", graphType:"none", expanded: false},
-            {name: "Project Name", categoryId: "projectname", type:"searchable", graphType:"none", expanded: false},
-            {name: "Official Watercourse Name", categoryId:"officialwcname", type:"searchable", graphType:"none", expanded: false}, 
-            {name: "Local Watercourse Name", categoryId:"localwcname", type:"searchable", graphType:"none", expanded: false}
         ],
         toggleCategory: (categoryId) => {
             var resetCategories = this.state.categories; 

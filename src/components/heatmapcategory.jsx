@@ -10,7 +10,7 @@ class HeatmapCategory extends Component {
     getButton() {
         if (this.props.type === "graphable") {
             return (
-                <button type="button" className="btn btn-primary btn-block" onClick="">Show on Map</button>
+                <button type="button" className="btn btn-primary btn-block" onClick={() => this.context.heatmap(this.props.categoryName)}>Show on Map</button>
             );
         }
         if (this.props.type === "heatmappable") {

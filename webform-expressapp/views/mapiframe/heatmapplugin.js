@@ -51,7 +51,7 @@ window.heatmap = {
                             })
                     .then(() => this.loadConservationLayers())
                     .then(() => this.loadConservationData())
-                    .then(() => this.loadInfoPanel())
+                    .then(() => this.loadDefaultInfoPanel())
                     .then(() => this.setDefaultHeatmap())
                     .then(() => this.addEventListeners()); 
         }); 
@@ -84,16 +84,10 @@ window.heatmap = {
     /**
      * Load the Info Panels
      */
-    loadInfoPanel() {
+    loadDefaultInfoPanel() {
         const caLayer = this.api.layers.getLayersById("calayer")[0]; 
         const recordLayer = this.api.layers.getLayersById("recordlayer")[0]; 
         for (const ca of caLayer.esriLayer.graphics) {
-            
-            var graphTemplate = new this.bundle.InfoTemplate(); 
-            graphTemplate.setTitle("Test Pie Graph"); 
-            graphTemplate.setContent(this.getChart(ca.geometry.apiId, "projectcat")); 
-
-
             var popupTemplate = new this.bundle.PopupTemplate({
                 title: ca.geometry.apiId,
                 
@@ -103,7 +97,7 @@ window.heatmap = {
                             <button type="button" id="${ca.geometry.apiId}" onClick=downloadCSV(this.id)>Download CSV of Records</button>`), 
                 
             });
-            ca.setInfoTemplate(graphTemplate); 
+            ca.setInfoTemplate(popupTemplate); 
             /**
              * Downloads a CSV of records 
              */
@@ -413,18 +407,36 @@ window.heatmap = {
             //textposition: "outside", 
             //automargin: true
         }], {
-            autosize: false, 
-            width: 250, 
-            height: 200,
+            title: caName + " : " + categoryName,
+            autosize: true, 
+            width: 500, 
+            height: 250,
             margin: {
                 l: 0, 
                 r: 0, 
                 b: 0,
                 t: 0
-            } 
+            }        
         });
         return testdiv;
     },
+
+    /**
+     * Sets the info panel of conservation authorities to graph a certain category
+     * @param {string} categoryName - name of category to graph 
+     */
+    loadInfoPanel(categoryName) {
+        this.api.esriMap.infoWindow.hide();  
+        this.api.esriMap.infoWindow.resize(500, 500); 
+        const caLayer = this.api.layers.getLayersById("calayer")[0];
+        for (const ca of caLayer.esriLayer.graphics) {
+            var graphTemplate = new this.bundle.InfoTemplate(); 
+            graphTemplate.setTitle(ca.geometry.apiId); 
+            graphTemplate.setContent(this.getChart(ca.geometry.apiId, categoryName));
+            ca.setInfoTemplate(graphTemplate); 
+        }
+    }, 
+
     /**
      * Adds all the event listeners for the plugin 
      */
@@ -432,7 +444,6 @@ window.heatmap = {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         const recordLayer = this.api.layers.getLayersById("recordlayer")[0];
         
-
         window.addEventListener("message", (e) => {
             console.log(e.data);
             if (e.data === "Drainage Area") {
@@ -442,10 +453,28 @@ window.heatmap = {
             if (e.data === "reset map") {
                 caLayer.esriLayer.setVisibility(true); 
                 recordLayer.removeGeometry(); 
+                this.api.esriMap.infoWindow.hide();  
+                this.api.esriMap.infoWindow.resize(250, 100); 
                 this.setDefaultHeatmap(); 
+                this.loadDefaultInfoPanel(); 
             }
             if (e.data === "Age of Mapping") {
                 this.setAgeHeatmap();
+            }
+            if (e.data === "Project Category") {
+                this.loadInfoPanel("projectcat"); 
+            }
+            if (e.data === "Type of Record") {
+                this.loadInfoPanel("typeofrecord"); 
+            }
+            if (e.data === "Flood Hazard Standard") {
+                this.loadInfoPanel("floodhzdstd"); 
+            }
+            if (e.data === "Financial Support") {
+                this.loadInfoPanel("financialsupport"); 
+            }
+            if (e.data === "Dataset Status") {
+                this.loadInfoPanel("datasetstatus"); 
             }
             else {
                 return; 
@@ -461,6 +490,7 @@ window.heatmap = {
             }
         });
         */
+
         //post finished loading message
         
         window.parent.postMessage("finished conservation load", "*");
