@@ -43,20 +43,17 @@ function nextPrev(n) {
         //exit the function 
         return false; 
     }
-
+    
     tabs[currentTab].style.display="none"; 
     currentTab = currentTab + n; 
 
     if (currentTab >= tabs.length) {
         //handle submission
+        window.onbeforeunload = null; 
         document.getElementById("entryForm").submit(); 
         return false; 
     }
     showTab(currentTab); 
-}
-
-function submitSaveBtn() {
-    //TO-DO
 }
 
 //this is used for updating the progress bar
@@ -138,12 +135,15 @@ $(document).ready(function () {
 
     $("#submitSaveBtn").click(function() {
         if (validateStep()) {
+            $(window).unbind("beforeunload"); 
             $.ajax({
                 type: 'POST', 
                 data: $("#entryForm").serialize(), 
                 url: '/submit/save',
             }).done(function() {
-                $("#submitSuccessModal").modal("show"); 
+                $("#submitSuccessModal").modal("show");
+                var tabs = document.getElementsByClassName("tab");  
+                tabs[currentTab].style.display="none"; 
                 currentTab = 0; 
                 showTab(currentTab); 
             }).fail(function() {
@@ -153,8 +153,3 @@ $(document).ready(function () {
     }); 
 
 }); 
-
-
-
-
-

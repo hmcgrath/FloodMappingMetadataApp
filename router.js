@@ -17,17 +17,18 @@ const options = {
 
 
 const {Pool, Client} = require("pg");
-/*
+
 const client = new Client({
-	user: 'defaultuser', 
+	user: 'postgres', 
 	host: 'localhost', 
 	database: 'floodmapping', 
-	password: 'default', 
+	password: 'Toasty1337', 
 	port: 5432,
 });
-*/
+
 
 //new connection up and running
+/*
 const client = new Client({
     user: "floodmapping_admin",
     host: "v-she-olrik.cits.rncan.gc.ca", 
@@ -35,6 +36,7 @@ const client = new Client({
     password: "floodmappingadm4dev", 
     port: 14180
 });
+*/
 
 client.connect(function(err, res) {
     if (err) {
@@ -149,14 +151,16 @@ app.get("/api", cors(), function(req, res) {
 //making a separate route for conservation authority counts... may integrate into /api route
 app.get("/api/cacount", function(req, res) {
     var jsonFile = fs.readFileSync("conservation-layers.json"); 
-    var jsonContent = JSON.parse(jsonFile); 
 
+    var jsonContent = JSON.parse(jsonFile); 
+    //console.log(jsonContent);
     //counter to keep track of async client.queries completed
     var completedQueries = 0;
     //obj to store the number of records found for each conservation authority  
     var countList = {};
 
     jsonContent.forEach((ca) => {
+        //console.log(ca.geometry.rings); 
         //copy values
         var coordList = ca.geometry.rings.flat(); 
         //swap lat-lng for all coordinates to match format in database... 
@@ -168,7 +172,7 @@ app.get("/api/cacount", function(req, res) {
         //format the coordinates for db query
         const polygon = coordList.join(","); 
 
-        const sql = "SELECT * FROM hazarddata WHERE $1 && polygon(boundingbox)";
+        const sql = "SELECT *, polygon(boundingbox) AS fullbox FROM hazarddata WHERE $1 && polygon(boundingbox)";
         const val = [polygon]; 
         client.query(sql, val, function(err, result) {
             //increment the number of completed queries 
@@ -188,7 +192,12 @@ app.get("/api/cacount", function(req, res) {
                 if (req.query.countonly == "true") {
                     countList[ca.attributes.LEGAL_NAME] = [coordList, result.rowCount]; 
                 }
-                
+                //get summaries for each conservation authority
+                else if (req.query.formatted == "true") {
+                    var formattedResponse = new FloodDataSummary(result.rows); 
+                    countList[ca.attributes.LEGAL_NAME] = formattedResponse.getSummary(); 
+                }
+                //get all detailed records for each conservation authority
                 else {
                     countList[ca.attributes.LEGAL_NAME] = result.rows; 
                 }
@@ -230,27 +239,31 @@ app.post("/submit/:action?", function (req,res) {
                                         hydrogeneralcomments, hydraprojid, hydrayear, hydramethod, \
                                         flowcond, hydracalib, \
                                         hydrainputcomments, floodlineestimated, hydrasupportingdoc, \
-                                        elevsource, hydrapeerreview, hydrageneralcomments, boundingbox) VALUES \
+                                        elevsource, hydrapeerreview, hydrageneralcomments, boundingbox, climatechangecomments, otherfloodhzd) VALUES \
                                         ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, \
                                         $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, \
                                         $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, \
                                         $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, \
                                         $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, \
-                                        $73, $74, $75, $76, $77, $78, $79, $80)"; 
+                                        $73, $74, $75, $76, $77, $78, $79, $80, $81, $82)"; 
     
-    var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(req.body), req.body.officialWCName, 
+    var floodhzdstd = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
+    var secdatasource = ["lidar", "photogrammetry", "radar", "sonar", 
+                        "satelite", "uav", "gps", "groundsurvey"]; 
+
+    var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(floodhzdstd, req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
                     req.body.otherundertakingname, req.body.datasetStatus, req.body.lastprojupdate, req.body.partupdate, req.body.updatepurp, req.body.drainagearea, 
                     req.body.summreportavail, req.body.updatesinceorig, req.body.localwcname, req.body.wclength, req.body.widestcswidth, req.body.maxfloodplain, req.body.majorevent, req.body.coordsysproj, req.body.generalprojcomments, req.body.imgprojid, req.body.acquisitionyear,
                     req.body.datadescrip, req.body.acquisitionseason, req.body.imghref, req.body.imgvref, req.body.imghozacc, req.body.imgderivmethod, req.body.spatialreshoz, 
                     req.body.spatialresvert, req.body.imgpeerreview, req.body.imggeneralcomments, req.body.elevprojid, req.body.digitaldata, req.body.dataformat, req.body.primdatasource, 
                     req.body.elevdataowner, req.body.elevhref, req.body.elevvref, req.body.elevhozacc, req.body.elevvertacc, req.body.elevderivmethod, req.body.elevspatialreshoz, 
-                    req.body.elevspatialresvert, req.body.secdatasource, req.body.elevpeerreview, req.body.elevgeneralcomments, req.body.hydroprojid, req.body.hydromethod, req.body.hydroyear,
+                    req.body.elevspatialresvert, getCheckboxes(secdatasource, req.body), req.body.elevpeerreview, req.body.elevgeneralcomments, req.body.hydroprojid, req.body.hydromethod, req.body.hydroyear,
                     req.body.datasetyrs, req.body.eventsmodeled, req.body.inputcomments, req.body.hydromodelyear, 
                     req.body.smincorporated, req.body.volreduction, req.body.catdiscretized, req.body.hydrosupportingdoc, req.body.ccconsidered, req.body.hydropeerreview, 
                     req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, 
                     req.body.hydrainputparamquality, req.body.hydrainputcomments, req.body.floodlineestimated, req.body.hydrasupportingdoc, req.body.elevsource, req.body.hydrapeerreview, 
-                    req.body.hydrageneralcomments, getBoundingBox(req.body)]; 
+                    req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.climatechangecomments, req.body.otherfloodhzd]; 
     
     //replace any empty strings with null
     for (var val of values) {
@@ -262,7 +275,7 @@ app.post("/submit/:action?", function (req,res) {
     //if an extent file is uploaded
     if (req.body.polycoordinates !== "") {
         console.log("Detected an extent"); 
-        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$80", "$80, $81"); 
+        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$82", "$82, $83"); 
         values.push(req.body.polycoordinates); 
     }
 
@@ -297,9 +310,14 @@ app.listen(process.env.PORT || 8080, process.env.IP, function() {
 
 
 //HELPER FUNCTIONS
+/**
+ * Gets the selected checkboxes for a group of checkboxes
+ * @param {Array} checkboxes - The checkbox names to search for
+ * @param {Object} dict - The request body object 
+ */
 
-function getCheckboxes(dict) {
-    var checkboxes = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
+function getCheckboxes(checkboxes, dict) {
+    //var checkboxes = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
     var checked = []; 
     checkboxes.forEach(function(elem) {
         if (elem in dict){
@@ -318,6 +336,8 @@ function getCheckboxes(dict) {
     stringver += "}"
     return stringver; 
 }
+
+
 
 function getBoundingBox(dict) {
     return dict.lat1 + "," + dict.long1 + "," + dict.lat2 + "," + dict.long2; 

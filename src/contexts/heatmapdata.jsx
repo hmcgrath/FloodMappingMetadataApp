@@ -70,7 +70,7 @@ class HeatmapDataProvider extends Component {
         }
         if (e.data === "finished conservation load") {
             console.log("finished conservation load"); 
-            this.setState({loadingCA: false, loadedCA:true}); 
+            this.setState({loadingCA: false, loadedCA: true}); 
         }
     }
 

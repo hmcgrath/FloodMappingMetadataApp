@@ -122,7 +122,7 @@
         <div class="container">
 
             <label for="floodHzdStd">
-                Flood Hazard Standard
+                Flood Hazard Event Evaluated
             </label>
             <div class="row checkboxes" id="floodHzdStd">
                 <div class="col-lg-4 col-md-12 col-sm-12">             
@@ -192,7 +192,7 @@
                         </div>
     
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="other" id="other">
+                            <input class="form-check-input" type="checkbox" value="other" id="other" onclick="checkOtherFloodHzd(this)">
                             <label class="form-check-label" for="other">
                                 Other
                             </label>
@@ -200,7 +200,16 @@
                     </div>
                 </div>
             </div>
-            
+
+            <div class="row" id="ifOtherFloodHzd" style="display:none">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="otherfloodhzd">Other Flood Hazard Event Evaluated</label>
+                        <input type="text" id="otherfloodhzd" class="form-control optional">
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
@@ -514,9 +523,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- TO DO: ADD COORDINATE SYSTEM FIELD-->
-
         </div>
     </div>
 
@@ -537,7 +543,7 @@
                 <div class="col-lg-12"> 
                     <div class="form-group">
                         <label for="imgprojid">Imagery Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="imgprojid" placeholder="Enter Project ID">
+                        <input type="text" maxlength="20" class="form-control optional" id="imgprojid" placeholder="Enter Project ID">
                     </div>
                 </div>
             </div>
@@ -596,6 +602,7 @@
                             <option value="cgvd2013">CGVD2013</option>
                             <option value="cgvd28">CGVD28</option>
                             <option value="cgvd28-pre1978">CGVD28-Pre1978</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                 </div>
@@ -696,7 +703,7 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="elevprojid">Elevation Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="elevprojid" placeholder="Enter Project ID">
+                        <input type="text" maxlength="20" class="form-control optional" id="elevprojid" placeholder="Enter Project ID">
                     </div>
                 </div>
             </div>
@@ -778,6 +785,7 @@
                             <option value="cgvd2013">CGVD2013</option>
                             <option value="cgvd28">CGVD28</option>
                             <option value="cgvd28-pre1978">CGVD28-Pre1978</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                 </div>
@@ -840,6 +848,7 @@
                 </div>
             </div>
 
+            <!--
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
@@ -858,6 +867,81 @@
                     </div>
                 </div>
             </div>
+            -->
+
+            <label for="secdatasource">
+                Secondary Data Source
+            </label>
+            <div class="row checkboxes" id="secdatasource">
+                <div class="col-lg-4 col-md-12 col-sm-12">             
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="lidar" id="lidar">
+                            <label class="form-check-label" for="lidar">
+                                lidar
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="photogrammetry" id="photogrammetry">
+                            <label class="form-check-label" for="photogrammetry">
+                                Photogrammetry
+                            </label>
+                        </div> 
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="radar" id="radar">
+                            <label class="form-check-label" for="radar">
+                                Radar
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="sonar" id="sonar">
+                            <label class="form-check-label" for="sonar">
+                                Sonar
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="satelite" id="satelite">
+                            <label class="form-check-label" for="satelite">
+                                Satelite
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="uav" id="uav">
+                            <label class="form-check-label" for="uav">
+                                UAV
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="gps" id="gps">
+                            <label class="form-check-label" for="gps">
+                                GPS
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="groundsurvey" id="groundsurvey">
+                            <label class="form-check-label" for="groundsurvey">
+                                Ground Survey
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
             <div class="row">
                 <div class="col-lg-12">
@@ -901,7 +985,7 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="hydroprojid">Hydrology Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="hydroprojid" placeholder="Enter Project ID">
+                        <input type="text" maxlength="20" class="form-control optional" id="hydroprojid" placeholder="Enter Project ID">
                     </div>
                 </div>
             </div>
@@ -958,7 +1042,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="inputcomments" class="textarealabel">Quality of Input Comments</label>
+                        <label for="inputcomments" class="textarealabel">Quality of Input and Calibration Comments</label>
                         <textarea class="form-control" maxlength="250" id="inputcomments" rows="3"></textarea>
                     </div>
                 </div>
@@ -967,8 +1051,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="hydromodelyear">Hydrology Model Year</label>
-                        <select class="browser-default custom-select yearinput" id="hydromodelyear">
+                        <label for="hydromodelyear">Hydrology Future Model Year</label>
+                        <select class="browser-default custom-select futureyearinput" id="hydromodelyear">
                             <option value = "" disabled selected>----</option>
                         </select>
                     </div>
@@ -1028,7 +1112,7 @@
                 <div class="col-lg-6 col-md-12 col-sm-12">
                     <div class="form-group">
                         <label for="ccconsidered">Climate Change Considered</label>
-                        <select class="browser-default custom-select" id="ccconsidered">
+                        <select class="browser-default custom-select" id="ccconsidered" onchange="checkClimateChange(this)">
                             <option value="" disabled selected>----</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
@@ -1043,6 +1127,15 @@
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="ifYesClimateChange" style="display: none">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="climatechangecomments">How is Climate Change Considered?</label>
+                        <textarea class="form-control" maxlength="250" id="climatechangecomments" rows="3"></textarea>
                     </div>
                 </div>
             </div>
@@ -1076,7 +1169,7 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="hydraprojid">Hydraulics Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="hydraprojid" placeholder="Enter Project ID">
+                        <input type="text" maxlength="20" class="form-control optional" id="hydraprojid" placeholder="Enter Project ID">
                     </div>
                 </div>
             </div>
@@ -1139,7 +1232,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="hydrainputcomments" class="textarealabel">Hydraulics Quality of Input Comments</label>
+                        <label for="hydrainputcomments" class="textarealabel">Hydraulics Quality of Input and Calibration Comments</label>
                         <textarea class="form-control" maxlength="250" id="hydrainputcomments" rows="3"></textarea>
                     </div>
                 </div>

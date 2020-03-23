@@ -3,6 +3,30 @@ window.addEventListener("beforeunload", function(e) {
     e.returnValue = "Are you sure? All progress will be lost";  
 });
 
+function checkOtherFloodHzd(checkbox) {
+    if (checkbox.checked) {
+        document.getElementById("ifOtherFloodHzd").style.display = "block";
+        document.getElementById("otherfloodhzd").classList.remove("optional");  
+    }
+    else {
+        document.getElementById("ifOtherFloodHzd").style.display = "none"; 
+        document.getElementById("otherfloodhzd").classList.add("optional"); 
+    }
+}
+
+
+function checkClimateChange(select) {
+    if (select.value == "yes") {
+        document.getElementById("ifYesClimateChange").style.display = "block"; 
+        document.getElementById("climatechangecomments").classList.remove("optional");
+    }
+    else {
+        document.getElementById("ifYesClimateChange").style.display = "none"; 
+        document.getElementById("climatechangecomments").classList.add("optional"); 
+    }
+}
+
+
 function checkYesNoPriv(select) {
     if (select.value == "yes") {
         document.getElementById("ifYesPriv").style.display = "block"; 
@@ -37,6 +61,8 @@ function checkPartUpdated(select) {
     }
 }
 
+
+
 //function to populate year dropdown
 var populateYear = 
 function () {
@@ -50,7 +76,16 @@ function () {
     
 }
 
-//continue to work on popovers
+var populateFutureYear = 
+function () {
+    var currentdate = new Date(); 
+    for (var i = currentdate.getFullYear() + 30; i > 1950; i--) {
+        var option = new Option(i, i); 
+        $(option).html(i); 
+        $(".futureyearinput").append(option); 
+    }
+}
+
 var populateHelpPopups = 
 function () {
     var helpIcon = new Image(50, 50); 
@@ -67,8 +102,13 @@ function () {
         anchor.attr("href", "#/"); 
 
         anchor.attr("data-content", $("#" + $(this).attr("for") + "h").html()); 
-        anchor.html($("<img>", {height: "20", width:"20", src:"./images/helpicon.png"}))
-        $(this).append(' <span style="color:red">*</span>'); 
+        anchor.html($("<img>", {height: "20", width:"20", src:"./images/helpicon.png"})); 
+        
+        var input = $("#" + $(this).attr("for")); 
+
+        if (!input.hasClass("optional") && !input.is("textarea")) {
+            $(this).append(' <span style="color:red">*</span>'); 
+        }
         $(this).append(" "); 
         $(this).append(anchor);         
     });
@@ -102,11 +142,14 @@ var populateCoordinates = function () {
 
 //populate all year fields 
 $(document).ready(populateYear);
+//populate future year inputs 
+$(document).ready(populateFutureYear); 
 //populate coordinate projection system field 
 $(document).ready(populateCoordinates); 
 //populate all help links
 $(document).ready(populateHelpPopups); 
 //populate all name attributes
 $(document).ready(populateNameAttr); 
+
 
 
