@@ -396,12 +396,16 @@ window.heatmap = {
     getChart(caName, categoryName) {    
         //get the data required for graph
         const payload = this.casummary[caName][categoryName]; 
+        if (Object.keys(this.casummary[caName]["drainagearea"]).length === 0) {
+            return ("No Data Found."); 
+        }
         //plotly graph test
         var testdiv = document.createElement("div"); 
         testdiv.id = "testgraph"; 
         testdiv.style.width = "250px"; 
         testdiv.style.height = "150px";
          //make pie graph
+        
         Plotly.newPlot(testdiv, [{
             labels: Object.keys(payload), 
             values: Object.values(payload), 
