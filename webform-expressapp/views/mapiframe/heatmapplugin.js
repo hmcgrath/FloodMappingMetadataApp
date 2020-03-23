@@ -406,23 +406,23 @@ window.heatmap = {
         testdiv.style.height = "150px";
          //make pie graph
         Plotly.newPlot(testdiv, [{
-            values: Object.values(payload), 
             labels: Object.keys(payload), 
+            values: Object.values(payload), 
             type: "pie",
-            textinfo: "label+percent", 
-            textposition: "outside", 
-            automargin: true
-        }, {
+            //textinfo: "label+percent", 
+            //textposition: "outside", 
+            //automargin: true
+        }], {
             autosize: false, 
             width: 250, 
-            height: 150,
+            height: 200,
             margin: {
                 l: 0, 
                 r: 0, 
                 b: 0,
                 t: 0
             } 
-        }]);
+        });
         return testdiv;
     },
     /**
