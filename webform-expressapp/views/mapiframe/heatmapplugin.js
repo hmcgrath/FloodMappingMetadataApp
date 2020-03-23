@@ -131,6 +131,9 @@ window.heatmap = {
                 }
             };
 
+            /**
+             * Shows all the records for each conservation authority on the map
+             */
             showDataOnMap = (caName) => {
                 //hide the conservation authority layer
                 caLayer.esriLayer.setVisibility(false); 
@@ -405,18 +408,12 @@ window.heatmap = {
             type: "pie",
             //textinfo: "label+percent", 
             //textposition: "outside", 
-            //automargin: true
+            automargin: true
         }], {
             title: caName + " : " + categoryName,
             autosize: true, 
-            width: 500, 
-            height: 250,
-            margin: {
-                l: 0, 
-                r: 0, 
-                b: 0,
-                t: 0
-            }        
+            width: "100%", 
+            height: "100%",
         });
         return testdiv;
     },
@@ -454,7 +451,7 @@ window.heatmap = {
                 caLayer.esriLayer.setVisibility(true); 
                 recordLayer.removeGeometry(); 
                 this.api.esriMap.infoWindow.hide();  
-                this.api.esriMap.infoWindow.resize(250, 100); 
+                this.api.esriMap.infoWindow.resize(250, 250); 
                 this.setDefaultHeatmap(); 
                 this.loadDefaultInfoPanel(); 
             }

@@ -11,7 +11,7 @@ class HeatmapCategoryList extends Component {
     }
     render() { 
         return (
-            <ListGroup>
+            <ListGroup style={{height: "100%"}}>
                 {this.state.categories.map(category =>
                     <HeatmapCategory categoryName={category.name}
                                     categoryId={category.categoryId}
