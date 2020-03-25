@@ -18,17 +18,8 @@ const options = {
 
 const {Pool, Client} = require("pg");
 
-const client = new Client({
-	user: 'postgres', 
-	host: 'localhost', 
-	database: 'floodmapping', 
-	password: 'Toasty1337', 
-	port: 5432,
-});
-
-
 //new connection up and running
-/*
+
 const client = new Client({
     user: "floodmapping_admin",
     host: "v-she-olrik.cits.rncan.gc.ca", 
@@ -36,7 +27,6 @@ const client = new Client({
     password: "floodmappingadm4dev", 
     port: 14180
 });
-*/
 
 client.connect(function(err, res) {
     if (err) {
