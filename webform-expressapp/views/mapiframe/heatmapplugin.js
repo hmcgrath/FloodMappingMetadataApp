@@ -444,7 +444,9 @@ window.heatmap = {
     addEventListeners() {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         const recordLayer = this.api.layers.getLayersById("recordlayer")[0];
-        
+        var extent = this.esriApi.graphicsUtils.graphicsExtent(caLayer.esriLayer.graphics);
+        this.api.esriMap.setExtent(extent); 
+
         window.addEventListener("message", (e) => {
             console.log(e.data);
             if (e.data === "Drainage Area") {
