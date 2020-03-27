@@ -290,6 +290,16 @@
                     </div>
                 </div> 
             </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label for="localwcname">Local Watercourse Name</label>
+                        <input type="text" maxlength="100" id="localwcname" class="form-control">
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -456,14 +466,7 @@
 
     <div class="tab">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <label for="localwcname">Local Watercourse Name</label>
-                        <input type="text" maxlength="100" id="localwcname" class="form-control">
-                    </div>
-                </div>
-            </div>
+            
 
             <div class="row">
                 <div class="col-lg-6 col-md-12 col-sm-12">
@@ -558,6 +561,7 @@
                             <option value="summer">Summer</option>
                             <option value="fall">Fall</option>
                             <option value="winter">Winter</option>
+                            <option value="unknown">Unknown</option>
                         </select>
                     </div>
                 </div>
@@ -566,6 +570,7 @@
                         <label for="acquisitionyear">Acquisition Year</label>
                         <select class="browser-default custom-select yearinput" id="acquisitionyear">
                             <option value = "" disabled selected>----</option>
+                            <option value="unknown">Unknown</option>
                         </select>          
                     </div>
                 </div> 
@@ -612,7 +617,7 @@
                 <div class= "col-lg-12">
                     <div class="form-group">
                         <label for="imghozacc">Horizontal Accuracy (m)</label>
-                        <input type="number" class="form-control" id="imghozacc" min="0" step=".01">
+                        <input type="number" class="form-control optional" id="imghozacc" min="0" step=".01">
                     </div>
                 </div>
             </div>
@@ -632,6 +637,7 @@
                             <option value="sva">SVA</option>
                             <option value="cva">CVA</option>
                             <option value="other">Other</option>
+                            <option value="unknown">Unknown</option>
                         </select>
                     </div>
                 </div>
@@ -848,27 +854,6 @@
                 </div>
             </div>
 
-            <!--
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <label for="secdatasource">Secondary Data Source</label>
-                        <select class="browser-default custom-select" id="secdatasource">
-                            <option value="" disabled selected>----</option>
-                            <option value="lidar">LiDaR</option>
-                            <option value="photogrammetry">Photogrammetry</option>
-                            <option value="radar">Radar</option>
-                            <option value="sonar">Sonar</option>
-                            <option value='satelite'>Satelite</option>
-                            <option value="uav">UAV</option>
-                            <option value="gps">GPS</option>
-                            <option value="groundsurvey">Ground Survey</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            -->
-
             <label for="secdatasource">
                 Secondary Data Source
             </label>
@@ -935,6 +920,12 @@
                             <input class="form-check-input" type="checkbox" value="groundsurvey" id="groundsurvey">
                             <label class="form-check-label" for="groundsurvey">
                                 Ground Survey
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="constructiondrawings" id="constructiondrawings">
+                            <label class="form-check-label" for="constructiondrawings">
+                                Construction Drawings
                             </label>
                         </div>
                     </div>
