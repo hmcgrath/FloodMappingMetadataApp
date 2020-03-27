@@ -239,7 +239,7 @@ app.post("/submit/:action?", function (req,res) {
     
     var floodhzdstd = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
     var secdatasource = ["lidar", "photogrammetry", "radar", "sonar", 
-                        "satelite", "uav", "gps", "groundsurvey"]; 
+                        "satelite", "uav", "gps", "groundsurvey", "constructiondrawings"]; 
 
     var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(floodhzdstd, req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
