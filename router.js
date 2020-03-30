@@ -307,7 +307,6 @@ app.listen(process.env.PORT || 8080, process.env.IP, function() {
  */
 
 function getCheckboxes(checkboxes, dict) {
-    //var checkboxes = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
     var checked = []; 
     checkboxes.forEach(function(elem) {
         if (elem in dict){
@@ -327,7 +326,10 @@ function getCheckboxes(checkboxes, dict) {
     return stringver; 
 }
 
-
+/**
+ * Formats the bounding box for entry in the database
+ * @param {object} dict bounding box coordinate object
+ */
 
 function getBoundingBox(dict) {
     return dict.lat1 + "," + dict.long1 + "," + dict.lat2 + "," + dict.long2; 
