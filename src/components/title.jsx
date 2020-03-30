@@ -1,0 +1,41 @@
+import React, { Component } from 'react';
+import {Modal, Button} from 'react-bootstrap'; 
+
+class Title extends Component {
+    state = {
+        showModal: false
+    }
+
+    handleClose = () => {
+        this.setState({showModal: false}); 
+    }
+
+    handleShow = () => {
+        this.setState({showModal: true});
+    }
+
+    render() { 
+        return (
+            <React.Fragment>
+                <p><h1>Flood Hazard Mapping Analytics <a href="#" onClick={this.handleShow} style={{fontSize: "14px"}}>About</a></h1></p>
+                <p><h4>Filter By</h4></p>
+
+                <Modal show={this.state.showModal} onHide={this.handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>About</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        This interactive map allows a user to visualize and query available able data in the database based on the selected category. Fields with the name “Heatmap’ contain thematic maps, with the values from the associated records grouped by numeric ranges and coloured. Fields/Labels with the name “Map’ contain datasets with multiple categories. These are coloured by the number of records in each area. Click on any of the areas which are coloured to view a pie chart which illustrates the distribution of data of categories in this polygon. Users can view the individual footprints of the stored maps (where available by clicking on the button). In addition, a csv file can be downloaded which contains all the attribute fields.  
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </React.Fragment>
+        );
+    }
+}
+ 
+export default Title;

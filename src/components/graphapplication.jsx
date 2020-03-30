@@ -4,6 +4,7 @@ import NavBar from './navbar';
 import CategoryList from './categorylist';
 import TabList from './tablist';
 import LoadingOverlay from 'react-loading-overlay';
+import Title from './title';
 
 class GraphApplication extends Component {
     static contextType = DataContext; 
@@ -13,8 +14,7 @@ class GraphApplication extends Component {
             <div className="App" style={{marginBottom:"0px", marginTop:"0px"}}>
                 <div className="wrapper" style={{marginLeft:"40px", paddingTop:"15px", paddingBottom: "15px", marginRight:"30px"}}> 
                     <div className="headers text-left" style={{alignItems:"left"}}>
-                        <p><h1>Flood Hazard Mapping Analytics</h1></p>
-                        <p><h4>Filter By</h4></p>
+                        <Title></Title>
                     </div>
                     <div className="row">
                         <div className="col-lg-4 col-md-6 col-sm-12">
