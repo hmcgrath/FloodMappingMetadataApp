@@ -237,7 +237,8 @@ app.post("/submit/:action?", function (req,res) {
                                         $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, \
                                         $73, $74, $75, $76, $77, $78, $79, $80, $81, $82)"; 
     
-    var floodhzdstd = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "other", "hazel"];
+    var floodhzdstd = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "10yr", "5yr", "2yr",
+                         "other", "hazel"];
     var secdatasource = ["lidar", "photogrammetry", "radar", "sonar", 
                         "satelite", "uav", "gps", "groundsurvey", "constructiondrawings"]; 
 
