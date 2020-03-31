@@ -70,6 +70,7 @@ window.heatmap = {
             $.getJSON("http://localhost:8080/api/cacount?countonly=true", (data) => {
                 //create object instance of the conservation authority record count data
                 this.cacount = data; 
+                console.log(data);
                 for (const ca of Object.keys(data)) {
                     //ID is now the conservation authority name
                     var capolygon = new RAMP.GEO.Polygon(ca, data[ca][0] /*, {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3}*/);

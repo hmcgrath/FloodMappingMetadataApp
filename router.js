@@ -7,6 +7,9 @@ const path = require("path");
 const fs = require("fs"); 
 const timeout = require("express-timeout-handler");
 
+//change this if the geoJSON is named differently
+const geoJsonFileName = "nbcounties.json"; 
+
 const options = {
     timeout:10000, 
     onTimeout: function(req, res) {
@@ -140,7 +143,7 @@ app.get("/api", cors(), function(req, res) {
 
 //making a separate route for conservation authority counts... may integrate into /api route
 app.get("/api/cacount", function(req, res) {
-    var jsonFile = fs.readFileSync("conservation-layers.json"); 
+    var jsonFile = fs.readFileSync(geoJsonFileName); 
 
     var jsonContent = JSON.parse(jsonFile); 
     //console.log(jsonContent);
@@ -148,7 +151,61 @@ app.get("/api/cacount", function(req, res) {
     var completedQueries = 0;
     //obj to store the number of records found for each conservation authority  
     var countList = {};
+    console.log(jsonContent.features.length); 
+    jsonContent.features.forEach((ca) => {
+        //copy values
+        var coordList = ca.geometry.rings.flat(); 
+        //swap lat-lng for all coordinates to match format in database... 
+        coordList.forEach((coordinate) => {
+            var tmp = coordinate[0]; 
+            coordinate[0] = coordinate[1]; 
+            coordinate[1] = tmp; 
+        });
+        //format the coordinates for db query
+        const polygon = coordList.join(","); 
 
+        const sql = "SELECT *, polygon(boundingbox) AS fullbox FROM hazarddata WHERE $1 && polygon(boundingbox)";
+        const val = [polygon]; 
+        client.query(sql, val, function(err, result) {
+            //increment the number of completed queries 
+            completedQueries++; 
+            if (err) {
+                console.log(err.stack); 
+            }
+            else {
+                /*
+                coordList.forEach((coordinate) => {
+                    var tmp = coordinate[0]; 
+                    coordinate[0] = coordinate[1]; 
+                    coordinate[1] = tmp; 
+                });
+                */
+                //returning the coordinates in (long, lat) to comply with FGPViewer
+                //request parameter countonly -> true: returns only the number of records, false: returns all records 
+                if (req.query.countonly == "true") {
+                    countList[ca.attributes.ENG_NAME] = [ca.geometry.rings, result.rowCount]; 
+                }
+                //get summaries for each conservation authority
+                else if (req.query.formatted == "true") {
+                    var formattedResponse = new FloodDataSummary(result.rows); 
+                    countList[ca.attributes.ENG_NAME] = formattedResponse.getSummary(); 
+                }
+                //get all detailed records for each conservation authority
+                else {
+                    countList[ca.attributes.ENG_NAME] = result.rows; 
+                }
+
+            }
+
+            //check if all queries have been completed
+            if (completedQueries === jsonContent.features.length) {
+                res.json(countList); 
+            }
+        }); 
+    });
+
+
+    /*
     jsonContent.forEach((ca) => {
         //console.log(ca.geometry.rings); 
         //copy values
@@ -200,6 +257,7 @@ app.get("/api/cacount", function(req, res) {
             }
         }); 
     });
+    */
 });
 
 

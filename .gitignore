@@ -14,6 +14,7 @@ webform-expressapp/views/mapiframe/conservation-layers.json
 id_rsa_workgithub
 id_rsa_workgithub.pub
 nbcounties.json
+splitnbcounties.json
 # production
 /build
 
