@@ -1,3 +1,7 @@
+In the mapping/analytics page, users can change the geographic extents for which the results are aggregated. 
+The default name for the file is conservation-layers.json, and can be found in the root folder. 
+The recommended format is a formatted JSON file. The example in the directory was created in Esri ArcMap, using the Feature to JSON tool, with the 'Formatted' option selection from a Shapefile. 
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
