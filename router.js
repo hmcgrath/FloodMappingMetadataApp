@@ -8,7 +8,7 @@ const fs = require("fs");
 const timeout = require("express-timeout-handler");
 
 //change this if the geoJSON is named differently
-const geoJsonFileName = "nbcounties.json"; 
+const geoJsonFileName = "conservation-layers.json"; 
 
 const options = {
     timeout:10000, 
@@ -151,6 +151,7 @@ app.get("/api/cacount", function(req, res) {
     var completedQueries = 0;
     //obj to store the number of records found for each conservation authority  
     var countList = {};
+    /*
     console.log(jsonContent.features.length); 
     jsonContent.features.forEach((ca) => {
         //copy values
@@ -173,13 +174,13 @@ app.get("/api/cacount", function(req, res) {
                 console.log(err.stack); 
             }
             else {
-                /*
+                
                 coordList.forEach((coordinate) => {
                     var tmp = coordinate[0]; 
                     coordinate[0] = coordinate[1]; 
                     coordinate[1] = tmp; 
                 });
-                */
+                
                 //returning the coordinates in (long, lat) to comply with FGPViewer
                 //request parameter countonly -> true: returns only the number of records, false: returns all records 
                 if (req.query.countonly == "true") {
@@ -203,10 +204,8 @@ app.get("/api/cacount", function(req, res) {
             }
         }); 
     });
-
-
-    /*
-    jsonContent.forEach((ca) => {
+    */
+    jsonContent.features.forEach((ca) => {
         //console.log(ca.geometry.rings); 
         //copy values
         var coordList = ca.geometry.rings.flat(); 
@@ -229,11 +228,13 @@ app.get("/api/cacount", function(req, res) {
                 
             }
             else {
+                
                 coordList.forEach((coordinate) => {
                     var tmp = coordinate[0]; 
                     coordinate[0] = coordinate[1]; 
                     coordinate[1] = tmp; 
                 });
+                
                 //returning the coordinates in (long, lat) to comply with FGPViewer
                 //request parameter countonly -> true: returns only the number of records, false: returns all records 
                 if (req.query.countonly == "true") {
@@ -248,16 +249,14 @@ app.get("/api/cacount", function(req, res) {
                 else {
                     countList[ca.attributes.LEGAL_NAME] = result.rows; 
                 }
-
             }
-
             //check if all queries have been completed
-            if (completedQueries === jsonContent.length) {
+            if (completedQueries === jsonContent.features.length) {
                 res.json(countList); 
             }
         }); 
     });
-    */
+    
 });
 
 

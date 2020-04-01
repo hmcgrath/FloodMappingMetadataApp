@@ -43,6 +43,7 @@ window.heatmap = {
             ["dojo/dom-construct", "domConstruct"]
             ]); 
 
+            //initalization
             esriApi.then((bundle) => {
                                 this.esriApi = RAMP.GAPI.esriBundle; 
                                 this.bundle = bundle; 
@@ -403,23 +404,27 @@ window.heatmap = {
         //plotly graph test
         var testdiv = document.createElement("div"); 
         testdiv.id = "testgraph"; 
-        testdiv.style.width = "250px"; 
-        testdiv.style.height = "150px";
          //make pie graph
-        
         Plotly.newPlot(testdiv, [{
             labels: Object.keys(payload), 
             values: Object.values(payload), 
             type: "pie",
             //textinfo: "label+percent", 
-            //textposition: "outside", 
+            textposition: "inside", 
+            domain: {x: [0, 0.5]},
             automargin: true
         }], {
             title: caName + " : " + categoryName,
+            titlefont: {
+                size: 14
+            },
             autosize: true, 
-            width: "100%", 
-            height: "100%",
-        });
+            margin: {
+                "l": 20
+            },
+            width: 490, 
+            height: 300,
+        }, {responsive: true});
         return testdiv;
     },
 
@@ -450,11 +455,21 @@ window.heatmap = {
 
         window.addEventListener("message", (e) => {
             console.log(e.data);
+            //mapping the full category names to the abbreviated database column names
+            const graphCategories = {
+                "Project Category": "projectcat", 
+                "Type of Record": "typeofrecord", 
+                "Flood Hazard Standard": "floodhzdstd", 
+                "Financial Support": "financialsupport", 
+                "Dataset Status": "datasetstatus", 
+                "Summary Report Available": "summreportavail", 
+                "Updated Since Original": "updatesinceorig"
+            };
             if (e.data === "Drainage Area") {
                 this.setDrainageAreaHeatmap(); 
             } 
             //make sure the layer is visible again
-            if (e.data === "reset map") {
+            else if (e.data === "reset map") {
                 caLayer.esriLayer.setVisibility(true); 
                 recordLayer.removeGeometry(); 
                 this.api.esriMap.infoWindow.hide();  
@@ -462,23 +477,11 @@ window.heatmap = {
                 this.setDefaultHeatmap(); 
                 this.loadDefaultInfoPanel(); 
             }
-            if (e.data === "Age of Mapping") {
+            else if (e.data === "Age of Mapping") {
                 this.setAgeHeatmap();
             }
-            if (e.data === "Project Category") {
-                this.loadInfoPanel("projectcat"); 
-            }
-            if (e.data === "Type of Record") {
-                this.loadInfoPanel("typeofrecord"); 
-            }
-            if (e.data === "Flood Hazard Standard") {
-                this.loadInfoPanel("floodhzdstd"); 
-            }
-            if (e.data === "Financial Support") {
-                this.loadInfoPanel("financialsupport"); 
-            }
-            if (e.data === "Dataset Status") {
-                this.loadInfoPanel("datasetstatus"); 
+            else if (Object.keys(graphCategories).includes(e.data)){
+                this.loadInfoPanel(graphCategories[e.data]);
             }
             else {
                 return; 
