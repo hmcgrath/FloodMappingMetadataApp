@@ -16,7 +16,7 @@ class HeatmapApplication extends Component {
                     <div className="App" style={{marginBottom:"0px", marginTop:"0px"}}>
                         <div className="wrapper" style={{marginLeft:"40px", paddingTop:"15px", marginRight:"30px", paddingBottom:"15px"}}> 
                             <div className="headers text-left" style={{alignItems:"left"}}>
-                                <Title></Title>
+                                <Title mode={"heatmap"}></Title>
                             </div>
                             <div className="row">
                                 <div className="col-lg-4 col-md-6 col-sm-12">

@@ -17,6 +17,7 @@ class HeatmapCategoryList extends Component {
                                     categoryId={category.categoryId}
                                     type={category.type}
                                     graphType={category.graphType}
+                                    searchable={category.categoryId}
                                     key={category.categoryId}>
                     </HeatmapCategory>
                 )}

@@ -19,11 +19,19 @@ class HeatmapCategory extends Component {
             );
         }
         else {
+            const {searchable} = this.props; 
+            const {data} = this.context; 
+            //ensure that the select list has unique options
+            const options = [...new Set(data.map((record) => record[searchable]))]; 
             return(
-                <input type="text" maxLength="20" className="form-control" placeholder="Search..."></input>
+                <select className="browser-default custom-select">
+                    <option value="" disabled selected>Search by....</option>
+                    {options.map((opt) => (
+                        <option value={opt}>{opt}</option>
+                    ))}
+                </select>    
             );
         }
-
     }
 
     render() { 

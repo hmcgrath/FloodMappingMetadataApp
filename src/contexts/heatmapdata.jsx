@@ -10,7 +10,7 @@ class HeatmapDataProvider extends Component {
         loadedCA: false,
         dataLoaded: false,
         dataExists: false,
-        data: {}, 
+        data: [], 
         graphTabs: [],
         categories : [
             {name: "Project Category", categoryId: "projectcat", type:"graphable", graphType:"pie"}, 
@@ -59,6 +59,10 @@ class HeatmapDataProvider extends Component {
 
     componentDidMount() {
         window.addEventListener("message", this.handleIframeMessage);
+        axios.get("http://localhost:8080/api")
+            .then((res) => {
+                this.setState({data: res.data}, () => console.log(this.state.data)); 
+            });
     }
     
     //handles all communication between iframe and app

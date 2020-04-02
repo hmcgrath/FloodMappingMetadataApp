@@ -40,7 +40,7 @@ class App extends Component{
   render() {
     return (<React.Fragment>
               <NavBar onButtonClick={this.changeMode}>
-                {(this.state.mode === "graph") ? "Change to Heatmap": "Change to Graph"}
+                {(this.state.mode === "graph") ? "Map By Polygon": "Graph"}
               </NavBar>
               {this.renderMode()}
             </React.Fragment>);
