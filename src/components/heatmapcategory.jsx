@@ -19,12 +19,17 @@ class HeatmapCategory extends Component {
             );
         }
         else {
-            const {searchable} = this.props; 
-            const {data} = this.context; 
+            const {searchable, disabled, categoryId, value} = this.props; 
+            const {data, setOption} = this.context; 
             //ensure that the select list has unique options
             const options = [...new Set(data.map((record) => record[searchable]))]; 
             return(
-                <select className="browser-default custom-select">
+                <select className="browser-default custom-select" 
+                        value={value}
+                        disabled={disabled} onChange={(evt) => {
+                    evt.persist(); 
+                    setOption(evt.target.value, categoryId);
+                }}>
                     <option value="" disabled selected>Search by....</option>
                     {options.map((opt) => (
                         <option value={opt}>{opt}</option>

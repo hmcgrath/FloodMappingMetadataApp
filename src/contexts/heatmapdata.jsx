@@ -11,7 +11,6 @@ class HeatmapDataProvider extends Component {
         dataLoaded: false,
         dataExists: false,
         data: [], 
-        graphTabs: [],
         categories : [
             {name: "Project Category", categoryId: "projectcat", type:"graphable", graphType:"pie"}, 
             {name: "Type of Record", categoryId: "typeofrecord", type:"graphable", graphType:"pie"}, 
@@ -22,38 +21,45 @@ class HeatmapDataProvider extends Component {
             {name: "Age of Mapping", categoryId:"lastprojupdate", type:"heatmappable", graphType:"none"}, 
             {name: "Summary Report Available", categoryId:"summreportavail", type:"graphable", graphType:"pie"}, 
             {name: "Updated Since Original", categoryId:"updatesinceorig", type:"graphable", graphType:"pie"},
-            {name: "Project ID", categoryId: "projectid", type:"searchable", graphType:"none"},
-            {name: "Project Name", categoryId: "projectname", type:"searchable", graphType:"none"},
-            {name: "Official Watercourse Name", categoryId:"officialwcname", type:"searchable", graphType:"none"}, 
-            {name: "Local Watercourse Name", categoryId:"localwcname", type:"searchable", graphType:"none"}
+            {name: "Project ID", categoryId: "projectid", type:"searchable", graphType:"none", disabled: false, value: ""},
+            {name: "Project Name", categoryId: "projectname", type:"searchable", graphType:"none", disabled: false, value: ""},
+            {name: "Official Watercourse Name", categoryId:"officialwcname", type:"searchable", graphType:"none", disabled: false, value: ""}, 
+            {name: "Local Watercourse Name", categoryId:"localwcname", type:"searchable", graphType:"none", disabled: false, value: ""}
         ],
         reset: () => {
             //send a message to map viewer to clear coordinates
             var map = document.getElementById("FGPVheatmap"); 
             map.contentWindow.postMessage("reset map", "*"); 
-
-            //reset the state (but be aware, this action is not instantaneous)
-
-            /*
-            this.setState({dataLoaded: false, dataExists: false, data:{}, graphTabs: []}, () => {
-                console.log(this.state);
+            var newCategories = [...this.state.categories]; 
+            newCategories.forEach((category) => {
+                if (category.type === "searchable") {
+                    category.disabled = false; 
+                    category.value = ""
+                }
             });
-            */
+            this.setState({categories: newCategories}); 
         }, 
-        //figure out params
-        addGraphTab: (graphName, graphId, graphType) => {
-            var newGraphTabs = this.state.graphTabs; 
-            //prevent duplicate tabs
-            if (newGraphTabs.filter(graphtab => graphtab.graphId == graphId).length === 0) {
-                newGraphTabs.push({graphName: graphName, graphId: graphId, graphType: graphType});
-                this.setState({graphTabs: newGraphTabs}, () => console.log(this.state)); 
-            }
-        }, 
-
         heatmap: (categoryName) => {
             var map = document.getElementById("FGPVheatmap"); 
             map.contentWindow.postMessage(categoryName, "*");
+        }, 
+        setOption: (option, categoryId) => {
+            console.log(option, categoryId); 
+            var newCategories = [...this.state.categories]; 
+            newCategories.forEach((category) => {
+                if (category.type === "searchable") {
+                    if (category.categoryId !== categoryId) {
+                        category.disabled = true; 
+                    }
+                    else {
+                        category.value = option; 
+                    }
+                    
+                }
+            }); 
+            this.setState({categories: newCategories}); 
         }
+
 
     }
 
