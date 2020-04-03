@@ -6,6 +6,7 @@ window.heatmap = {
     serviceurl: null,
     cacount: null,
     cadata: null,
+    alldata: null,
     casummary: null,
     legendpanel: null,
     bundle: null,
@@ -140,7 +141,6 @@ window.heatmap = {
                 //hide the conservation authority layer
                 caLayer.esriLayer.setVisibility(false); 
                 this.api.esriMap.infoWindow.hide();  
-                console.log(this.cadata[caName]); 
                 for (const record of this.cadata[caName]) {
                     var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
                     var boxlist = []; 
@@ -374,18 +374,22 @@ window.heatmap = {
     },
     //loads all the flood record data for each CA. 
     loadConservationData() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {  
             $.getJSON("http://localhost:8080/api/cacount", (data) => {
                 this.cadata = data;
-                console.log("test1"); 
                 $.getJSON("http://localhost:8080/api/cacount?formatted=true", (summarydata) => {
                     this.casummary = summarydata; 
-                    console.log(this.cadata); 
-                    console.log(this.casummary); 
-                    resolve();
+                    $.getJSON("http://localhost:8080/api", (alldata) => {
+                        this.alldata = alldata; 
+                        console.log(this.cadata); 
+                        console.log(this.casummary); 
+                        console.log(this.alldata); 
+                        resolve(); 
+                    });
                 });               
             })
-            .catch((err) => console.log(err));
+            .catch((err) => reject(err));
+            
         }); 
     }, 
 
@@ -455,6 +459,7 @@ window.heatmap = {
 
         window.addEventListener("message", (e) => {
             console.log(e.data);
+            
             //mapping the full category names to the abbreviated database column names
             const graphCategories = {
                 "Project Category": "projectcat", 
@@ -483,67 +488,37 @@ window.heatmap = {
             else if (Object.keys(graphCategories).includes(e.data)){
                 this.loadInfoPanel(graphCategories[e.data]);
             }
+            else if (typeof(e.data) === "object"){
+                if (Object.keys(e.data).includes("show")) {
+                    caLayer.esriLayer.setVisibility(false); 
+                    this.api.esriMap.infoWindow.hide();  
+                    const categoryId = e.data["show"][0]; 
+                    const categoryVal = e.data["show"][1]; 
+                    const displayRecords = this.alldata.filter((record) => record[categoryId] === categoryVal); 
+                    console.log(displayRecords); 
+                    
+                    for (const record of displayRecords) {
+                        var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
+                        var boxlist = []; 
+                        for (var i = 0; i < stringlist.length; i+= 2) {
+                            boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
+                        } 
+                        var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { outlineColor: [255, 130, 0], 
+                            outlineWidth: 3 }); 
+                        recordLayer.addGeometry(recordbox); 
+                    }
+                    
+                }
+            }
             else {
                 return; 
             }
         }); 
-
-        /*        
-        this.api.esriMap.on("click", (e) => {
-            if (e.graphic) {
-                this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
-                this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
-                console.log(this.api.esriMap.infoWindow.domNode); 
-            }
-        });
-        */
-
         //post finished loading message
-        
         window.parent.postMessage("finished conservation load", "*");
-
-        /*
-        this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
-        this.api.click.subscribe((evt) => {
-            this.polygonClick(evt); 
-        });
-        */
     },
 
-    /**
-     * Determines if a conservation authority polygon was clicked on
-     * @param {any} evt - the click event  
-     */
-    polygonClick(evt) {
-        //convert to a point with same spatial reference..... 
-
-        //create point object from click event
-        const clickPoint = new this.esriApi.Point(evt.xy.x, evt.xy.y);
-        
-        //create projection parameters 
-        const geometries = [clickPoint]; 
-        const targetSR = this.esriApi.SpatialReference({wkid: 3978});
-        const transformation = {wkid: 1188}; 
-
-        const transformparams = new this.esriApi.ProjectParameters(); 
-        transformparams.geometries = geometries; 
-        transformparams.outSR = targetSR; 
-        transformparams.transformation = transformation; 
-        
-        const caLayer = this.api.layers.getLayersById("calayer")[0];
-        const cadata = this.cadata; 
-        //apply the transformation using geometryservice and use polygon.contains() to determine if click falls within a polygon
-        this.geometryService.project(transformparams, (outputpoint) => {
-            for (const ca of caLayer.esriLayer.graphics) {
-                if (ca.geometry.contains(outputpoint[0])) {
-                    console.log(cadata[ca.geometry.apiId]); 
-                }
-            }
-        });
-
-        
-
-    }
+    
 }
 
 

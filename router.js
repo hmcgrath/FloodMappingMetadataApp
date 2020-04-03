@@ -121,7 +121,7 @@ app.get("/api", cors(), function(req, res) {
 
     //otherwise get all the entries from the database
     else {
-        const sql = "SELECT *, polygon(boundingbox) FROM hazarddata";
+        const sql = "SELECT *, polygon(boundingbox) AS fullbox FROM hazarddata";
         client.query(sql, function(err,result) {
             if (err) {
                 console.log(err.stack); 

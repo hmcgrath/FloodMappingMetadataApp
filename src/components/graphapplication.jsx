@@ -15,7 +15,7 @@ class GraphApplication extends Component {
                         <Title mode={"graph"}></Title>
                     </div>
                     <div className="row">
-                        <div className="col-lg-4 col-md-6 col-sm-12">
+                        <div className="col-lg-4 col-md-6 col-sm-12" style={{maxHeight: "644px", overflowY: "scroll"}}>
                              <CategoryList></CategoryList>
                         </div>
                         <div className="col-lg-8 col-md-6 col-sm-12">

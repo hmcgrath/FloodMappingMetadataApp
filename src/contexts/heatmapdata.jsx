@@ -17,7 +17,7 @@ class HeatmapDataProvider extends Component {
             {name: "Flood Hazard Standard", categoryId: "floodhzdstd", type:"graphable", graphType:"bar"},
             {name: "Financial Support", categoryId:"financialsupport", type:"graphable", graphType:"pie"}, 
             {name: "Dataset Status", categoryId:"datasetstatus", type:"graphable", graphType:"bar"}, 
-            {name: "Drainage Area", categoryId:"drainagearea", type:"heatmappable", graphType:"none"},
+            {name: "Total Drainage Area Mapped", categoryId:"drainagearea", type:"heatmappable", graphType:"none"},
             {name: "Age of Mapping", categoryId:"lastprojupdate", type:"heatmappable", graphType:"none"}, 
             {name: "Summary Report Available", categoryId:"summreportavail", type:"graphable", graphType:"pie"}, 
             {name: "Updated Since Original", categoryId:"updatesinceorig", type:"graphable", graphType:"pie"},
@@ -54,9 +54,10 @@ class HeatmapDataProvider extends Component {
                     else {
                         category.value = option; 
                     }
-                    
                 }
             }); 
+            var map = document.getElementById("FGPVheatmap"); 
+            map.contentWindow.postMessage({"show": [categoryId, option]}, "*");
             this.setState({categories: newCategories}); 
         }
 
