@@ -43,6 +43,7 @@ client.connect(function(err, res) {
 
 app.set("view engine", "ejs"); 
 app.use(express.static(__dirname + "/webform-expressapp/views"));
+
 app.use(express.static(__dirname + "/webform-expressapp/views/mapiframe"));
 app.use(bodyParser.urlencoded({extended: true})); 
 app.use(express.json()); 
@@ -79,7 +80,10 @@ app.post("/entry", function(req, res) {
 
 
 app.get("/analytics", function(req, res) {
-    res.sendFile(path.join(__dirname, "build", "index.html")); 
+    app.use(express.static(__dirname + "/build"));
+    console.log(path.join(__dirname, "build", "index.html")); 
+    //res.sendFile(path.join(__dirname, "build", "index.html")); 
+    res.sendFile("index.html", {root: "build"}); 
 }); 
 
 app.get("/embed", function(req, res) {
