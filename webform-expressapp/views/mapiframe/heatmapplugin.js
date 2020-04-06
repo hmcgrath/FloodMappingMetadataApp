@@ -97,41 +97,14 @@ window.heatmap = {
                 description:(this.cacount[ca.geometry.apiId][1] === 0 ? "" :
                             `Number of Records: ${this.cacount[ca.geometry.apiId][1]}\
                             <button type="button" id="${ca.geometry.apiId}" onClick=showDataOnMap(this.id)>Show Records On Map</button><br>
-                            <button type="button" id="${ca.geometry.apiId}" onClick=downloadCSV(this.id)>Download CSV of Records</button>`), 
+                            <button type="button" id="${ca.geometry.apiId}" onClick=_downloadCSV(this.id)>Download CSV of Records</button>`), 
                 
             });
             ca.setInfoTemplate(popupTemplate); 
-            /**
-             * Downloads a CSV of records 
-             */
-            downloadCSV = (caName) => {
+
+            _downloadCSV = (caName) => {
                 var data = this.cadata[caName]; 
-                var csvContent = "data:text/csv;charset=utf-8,"; 
-                if (data.length > 0) {
-                    //write the fields first
-                    var fieldsRow = Object.keys(data[0]).join(","); 
-                    csvContent += fieldsRow + "\r\n";
-                    for (const record of data){
-                        for (const entry of Object.values(record)) {
-                            let content = entry; 
-                            if (typeof(content) === "string" && content.includes(",")) {
-                                content = "\"" + content + "\""; 
-                            }
-                            csvContent += content + ","
-                        }
-                        //let contentRow = Object.values(record).join(","); 
-                        csvContent += "\r\n";
-                    }
-                    var encodedUri = encodeURI(csvContent); 
-                    var download = document.createElement("a"); 
-                    download.href = encodedUri; 
-                    download.target = "_blank"; 
-                    download.download = `${caName}.csv`; 
-                    download.click(); 
-                }
-                else {
-                    alert("No data exists for this CA."); 
-                }
+                this.downloadCSV(data, caName); 
             };
 
             /**
@@ -156,6 +129,39 @@ window.heatmap = {
         }
     },
 
+    /**
+     * 
+     * @param {Array} data array of data to convert into a CSV
+     * @param {string} fileName name of CSV file
+     */
+    downloadCSV(data, fileName){
+        var csvContent = "data:text/csv;charset=utf-8,"; 
+        if (data.length > 0) {
+            //write the fields first
+            var fieldsRow = Object.keys(data[0]).join(","); 
+            csvContent += fieldsRow + "\r\n";
+            for (const record of data){
+                for (const entry of Object.values(record)) {
+                    let content = entry; 
+                    if (typeof(content) === "string" && content.includes(",")) {
+                        content = "\"" + content + "\""; 
+                    }
+                    csvContent += content + ","
+                }
+                //let contentRow = Object.values(record).join(","); 
+                csvContent += "\r\n";
+            }
+            var encodedUri = encodeURI(csvContent); 
+            var download = document.createElement("a"); 
+            download.href = encodedUri; 
+            download.target = "_blank"; 
+            download.download = `${fileName}.csv`; 
+            download.click(); 
+        }
+        else {
+            alert("No data exists for this CA."); 
+        }
+    },
 
     /**
      * Loads the default heatmap layer (a heatmap for the number of records each conservation authority has)
@@ -481,6 +487,8 @@ window.heatmap = {
                 this.api.esriMap.infoWindow.resize(250, 250); 
                 this.setDefaultHeatmap(); 
                 this.loadDefaultInfoPanel(); 
+                var extent = this.esriApi.graphicsUtils.graphicsExtent(caLayer.esriLayer.graphics);
+                this.api.esriMap.setExtent(extent);         
             }
             else if (e.data === "Age of Mapping") {
                 this.setAgeHeatmap();
@@ -489,13 +497,14 @@ window.heatmap = {
                 this.loadInfoPanel(graphCategories[e.data]);
             }
             else if (typeof(e.data) === "object"){
+                //clear any existing geometry
+                recordLayer.removeGeometry(); 
                 if (Object.keys(e.data).includes("show")) {
                     caLayer.esriLayer.setVisibility(false); 
                     this.api.esriMap.infoWindow.hide();  
                     const categoryId = e.data["show"][0]; 
                     const categoryVal = e.data["show"][1]; 
                     const displayRecords = this.alldata.filter((record) => record[categoryId] === categoryVal); 
-                    console.log(displayRecords); 
                     
                     for (const record of displayRecords) {
                         var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
@@ -504,10 +513,33 @@ window.heatmap = {
                             boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
                         } 
                         var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { outlineColor: [255, 130, 0], 
-                            outlineWidth: 3 }); 
+                            outlineWidth: 3, fillColor: [255, 130, 0], fillOpacity: 0.8 }); 
+                        //create the info window
+                        
                         recordLayer.addGeometry(recordbox); 
                     }
-                    
+                    var recordextent = this.esriApi.graphicsUtils.graphicsExtent(recordLayer.esriLayer.graphics);
+                    this.api.esriMap.setExtent(recordextent); 
+
+                    for (const record of recordLayer.esriLayer.graphics) {                        
+                        var infoPopup = new this.bundle.InfoTemplate(); 
+                        const recdata = this.alldata.filter((rec) => rec.submissionid === parseInt(record.geometry.apiId))[0];
+                        infoPopup.setTitle(recdata.projectid); 
+                        infoPopup.setContent(`Age of Mapping: ${recdata.lastprojupdate}</br>
+                                            Flood Hazard Standard: ${recdata.floodhzdstd}</br>
+                                            Project ID: ${recdata.projectid}</br>
+                                            Project Name: ${recdata.projectname}</br>
+                                            Official WC Name: ${recdata.officialwcname}</br>
+                                            Local WC Name: ${recdata.localwcname}</br>
+                                            <button type="button" id="${recdata.projectid}" onClick=_downloadCSV(this.id)>Download CSV of Records</button>`); 
+                        record.setInfoTemplate(infoPopup); 
+                    }
+
+                    _downloadCSV = (projectid) => {
+                        var data = displayRecords; 
+                        this.downloadCSV(data, projectid); 
+                    }
+
                 }
             }
             else {

@@ -19,7 +19,7 @@ class HeatmapApplication extends Component {
                                 <Title mode={"heatmap"}></Title>
                             </div>
                             <div className="row">
-                                <div className="col-lg-4 col-md-6 col-sm-12">
+                                <div className="col-lg-4 col-md-6 col-sm-12" style={{maxHeight: "816px", overflowY: "scroll"}}>
                                     <HeatmapCategoryList></HeatmapCategoryList>
                                 </div>
                                 <div className="col-lg-8 col-md-6 col-sm-12">
