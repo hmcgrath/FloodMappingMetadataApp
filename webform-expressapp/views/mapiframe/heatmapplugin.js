@@ -6,6 +6,7 @@ window.heatmap = {
     serviceurl: null,
     cacount: null,
     cadata: null,
+    alldata: null,
     casummary: null,
     legendpanel: null,
     bundle: null,
@@ -43,6 +44,7 @@ window.heatmap = {
             ["dojo/dom-construct", "domConstruct"]
             ]); 
 
+            //initalization
             esriApi.then((bundle) => {
                                 this.esriApi = RAMP.GAPI.esriBundle; 
                                 this.bundle = bundle; 
@@ -70,6 +72,7 @@ window.heatmap = {
             $.getJSON("http://localhost:8080/api/cacount?countonly=true", (data) => {
                 //create object instance of the conservation authority record count data
                 this.cacount = data; 
+                console.log(data);
                 for (const ca of Object.keys(data)) {
                     //ID is now the conservation authority name
                     var capolygon = new RAMP.GEO.Polygon(ca, data[ca][0] /*, {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3}*/);
@@ -94,41 +97,14 @@ window.heatmap = {
                 description:(this.cacount[ca.geometry.apiId][1] === 0 ? "" :
                             `Number of Records: ${this.cacount[ca.geometry.apiId][1]}\
                             <button type="button" id="${ca.geometry.apiId}" onClick=showDataOnMap(this.id)>Show Records On Map</button><br>
-                            <button type="button" id="${ca.geometry.apiId}" onClick=downloadCSV(this.id)>Download CSV of Records</button>`), 
+                            <button type="button" id="${ca.geometry.apiId}" onClick=_downloadCSV(this.id)>Download CSV of Records</button>`), 
                 
             });
             ca.setInfoTemplate(popupTemplate); 
-            /**
-             * Downloads a CSV of records 
-             */
-            downloadCSV = (caName) => {
+
+            _downloadCSV = (caName) => {
                 var data = this.cadata[caName]; 
-                var csvContent = "data:text/csv;charset=utf-8,"; 
-                if (data.length > 0) {
-                    //write the fields first
-                    var fieldsRow = Object.keys(data[0]).join(","); 
-                    csvContent += fieldsRow + "\r\n";
-                    for (const record of data){
-                        for (const entry of Object.values(record)) {
-                            let content = entry; 
-                            if (typeof(content) === "string" && content.includes(",")) {
-                                content = "\"" + content + "\""; 
-                            }
-                            csvContent += content + ","
-                        }
-                        //let contentRow = Object.values(record).join(","); 
-                        csvContent += "\r\n";
-                    }
-                    var encodedUri = encodeURI(csvContent); 
-                    var download = document.createElement("a"); 
-                    download.href = encodedUri; 
-                    download.target = "_blank"; 
-                    download.download = `${caName}.csv`; 
-                    download.click(); 
-                }
-                else {
-                    alert("No data exists for this CA."); 
-                }
+                this.downloadCSV(data, caName); 
             };
 
             /**
@@ -138,7 +114,6 @@ window.heatmap = {
                 //hide the conservation authority layer
                 caLayer.esriLayer.setVisibility(false); 
                 this.api.esriMap.infoWindow.hide();  
-                console.log(this.cadata[caName]); 
                 for (const record of this.cadata[caName]) {
                     var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
                     var boxlist = []; 
@@ -154,6 +129,39 @@ window.heatmap = {
         }
     },
 
+    /**
+     * 
+     * @param {Array} data array of data to convert into a CSV
+     * @param {string} fileName name of CSV file
+     */
+    downloadCSV(data, fileName){
+        var csvContent = "data:text/csv;charset=utf-8,"; 
+        if (data.length > 0) {
+            //write the fields first
+            var fieldsRow = Object.keys(data[0]).join(","); 
+            csvContent += fieldsRow + "\r\n";
+            for (const record of data){
+                for (const entry of Object.values(record)) {
+                    let content = entry; 
+                    if (typeof(content) === "string" && content.includes(",")) {
+                        content = "\"" + content + "\""; 
+                    }
+                    csvContent += content + ","
+                }
+                //let contentRow = Object.values(record).join(","); 
+                csvContent += "\r\n";
+            }
+            var encodedUri = encodeURI(csvContent); 
+            var download = document.createElement("a"); 
+            download.href = encodedUri; 
+            download.target = "_blank"; 
+            download.download = `${fileName}.csv`; 
+            download.click(); 
+        }
+        else {
+            alert("No data exists for this CA."); 
+        }
+    },
 
     /**
      * Loads the default heatmap layer (a heatmap for the number of records each conservation authority has)
@@ -372,18 +380,22 @@ window.heatmap = {
     },
     //loads all the flood record data for each CA. 
     loadConservationData() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {  
             $.getJSON("http://localhost:8080/api/cacount", (data) => {
                 this.cadata = data;
-                console.log("test1"); 
                 $.getJSON("http://localhost:8080/api/cacount?formatted=true", (summarydata) => {
                     this.casummary = summarydata; 
-                    console.log(this.cadata); 
-                    console.log(this.casummary); 
-                    resolve();
+                    $.getJSON("http://localhost:8080/api", (alldata) => {
+                        this.alldata = alldata; 
+                        console.log(this.cadata); 
+                        console.log(this.casummary); 
+                        console.log(this.alldata); 
+                        resolve(); 
+                    });
                 });               
             })
-            .catch((err) => console.log(err));
+            .catch((err) => reject(err));
+            
         }); 
     }, 
 
@@ -402,23 +414,27 @@ window.heatmap = {
         //plotly graph test
         var testdiv = document.createElement("div"); 
         testdiv.id = "testgraph"; 
-        testdiv.style.width = "250px"; 
-        testdiv.style.height = "150px";
          //make pie graph
-        
         Plotly.newPlot(testdiv, [{
             labels: Object.keys(payload), 
             values: Object.values(payload), 
             type: "pie",
             //textinfo: "label+percent", 
-            //textposition: "outside", 
+            textposition: "inside", 
+            domain: {x: [0, 0.5]},
             automargin: true
         }], {
             title: caName + " : " + categoryName,
+            titlefont: {
+                size: 14
+            },
             autosize: true, 
-            width: "100%", 
-            height: "100%",
-        });
+            margin: {
+                "l": 20
+            },
+            width: 490, 
+            height: 300,
+        }, {responsive: true});
         return testdiv;
     },
 
@@ -449,97 +465,92 @@ window.heatmap = {
 
         window.addEventListener("message", (e) => {
             console.log(e.data);
+            
+            //mapping the full category names to the abbreviated database column names
+            const graphCategories = {
+                "Project Category": "projectcat", 
+                "Type of Record": "typeofrecord", 
+                "Flood Hazard Standard": "floodhzdstd", 
+                "Financial Support": "financialsupport", 
+                "Dataset Status": "datasetstatus", 
+                "Summary Report Available": "summreportavail", 
+                "Updated Since Original": "updatesinceorig"
+            };
             if (e.data === "Drainage Area") {
                 this.setDrainageAreaHeatmap(); 
             } 
             //make sure the layer is visible again
-            if (e.data === "reset map") {
+            else if (e.data === "reset map") {
                 caLayer.esriLayer.setVisibility(true); 
                 recordLayer.removeGeometry(); 
                 this.api.esriMap.infoWindow.hide();  
                 this.api.esriMap.infoWindow.resize(250, 250); 
                 this.setDefaultHeatmap(); 
                 this.loadDefaultInfoPanel(); 
+                var extent = this.esriApi.graphicsUtils.graphicsExtent(caLayer.esriLayer.graphics);
+                this.api.esriMap.setExtent(extent);         
             }
-            if (e.data === "Age of Mapping") {
+            else if (e.data === "Age of Mapping") {
                 this.setAgeHeatmap();
             }
-            if (e.data === "Project Category") {
-                this.loadInfoPanel("projectcat"); 
+            else if (Object.keys(graphCategories).includes(e.data)){
+                this.loadInfoPanel(graphCategories[e.data]);
             }
-            if (e.data === "Type of Record") {
-                this.loadInfoPanel("typeofrecord"); 
-            }
-            if (e.data === "Flood Hazard Standard") {
-                this.loadInfoPanel("floodhzdstd"); 
-            }
-            if (e.data === "Financial Support") {
-                this.loadInfoPanel("financialsupport"); 
-            }
-            if (e.data === "Dataset Status") {
-                this.loadInfoPanel("datasetstatus"); 
+            else if (typeof(e.data) === "object"){
+                //clear any existing geometry
+                recordLayer.removeGeometry(); 
+                if (Object.keys(e.data).includes("show")) {
+                    caLayer.esriLayer.setVisibility(false); 
+                    this.api.esriMap.infoWindow.hide();  
+                    const categoryId = e.data["show"][0]; 
+                    const categoryVal = e.data["show"][1]; 
+                    const displayRecords = this.alldata.filter((record) => record[categoryId] === categoryVal); 
+                    
+                    for (const record of displayRecords) {
+                        var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
+                        var boxlist = []; 
+                        for (var i = 0; i < stringlist.length; i+= 2) {
+                            boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
+                        } 
+                        var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { outlineColor: [255, 130, 0], 
+                            outlineWidth: 3, fillColor: [255, 130, 0], fillOpacity: 0.8 }); 
+                        //create the info window
+                        
+                        recordLayer.addGeometry(recordbox); 
+                    }
+                    var recordextent = this.esriApi.graphicsUtils.graphicsExtent(recordLayer.esriLayer.graphics);
+                    this.api.esriMap.setExtent(recordextent); 
+
+                    for (const record of recordLayer.esriLayer.graphics) {                        
+                        var infoPopup = new this.bundle.InfoTemplate(); 
+                        const recdata = this.alldata.filter((rec) => rec.submissionid === parseInt(record.geometry.apiId))[0];
+                        infoPopup.setTitle(recdata.projectid); 
+                        infoPopup.setContent(`Age of Mapping: ${recdata.lastprojupdate}</br>
+                                            Flood Hazard Standard: ${recdata.floodhzdstd}</br>
+                                            Project ID: ${recdata.projectid}</br>
+                                            Project Name: ${recdata.projectname}</br>
+                                            Official WC Name: ${recdata.officialwcname}</br>
+                                            Local WC Name: ${recdata.localwcname}</br>
+                                            <button type="button" id="${recdata.projectid}" onClick=_downloadCSV(this.id)>Download CSV of Records</button>`); 
+                        record.setInfoTemplate(infoPopup); 
+                    }
+
+                    _downloadCSV = (projectid) => {
+                        var data = displayRecords; 
+                        this.downloadCSV(data, projectid); 
+                    }
+
+                }
             }
             else {
                 return; 
             }
         }); 
-
-        /*        
-        this.api.esriMap.on("click", (e) => {
-            if (e.graphic) {
-                this.api.esriMap.infoWindow.setContent(e.graphic.getContent()); 
-                this.api.esriMap.infoWindow.show(e.screenPoint, this.api.esriMap.getInfoWindowAnchor(e.screenPoint)); 
-                console.log(this.api.esriMap.infoWindow.domNode); 
-            }
-        });
-        */
-
         //post finished loading message
-        
         window.parent.postMessage("finished conservation load", "*");
-
-        /*
-        this.geometryService = this.esriApi.GeometryService(this.serviceurl); 
-        this.api.click.subscribe((evt) => {
-            this.polygonClick(evt); 
-        });
-        */
     },
 
-    /**
-     * Determines if a conservation authority polygon was clicked on
-     * @param {any} evt - the click event  
-     */
-    polygonClick(evt) {
-        //convert to a point with same spatial reference..... 
-
-        //create point object from click event
-        const clickPoint = new this.esriApi.Point(evt.xy.x, evt.xy.y);
-        
-        //create projection parameters 
-        const geometries = [clickPoint]; 
-        const targetSR = this.esriApi.SpatialReference({wkid: 3978});
-        const transformation = {wkid: 1188}; 
-
-        const transformparams = new this.esriApi.ProjectParameters(); 
-        transformparams.geometries = geometries; 
-        transformparams.outSR = targetSR; 
-        transformparams.transformation = transformation; 
-        
-        const caLayer = this.api.layers.getLayersById("calayer")[0];
-        const cadata = this.cadata; 
-        //apply the transformation using geometryservice and use polygon.contains() to determine if click falls within a polygon
-        this.geometryService.project(transformparams, (outputpoint) => {
-            for (const ca of caLayer.esriLayer.graphics) {
-                if (ca.geometry.contains(outputpoint[0])) {
-                    console.log(cadata[ca.geometry.apiId]); 
-                }
-            }
-        });
-
-        
-
-    }
+    
 }
 
 

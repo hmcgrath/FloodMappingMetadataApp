@@ -31,7 +31,7 @@ class Category extends Component {
         //moved all categories to context.
         return (
             <React.Fragment>
-                <ListGroup.Item style={{backgroundColor: "rgb(212, 212, 212)"}}
+                <ListGroup.Item style={{backgroundColor: "rgb(212, 212, 212)", height: "100%"}}
                                 action onClick={() => this.context.toggleCategory(this.props.categoryId)} 
                                 aria-controls="collapse-content" 
                                 aria-expanded={(expanded)} 
@@ -63,7 +63,9 @@ const GraphButton = (props) => {
 
 const SearchBox = () => {
     return (
-        <input type="text" maxLength="20" className="form-control" placeholder="Search..."></input>
+        <select className="browser-default custom-select">
+            <option value="" disabled selected>Search by....</option>
+        </select>    
     );
 }
 
