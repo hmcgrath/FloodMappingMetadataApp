@@ -476,7 +476,7 @@ window.heatmap = {
                 "Summary Report Available": "summreportavail", 
                 "Updated Since Original": "updatesinceorig"
             };
-            if (e.data === "Drainage Area") {
+            if (e.data === "Total Drainage Area Mapped") {
                 this.setDrainageAreaHeatmap(); 
             } 
             //make sure the layer is visible again
