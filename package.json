@@ -1,6 +1,6 @@
 {
   "name": "floodanalyticsapp",
-  "homepage": "http://localhost:8080/analytics",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
