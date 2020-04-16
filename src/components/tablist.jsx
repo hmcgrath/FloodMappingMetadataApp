@@ -61,8 +61,7 @@ class TabList extends Component {
                         values: Object.values(this.context.data[graphId]),
                         labels: Object.keys(this.context.data[graphId]),
                         type: "pie",
-                        textinfo: "label+percent", 
-                        textposition:"outside",
+                        textposition:"inside",
                         automargin: true
                     }
                 ]}
