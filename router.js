@@ -2,23 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express(); 
 const FloodDataSummary = require("./flood-data-summary");
-const cors = require('cors');
 const path = require("path"); 
 const fs = require("fs"); 
-const timeout = require("express-timeout-handler");
 
 //change this if the geoJSON is named differently
 const geoJsonFileName = "conservation-layers.json"; 
-
-const options = {
-    timeout:10000, 
-    onTimeout: function(req, res) {
-        res.status(503).send("Service timed out.");
-    },
-    disable: ["write", "setHeaders", "send", "json", "end"]
-};
-
-
 const {Pool, Client} = require("pg");
 
 //new connection up and running
@@ -94,9 +82,8 @@ app.get("/embedheatmap", function(req, res) {
     res.sendFile("heatmap.html", {root: "webform-expressapp/views/mapiframe"});
 }); 
 
-//we need to use cors to allow cross domain access to the API (Temporarily). 
 //RESTful route to get database entries
-app.get("/api", cors(), function(req, res) {
+app.get("/api", function(req, res) {
     //FOR FUTURE-USE: IMPLEMENT A LIMIT PARAM?
     
     //if a bounding box is defined

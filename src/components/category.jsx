@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Collapse from 'react-bootstrap/Collapse';
 import DataContext from '../contexts/graphdata';
+import Modal from 'react-bootstrap/Modal'; 
 
 class Category extends Component {
     // name: name of the category
@@ -10,11 +11,22 @@ class Category extends Component {
 
     state = { 
         buttonEnabled: false,
-        collapseEnabled: false
+        collapseEnabled: false, 
+        showModal: false
     }
     
     constructor(props) {
         super(props);
+        this.showWarnModal = this.showWarnModal.bind(this); 
+        this.hideWarnModal = this.hideWarnModal.bind(this); 
+    }
+
+    showWarnModal() {
+        this.setState({showModal: true}); 
+    }
+
+    hideWarnModal() {
+        this.setState({showModal: false}); 
     }
 
     render() { 
@@ -32,10 +44,10 @@ class Category extends Component {
         return (
             <React.Fragment>
                 <ListGroup.Item style={{backgroundColor: "rgb(212, 212, 212)", height: "100%"}}
-                                action onClick={() => this.context.toggleCategory(this.props.categoryId)} 
+                                action onClick={this.context.dataExists ? () => this.context.toggleCategory(this.props.categoryId) : this.showWarnModal} 
                                 aria-controls="collapse-content" 
                                 aria-expanded={(expanded)} 
-                                disabled={!this.context.dataLoaded}>
+                                >
                     {this.props.categoryName}
                 </ListGroup.Item>
                 <Collapse in={(expanded)}>
@@ -50,6 +62,14 @@ class Category extends Component {
                         </div>
                     </div>
                 </Collapse> 
+                <Modal show={this.state.showModal} onHide={this.hideWarnModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Error</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Please select an area that contains records. 
+                    </Modal.Body>
+                </Modal>
             </React.Fragment>
         );
     }
