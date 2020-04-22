@@ -1,3 +1,12 @@
+var submitForm = false; 
+
+window.addEventListener("beforeunload", function(e) {
+    if (!submitForm) {
+        e.preventDefault(); 
+        e.returnValue = "Are you sure? All progress will be lost";  
+    }
+});
+
 //page navigation
 var currentTab = 0; 
 showTab(currentTab); 
@@ -49,7 +58,7 @@ function nextPrev(n) {
 
     if (currentTab >= tabs.length) {
         //handle submission
-        window.onbeforeunload = null; 
+        submitForm = true; 
         document.getElementById("entryForm").submit(); 
         return false; 
     }

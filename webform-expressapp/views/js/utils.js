@@ -1,8 +1,3 @@
-window.addEventListener("beforeunload", function(e) {
-    e.preventDefault(); 
-    e.returnValue = "Are you sure? All progress will be lost";  
-});
-
 function checkOtherFloodHzd(checkbox) {
     if (checkbox.checked) {
         document.getElementById("ifOtherFloodHzd").style.display = "block";
