@@ -72,7 +72,6 @@ window.heatmap = {
             $.getJSON("http://localhost:8080/api/cacount?countonly=true", (data) => {
                 //create object instance of the conservation authority record count data
                 this.cacount = data; 
-                console.log(data);
                 for (const ca of Object.keys(data)) {
                     //ID is now the conservation authority name
                     var capolygon = new RAMP.GEO.Polygon(ca, data[ca][0] /*, {outlineColor: [220,5,0], fillColor: colors[intervalNum], fillOpacity:0.8, outlineWidth: 3}*/);
@@ -232,7 +231,6 @@ window.heatmap = {
             }
             totalDrainageAreas[key] = totaldrainagearea; 
         }
-        console.log(totalDrainageAreas); 
 
         //get the maximum number of records
         var maxCount = Math.max(...Object.values(totalDrainageAreas)); 
@@ -387,9 +385,6 @@ window.heatmap = {
                     this.casummary = summarydata; 
                     $.getJSON("http://localhost:8080/api", (alldata) => {
                         this.alldata = alldata; 
-                        console.log(this.cadata); 
-                        console.log(this.casummary); 
-                        console.log(this.alldata); 
                         resolve(); 
                     });
                 });               
@@ -464,7 +459,6 @@ window.heatmap = {
         this.api.esriMap.setExtent(extent); 
 
         window.addEventListener("message", (e) => {
-            console.log(e.data);
             
             //mapping the full category names to the abbreviated database column names
             const graphCategories = {

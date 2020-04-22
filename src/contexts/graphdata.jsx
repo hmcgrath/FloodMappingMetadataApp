@@ -40,9 +40,7 @@ class DataProvider extends Component {
             resetCategories.forEach((category) => {
                 category.expanded = false; 
             }); 
-            this.setState({dataLoaded: false, dataExists: false, data:{}, graphTabs: [], categeories: resetCategories}, () => {
-                console.log(this.state);
-            });
+            this.setState({dataLoaded: false, dataExists: false, data:{}, graphTabs: [], categeories: resetCategories});
         }, 
         toggleRecords: () => {
             var map = document.getElementById("FGPV"); 
@@ -53,11 +51,10 @@ class DataProvider extends Component {
             //prevent duplicate tabs
             if (newGraphTabs.filter(graphtab => graphtab.graphId == graphId).length === 0) {
                 newGraphTabs.push({graphName: graphName, graphId: graphId, graphType: graphType});
-                this.setState({graphTabs: newGraphTabs}, () => console.log(this.state)); 
+                this.setState({graphTabs: newGraphTabs}); 
             }
         }, 
         removeGraphTab: (graphId) => {
-            console.log(graphId); 
             var newGraphTabs = this.state.graphTabs.filter(graphTab => graphTab.graphId !== graphId); 
             this.setState({graphTabs: newGraphTabs}); 
         }
@@ -72,7 +69,6 @@ class DataProvider extends Component {
         //implement source url checking once this is up on a server
         if (e.data.includes('coordinates selected')) {
             var boundingbox = e.data.replace("coordinates selected ", "");
-            console.log("selected message received");
             //axios call to local api
             axios.get('/api', 
                         {params: {
@@ -92,7 +88,6 @@ class DataProvider extends Component {
                         else {
                             this.setState({dataLoaded: true, data: res.data});
                         }
-                        console.log(this.state);
                     }).catch((err) => {
                         console.log(err);
                     }); 

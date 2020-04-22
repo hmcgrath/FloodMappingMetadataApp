@@ -34,7 +34,6 @@ window.select_coordinates = {
         }); 
     },
     listenToClick() {
-        //console.log(this.api.panels.legend.body.append("test")); 
         this.api.layersObj.addLayer("markerlayer");  
         const markerLayer = this.api.layers.getLayersById("markerlayer")[0]; 
 
@@ -44,7 +43,6 @@ window.select_coordinates = {
         this.click = this.api.click.subscribe((pointObject) => {
             this.addPointOnClick(pointObject, markerLayer, recordLayer); 
         }); 
-        //console.log($(".rv-legend-root"));
         window.addEventListener("message", (e) => {
             if(e.data == "reset map") {
                 this.showRecords = true; 

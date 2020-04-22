@@ -44,7 +44,6 @@ class HeatmapDataProvider extends Component {
             map.contentWindow.postMessage(categoryName, "*");
         }, 
         setOption: (option, categoryId) => {
-            console.log(option, categoryId); 
             var newCategories = [...this.state.categories]; 
             newCategories.forEach((category) => {
                 if (category.type === "searchable") {
@@ -68,7 +67,7 @@ class HeatmapDataProvider extends Component {
         window.addEventListener("message", this.handleIframeMessage);
         axios.get("/api")
             .then((res) => {
-                this.setState({data: res.data}, () => console.log(this.state.data)); 
+                this.setState({data: res.data}); 
             });
     }
     
@@ -76,11 +75,9 @@ class HeatmapDataProvider extends Component {
     handleIframeMessage = (e) => {
         //implement source url checking once this is up on a server
         if (e.data === "started conservation load") {
-            console.log("started conservation load"); 
             this.setState({loadingCA: true});
         }
         if (e.data === "finished conservation load") {
-            console.log("finished conservation load"); 
             this.setState({loadingCA: false, loadedCA: true}); 
         }
     }

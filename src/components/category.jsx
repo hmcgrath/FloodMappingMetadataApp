@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Collapse from 'react-bootstrap/Collapse';
-import DataContext from '../contexts/graphdata';
-import Modal from 'react-bootstrap/Modal'; 
+import DataContext from '../contexts/graphdata'; 
+import {ListGroup, Collapse, Modal, Button} from 'react-bootstrap'; 
 
 class Category extends Component {
     // name: name of the category
@@ -69,6 +67,9 @@ class Category extends Component {
                     <Modal.Body>
                         Please select an area that contains records. 
                     </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.hideWarnModal}>Close</Button>
+                    </Modal.Footer>
                 </Modal>
             </React.Fragment>
         );
