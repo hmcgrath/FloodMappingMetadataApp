@@ -69,7 +69,7 @@ window.heatmap = {
             this.api.layersObj.addLayer("recordlayer");
             const caLayer = this.api.layers.getLayersById("calayer")[0]; 
             window.parent.postMessage("started conservation load", "*");  
-            $.getJSON("http://localhost:8080/api/cacount?countonly=true", (data) => {
+            $.getJSON("/api/cacount?countonly=true", (data) => {
                 //create object instance of the conservation authority record count data
                 this.cacount = data; 
                 for (const ca of Object.keys(data)) {
@@ -379,11 +379,11 @@ window.heatmap = {
     //loads all the flood record data for each CA. 
     loadConservationData() {
         return new Promise((resolve, reject) => {  
-            $.getJSON("http://localhost:8080/api/cacount", (data) => {
+            $.getJSON("/api/cacount", (data) => {
                 this.cadata = data;
-                $.getJSON("http://localhost:8080/api/cacount?formatted=true", (summarydata) => {
+                $.getJSON("/api/cacount?formatted=true", (summarydata) => {
                     this.casummary = summarydata; 
-                    $.getJSON("http://localhost:8080/api", (alldata) => {
+                    $.getJSON("/api", (alldata) => {
                         this.alldata = alldata; 
                         resolve(); 
                     });

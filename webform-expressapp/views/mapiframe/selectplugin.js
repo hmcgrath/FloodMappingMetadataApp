@@ -96,7 +96,7 @@ window.select_coordinates = {
 
             markerLayer.addGeometry(rectangle);
             
-            $.getJSON("http://localhost:8080/api?boundingbox=" + boundingcoords, (data) => {
+            $.getJSON("/api?boundingbox=" + boundingcoords, (data) => {
                 this.data = data; 
                 var idcounter = 100;
                 for (const record of data) {
