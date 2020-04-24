@@ -6,7 +6,7 @@ const path = require("path");
 const fs = require("fs"); 
 
 //change this if the geoJSON is named differently
-const geoJsonFileName = "conservation-layers.json"; 
+const geoJsonFileName = "CA_Simple_JSON6.json"; 
 const {Pool, Client} = require("pg");
 
 //new connection up and running
@@ -229,7 +229,7 @@ app.get("/api/cacount", function(req, res) {
                 //returning the coordinates in (long, lat) to comply with FGPViewer
                 //request parameter countonly -> true: returns only the number of records, false: returns all records 
                 if (req.query.countonly == "true") {
-                    countList[ca.attributes.LEGAL_NAME] = [coordList, result.rowCount]; 
+                    countList[ca.attributes.LEGAL_NAME] = [ca.geometry.rings, result.rowCount]; 
                 }
                 //get summaries for each conservation authority
                 else if (req.query.formatted == "true") {
