@@ -65,7 +65,7 @@ class HeatmapDataProvider extends Component {
 
     componentDidMount() {
         window.addEventListener("message", this.handleIframeMessage);
-        axios.get("/api")
+        axios.get("/hydro_dev/api")
             .then((res) => {
                 this.setState({data: res.data}); 
             });

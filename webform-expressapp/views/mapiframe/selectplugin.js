@@ -96,7 +96,7 @@ window.select_coordinates = {
 
             markerLayer.addGeometry(rectangle);
             
-            $.getJSON("/api?boundingbox=" + boundingcoords, (data) => {
+            $.getJSON("/hydro_dev/api?boundingbox=" + boundingcoords, (data) => {
                 this.data = data; 
                 var idcounter = 100;
                 for (const record of data) {

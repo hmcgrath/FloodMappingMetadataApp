@@ -9,7 +9,7 @@ class FGPVheatmap extends Component {
         return (
             <React.Fragment>
                 <div style={{height: "100%"}}>
-                    <iframe src="http://localhost:8080/embedheatmap" title="FGPVheatmap" id="FGPVheatmap"
+                    <iframe src="http://geogratis.gc.ca/hydro_dev/embedheatmap" title="FGPVheatmap" id="FGPVheatmap"
                         height="820px" width="100%" allowFullScreen={false}/>
                     <div className="row">
                         <br></br>

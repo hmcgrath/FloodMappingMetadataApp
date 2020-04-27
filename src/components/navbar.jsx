@@ -10,8 +10,8 @@ const NavBar = (props) => {
             <Navbar.Toggle aria-controls="collapseNav"/>
             <Navbar.Collapse id="collapseNav">
                 <Nav className="navigation mr-auto">
-                    <Nav.Link href="/" style={{color:"white"}}>Submit Data</Nav.Link>
-                    <Nav.Link href="/analytics" style={{color:"white"}}>View Data</Nav.Link>
+                    <Nav.Link href="/hydro_dev/" style={{color:"white"}}>Submit Data</Nav.Link>
+                    <Nav.Link href="/hydro_dev/analytics" style={{color:"white"}}>View Data</Nav.Link>
                 </Nav>
                 <Nav className="mr-sm-2">
                     <button type="button" className="btn btn-success" onClick={props.onButtonClick}>{props.children}</button>

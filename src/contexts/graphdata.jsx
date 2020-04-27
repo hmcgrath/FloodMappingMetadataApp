@@ -70,7 +70,7 @@ class DataProvider extends Component {
         if (e.data.includes('coordinates selected')) {
             var boundingbox = e.data.replace("coordinates selected ", "");
             //axios call to local api
-            axios.get('/api', 
+            axios.get('/hydro_dev/api', 
                         {params: {
                             "boundingbox" : boundingbox,
                             "formatted" : true

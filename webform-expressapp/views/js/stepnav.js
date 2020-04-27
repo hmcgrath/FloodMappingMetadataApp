@@ -148,7 +148,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST', 
                 data: $("#entryForm").serialize(), 
-                url: '/submit/save',
+                url: '/hydro_dev/submit/save',
             }).done(function() {
                 $("#submitSuccessModal").modal("show");
                 var tabs = document.getElementsByClassName("tab");  
