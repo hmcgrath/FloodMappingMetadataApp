@@ -4,19 +4,18 @@ const app = express();
 const FloodDataSummary = require("./flood-data-summary");
 const path = require("path"); 
 const fs = require("fs"); 
+const config = require("./config.json")
 
-//change this if the geoJSON is named differently
-const geoJsonFileName = "CA_Simple_JSON6.json"; 
 const {Pool, Client} = require("pg");
 
 //new connection up and running
 
 const client = new Client({
-    user: "floodmapping_admin",
-    host: "v-she-olrik.cits.rncan.gc.ca", 
-    database: "floodmapping_dev", 
-    password: "floodmappingadm4dev", 
-    port: 14180
+    user: config.database.user,
+    host: config.database.host, 
+    database: config.database.database, 
+    password: config.database.password, 
+    port: config.database.port
 });
 
 client.connect(function(err, res) {
@@ -134,7 +133,7 @@ app.get("/api", function(req, res) {
 
 //making a separate route for conservation authority counts... may integrate into /api route
 app.get("/api/cacount", function(req, res) {
-    var jsonFile = fs.readFileSync(geoJsonFileName); 
+    var jsonFile = fs.readFileSync(config.geoJSON); 
 
     var jsonContent = JSON.parse(jsonFile); 
     //console.log(jsonContent);
@@ -344,7 +343,7 @@ app.post("/submit/:action?", function (req,res) {
 
 //modify with domain name?
 app.listen(process.env.PORT || 8080, process.env.IP, function() {
-	console.log("App started!"); 
+    console.log("App started!"); 
 });
 
 

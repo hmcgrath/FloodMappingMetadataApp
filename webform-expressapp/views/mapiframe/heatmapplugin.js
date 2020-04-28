@@ -123,6 +123,8 @@ window.heatmap = {
                         outlineWidth: 3 }); 
                     recordLayer.addGeometry(recordbox); 
                 }
+                var extent = this.esriApi.graphicsUtils.graphicsExtent(recordLayer.esriLayer.graphics);
+                this.api.esriMap.setExtent(extent);  
             }; 
 
         }
@@ -449,6 +451,19 @@ window.heatmap = {
         }
     }, 
 
+    resetMap() {
+        const caLayer = this.api.layers.getLayersById("calayer")[0];
+        const recordLayer = this.api.layers.getLayersById("recordlayer")[0];
+        caLayer.esriLayer.setVisibility(true); 
+        recordLayer.removeGeometry(); 
+        this.api.esriMap.infoWindow.hide();  
+        this.api.esriMap.infoWindow.resize(250, 250); 
+        this.setDefaultHeatmap(); 
+        this.loadDefaultInfoPanel(); 
+        var extent = this.esriApi.graphicsUtils.graphicsExtent(caLayer.esriLayer.graphics);
+        this.api.esriMap.setExtent(extent);   
+    },
+
     /**
      * Adds all the event listeners for the plugin 
      */
@@ -471,23 +486,19 @@ window.heatmap = {
                 "Updated Since Original": "updatesinceorig"
             };
             if (e.data === "Total Drainage Area Mapped") {
+                this.resetMap(); 
                 this.setDrainageAreaHeatmap(); 
             } 
             //make sure the layer is visible again
             else if (e.data === "reset map") {
-                caLayer.esriLayer.setVisibility(true); 
-                recordLayer.removeGeometry(); 
-                this.api.esriMap.infoWindow.hide();  
-                this.api.esriMap.infoWindow.resize(250, 250); 
-                this.setDefaultHeatmap(); 
-                this.loadDefaultInfoPanel(); 
-                var extent = this.esriApi.graphicsUtils.graphicsExtent(caLayer.esriLayer.graphics);
-                this.api.esriMap.setExtent(extent);         
+                this.resetMap();         
             }
             else if (e.data === "Age of Mapping") {
+                this.resetMap(); 
                 this.setAgeHeatmap();
             }
             else if (Object.keys(graphCategories).includes(e.data)){
+                this.resetMap(); 
                 this.loadInfoPanel(graphCategories[e.data]);
             }
             else if (typeof(e.data) === "object"){
