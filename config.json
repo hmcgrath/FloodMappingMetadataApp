@@ -1,0 +1,11 @@
+{
+    "database": {
+        "user": "floodmapping_admin", 
+        "host": "v-she-olrik.cits.rncan.gc.ca", 
+        "database": "floodmapping_dev", 
+        "password": "floodmappingadm4dev", 
+        "port": 14180
+    },
+
+    "geoJSON": "CA_SIMPLE_JSON6.json" 
+}
