@@ -12,7 +12,7 @@ class FloodDataSummary {
         this.updatesinceorig = {"Yes": 0, "No": 0};  
         this.floodhzdstd = {"Hazel": 0, "Timmins": 0, "1000 yr": 0, 
                             "500 yr": 0, "200 yr": 0, "100 yr" : 0, 
-                            "50 yr": 0, "20 yr": 0, "Other": 0}; 
+                            "50 yr": 0, "20 yr": 0, "10 yr": 0, "5 yr": 0, "2 yr": 0, "Other": 0}; 
         this.financialsupport = {"NDMP": 0, "FDRP": 0, "Conservation Authority": 0,
                                 "Municipal": 0, "Federal": 0,
                                 "Private": 0, "Other": 0}; 
