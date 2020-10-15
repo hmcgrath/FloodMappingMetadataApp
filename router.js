@@ -4,7 +4,7 @@ const app = express();
 const FloodDataSummary = require("./flood-data-summary");
 const path = require("path"); 
 const fs = require("fs"); 
-const config = require("./config.json")
+const config = require("./config-dev.json") //change this back for production
 
 const {Pool, Client} = require("pg");
 

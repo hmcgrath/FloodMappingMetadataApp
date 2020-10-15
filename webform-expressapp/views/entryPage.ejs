@@ -330,10 +330,10 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="munundertaking">Financially Supported By</label>
+                        <div style="margin-bottom: 8px;">Municipal:</div>
                         <select class="browser-default custom-select" id="munundertaking">
-                            <option value = "" disabled selected>Municipal</option>
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                     </div> 
                 </div>
@@ -342,10 +342,10 @@
             <div class="row">
                   <div class="col-lg-12">
                     <div class="form-group">
+                        <div style="margin-bottom: 8px;">Conservation Authority:</div>
                         <select class="browser-default custom-select" id="caundertaking">
-                            <option value = "" disabled selected>Conservation Authority</option>
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                     </div> 
                   </div>
@@ -354,11 +354,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
+                        <div style="margin-bottom: 8px;">Federal:</div>
                         <select class="browser-default custom-select" id="fedundertaking">
-                            <option value = "" disabled selected>Federal</option>
                             <option value="fdrp">FDRP</option>
                             <option value="ndmp">NDMP</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                     </div> 
                 </div>
@@ -368,13 +368,14 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <select class="browser-default custom-select" id="privundertaking" onchange="checkYesNoPriv(this);">
-                            <option value = "" disabled selected>Private</option>
+                        <div style="margin-bottom: 8px;">Private:</div>
+                        <select class="browser-default custom-select" id="privundertaking" onchange="checkYesNoPriv(this);"
+                            style="margin-bottom: 8px;">
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                         <!--Initially hidden component-->
-                        <div id="ifYesPriv" style="display: none;">
+                        <div id="ifYesPriv" style="display: none; padding-left: 20px;">
                             <label for="privateundertaking">Name of Organization</label>
                             <input type="text" id="privateundertakingname" name="privateundertaking" class="form-control">
                         </div>
@@ -386,13 +387,14 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <select class="browser-default custom-select" id="otherundertaking" onchange="checkYesNoOther(this);">
-                            <option value = "" disabled selected>Other</option>
+                        <div style="margin-bottom: 8px;">Other:</div>
+                        <select class="browser-default custom-select" id="otherundertaking" onchange="checkYesNoOther(this);"
+                            style="margin-bottom: 8px;">
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                         <!--Initially hidden component-->
-                        <div id="ifYesOther" style="display: none;">
+                        <div id="ifYesOther" style="display: none; padding-left: 20px;">
                             <label for="otherundertaking">Name of Organization</label>
                             <input type="text" id="otherundertakingname" name="otherundertaking" class="form-control">
                         </div>

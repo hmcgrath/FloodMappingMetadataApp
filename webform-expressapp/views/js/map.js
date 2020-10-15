@@ -177,7 +177,7 @@ var plotFile = function() {
 $(document).ready(function() {     
     //select the dropdown
     
-    $("#officialWCName").click(populate);
+    
     $("#lat1").blur(plotCoordinates);     
     $("#lat2").blur(plotCoordinates); 
     $("#long1").blur(plotCoordinates); 
@@ -260,6 +260,7 @@ function drawRect() {
     //clear the markers
     markerGroup.clearLayers();
 
+    populate();
 
 }
 

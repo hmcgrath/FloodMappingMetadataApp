@@ -7,6 +7,7 @@
 apitest.js
 conservation-authority-info.js
 webform-expressapp/views/mapiframe/conservation-layers.json
+config-dv.json
 /retired
 /.vscode
 # testing
@@ -28,3 +29,5 @@ splitnbcounties.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+
