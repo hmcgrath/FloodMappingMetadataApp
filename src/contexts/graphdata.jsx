@@ -66,9 +66,8 @@ class DataProvider extends Component {
     
     //handles all communication between iframe and app
     handleIframeMessage = (e) => {
-        
         //implement source url checking once this is up on a server
-        if (e.data['coordinates selected']) {
+        if (e.data && typeof(e.data) == "string" && e.data.includes('coordinates selected')) {
             var boundingbox = e.data.replace("coordinates selected ", "");
             //axios call to local api
             axios.get('/api', 

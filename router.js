@@ -256,7 +256,7 @@ app.post("/submit/:action?", function (req,res) {
 
     console.log(req.body);    
     //insert everything except extent 
-    var sql = "INSERT INTO hazarddata(projectid, projectname, projectcat, \
+    var sql = "INSERT INTO hazarddata(username, projectname, projectcat, \
                                         typeofrecord, floodhzdstd, officialwcname, \
                                         fedundertaking, caundertaking, munundertaking, \
                                         privundertaking, privateundertakingname, otherundertaking, otherundertakingname, datasetstatus, \
@@ -289,7 +289,9 @@ app.post("/submit/:action?", function (req,res) {
     var secdatasource = ["lidar", "photogrammetry", "radar", "sonar", 
                         "satelite", "uav", "gps", "groundsurvey", "constructiondrawings"]; 
 
-    var values = [req.body.projectID, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(floodhzdstd, req.body), req.body.officialWCName, 
+    var elevationSources = ["gps", "totalStation", "leveling", "baseElev", "otherElevation"];
+
+    var values = [req.body.username, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(floodhzdstd, req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
                     req.body.otherundertakingname, req.body.datasetStatus, req.body.lastprojupdate, req.body.partupdate, req.body.updatepurp, req.body.drainagearea, 
                     req.body.summreportavail, req.body.updatesinceorig, req.body.localwcname, req.body.wclength, req.body.widestcswidth, req.body.maxfloodplain, req.body.majorevent, req.body.coordsysproj, req.body.generalprojcomments, req.body.imgprojid, req.body.acquisitionyear,
@@ -300,7 +302,7 @@ app.post("/submit/:action?", function (req,res) {
                     req.body.datasetyrs, req.body.eventsmodeled, req.body.inputcomments, req.body.hydromodelyear, 
                     req.body.smincorporated, req.body.volreduction, req.body.catdiscretized, req.body.hydrosupportingdoc, req.body.ccconsidered, req.body.hydropeerreview, 
                     req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, 
-                    req.body.hydrainputparamquality, req.body.hydrainputcomments, req.body.floodlineestimated, req.body.hydrasupportingdoc, req.body.elevsource, req.body.hydrapeerreview, 
+                    req.body.hydrainputparamquality, req.body.hydrainputcomments, req.body.floodlineestimated, req.body.hydrasupportingdoc, getCheckboxes(elevationSources, req.body), req.body.hydrapeerreview, 
                     req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.climatechangecomments, req.body.otherfloodhzd]; 
     
     //replace any empty strings with null
