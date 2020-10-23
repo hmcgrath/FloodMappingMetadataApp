@@ -460,8 +460,9 @@ window.heatmap = {
         this.api.esriMap.infoWindow.resize(250, 250); 
         this.setDefaultHeatmap(); 
         this.loadDefaultInfoPanel(); 
-        var extent = this.esriApi.graphicsUtils.graphicsExtent(caLayer.esriLayer.graphics);
-        this.api.esriMap.setExtent(extent);   
+        //Do not reset extent
+        //var extent = this.esriApi.graphicsUtils.graphicsExtent(caLayer.esriLayer.graphics);
+        //this.api.esriMap.setExtent(extent);   
     },
 
     /**
@@ -474,7 +475,7 @@ window.heatmap = {
         this.api.esriMap.setExtent(extent); 
 
         window.addEventListener("message", (e) => {
-            
+            console.log(e);
             //mapping the full category names to the abbreviated database column names
             const graphCategories = {
                 "Project Category": "projectcat", 
