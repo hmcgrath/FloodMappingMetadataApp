@@ -17,8 +17,7 @@ class HeatmapCategory extends Component {
             return (
                 <button type="button" className="btn btn-primary btn-block" onClick={() => this.context.heatmap(this.props.categoryName)}>Heatmap</button>
             );
-        }
-        else {
+        } else {
             const {searchable, disabled, categoryId, value} = this.props; 
             const {data, setOption} = this.context; 
             //ensure that the select list has unique options

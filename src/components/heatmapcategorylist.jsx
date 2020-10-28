@@ -3,6 +3,7 @@ import HeatmapCategory from './heatmapcategory';
 import ListGroup from 'react-bootstrap/ListGroup'; 
 import HeatmapDataContext from '../contexts/heatmapdata'; 
 import {Modal, Button} from 'react-bootstrap'; 
+import HeatmapSearch from './heatmapsearch';
 
 class HeatmapCategoryList extends Component {
     static contextType = HeatmapDataContext; 
@@ -43,7 +44,7 @@ class HeatmapCategoryList extends Component {
                     <Modal.Header closeButton>
                         <Modal.Title>Advanced Search</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Ttest search</Modal.Body>
+                    <Modal.Body><HeatmapSearch></HeatmapSearch></Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleClose}>
                             Close

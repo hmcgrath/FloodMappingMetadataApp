@@ -131,6 +131,17 @@ app.get("/api", function(req, res) {
     
 });
 
+app.get("/api/columns", function(req, res) {
+    const sql = "select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME=\'hazarddata\'";
+    client.query(sql, function(err, result) {
+        if (err) {
+            res.send("Error: cannot fetch rows");
+        } else {
+            res.json(result);
+        }
+    });
+});
+
 //making a separate route for conservation authority counts... may integrate into /api route
 app.get("/api/cacount", function(req, res) {
     var jsonFile = fs.readFileSync(config.geoJSON); 
