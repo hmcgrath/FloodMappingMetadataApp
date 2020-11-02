@@ -7,7 +7,7 @@ import NavBar from './components/navbar';
 import HeatmapApplication from './components/heatmapapplication';
 class App extends Component{
   state = {
-    mode:"graph"
+    mode:"heatmap"
   };
 
   constructor() {
@@ -40,7 +40,7 @@ class App extends Component{
   render() {
     return (<React.Fragment>
               <NavBar onButtonClick={this.changeMode}>
-                {(this.state.mode === "graph") ? "Map By Polygon": "Graph"}
+                {(this.state.mode === "graph") ? "Map By Polygon": "Map by Selected Area"}
               </NavBar>
               {this.renderMode()}
             </React.Fragment>);
