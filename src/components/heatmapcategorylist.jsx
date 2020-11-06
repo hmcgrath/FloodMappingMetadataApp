@@ -18,6 +18,11 @@ class HeatmapCategoryList extends Component {
     handleClose = () => this.setState({show: false});
     handleShow = () => this.setState({show: true});
 
+    handleSearchClose = (e) => {
+        console.log(e);
+        this.setState({show: false});
+    }
+
     render() { 
         return (
             <div>
@@ -34,7 +39,7 @@ class HeatmapCategoryList extends Component {
                         </HeatmapCategory>
                     )}
                     <ListGroup.Item>
-                        <div class="row">                            
+                        <div className="row">                            
                             <button type="button" className="btn btn-primary btn-block" onClick={this.handleShow}>Advanced</button>                            
                         </div>
                     </ListGroup.Item>
@@ -44,12 +49,16 @@ class HeatmapCategoryList extends Component {
                     <Modal.Header closeButton>
                         <Modal.Title>Advanced Search</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body><HeatmapSearch></HeatmapSearch></Modal.Body>
+                    <Modal.Body>
+                        <HeatmapSearch
+                            handleSearchClose={this.handleSearchClose}>
+                        </HeatmapSearch>
+                    </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleClose}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={this.handleClose}>
+                        <Button variant="primary" onClick={this.handleSearchClose}>
                             Search
                         </Button>
                     </Modal.Footer>

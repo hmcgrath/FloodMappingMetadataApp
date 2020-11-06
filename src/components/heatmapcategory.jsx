@@ -18,20 +18,20 @@ class HeatmapCategory extends Component {
                 <button type="button" className="btn btn-primary btn-block" onClick={() => this.context.heatmap(this.props.categoryName)}>Heatmap</button>
             );
         } else {
-            const {searchable, disabled, categoryId, value} = this.props; 
+            const {searchable, disabled, categoryId} = this.props; 
             const {data, setOption} = this.context; 
             //ensure that the select list has unique options
             const options = [...new Set(data.map((record) => record[searchable]))]; 
             return(
                 <select className="browser-default custom-select" 
-                        value={value}
+                        defaultValue={"Search by...."}
                         disabled={disabled} onChange={(evt) => {
                     evt.persist(); 
-                    setOption(evt.target.value, categoryId);
+                    setOption(evt.target.value, categoryId);                    
                 }}>
-                    <option value="" disabled selected>Search by....</option>
-                    {options.map((opt) => (
-                        <option value={opt}>{opt}</option>
+                    <option value="Search by...." disabled>Search by....</option>
+                    {options.map((opt, index) => (
+                        <option key={index} value={opt}>{opt}</option>
                     ))}
                 </select>    
             );
@@ -41,11 +41,11 @@ class HeatmapCategory extends Component {
     render() { 
         return (  
             <ListGroup.Item>
-                <div class="row">
-                    <div class="col-lg-6 col-md-12 col-sm-12">
+                <div className="row">
+                    <div className="col-lg-6 col-md-12 col-sm-12">
                         {this.props.categoryName}
                     </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div className="col-lg-6 col-md-12 col-sm-12">
                         {this.getButton()}
                     </div>
                 </div>

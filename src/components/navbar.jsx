@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Navbar from 'react-bootstrap/Navbar'; 
 import Nav from 'react-bootstrap/Nav'; 
-import { Form, FormControl, FormLabel, FormGroup } from 'react-bootstrap';
 
 const NavBar = (props) => {
     return(

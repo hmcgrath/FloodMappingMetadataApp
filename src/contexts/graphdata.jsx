@@ -49,7 +49,7 @@ class DataProvider extends Component {
         addGraphTab: (graphName, graphId, graphType) => {
             var newGraphTabs = this.state.graphTabs; 
             //prevent duplicate tabs
-            if (newGraphTabs.filter(graphtab => graphtab.graphId == graphId).length === 0) {
+            if (newGraphTabs.filter(graphtab => graphtab.graphId === graphId).length === 0) {
                 newGraphTabs.push({graphName: graphName, graphId: graphId, graphType: graphType});
                 this.setState({graphTabs: newGraphTabs}); 
             }

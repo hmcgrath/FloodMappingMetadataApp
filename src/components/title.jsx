@@ -35,9 +35,9 @@ class Title extends Component {
 
         return (
             <React.Fragment>
-                <p><h1>Flood Hazard Mapping Analytics <a href="#about" onClick={this.handleShowAbout} style={{fontSize: "14px"}}>About</a>
-                    <a href="#help" onClick={this.handleShowHelp} style={{fontSize: "14px", marginLeft: "1em"}}>Help</a></h1></p>
-                <p><h4>{subHeading}</h4></p>
+                <div><h1>Flood Hazard Mapping Analytics <a href="#about" onClick={this.handleShowAbout} style={{fontSize: "14px"}}>About</a>
+                    <a href="#help" onClick={this.handleShowHelp} style={{fontSize: "14px", marginLeft: "1em"}}>Help</a></h1></div>
+                <h4>{subHeading}</h4>
 
                 <Modal show={this.state.showModalAbout} onHide={this.handleCloseAbout}>
                     <Modal.Header closeButton>
