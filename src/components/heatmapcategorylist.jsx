@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import HeatmapCategory from './heatmapcategory'; 
 import ListGroup from 'react-bootstrap/ListGroup'; 
 import HeatmapDataContext from '../contexts/heatmapdata'; 
-import {Modal, Button} from 'react-bootstrap'; 
 import HeatmapSearch from './heatmapsearch';
 
 class HeatmapCategoryList extends Component {
@@ -45,24 +44,9 @@ class HeatmapCategoryList extends Component {
                     </ListGroup.Item>
                 </ListGroup>
 
-                <Modal show={this.state.show} onHide={this.handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Advanced Search</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <HeatmapSearch
-                            handleSearchClose={this.handleSearchClose}>
-                        </HeatmapSearch>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleClose}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={this.handleSearchClose}>
-                            Search
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                <HeatmapSearch show={this.state.show}
+                    handleClose={this.handleClose.bind(this)}
+                    handleSearchClose={this.handleSearchClose.bind(this)}></HeatmapSearch>
             </div>
         );
     }
