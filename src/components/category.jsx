@@ -30,7 +30,7 @@ class Category extends Component {
     render() { 
         const expanded = (this.context.categories.filter(category => category.categoryId === this.props.categoryId)[0].expanded); 
         var feature; 
-        if (this.props.type == "graphable") {
+        if (this.props.type === "graphable") {
             feature = <GraphButton onClick={() => this.context.addGraphTab(this.props.categoryName, this.props.categoryId, this.props.graphType)}
                                             disabled={!this.context.dataExists}></GraphButton>
         }

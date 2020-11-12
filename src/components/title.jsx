@@ -3,45 +3,64 @@ import {Modal, Button} from 'react-bootstrap';
 
 class Title extends Component {
     state = {
-        showModal: false
+        showModalAbout: false,
+        showModalHelp: false
     }
 
-    handleClose = () => {
-        this.setState({showModal: false}); 
+    handleCloseAbout = () => {
+        this.setState({showModalAbout: false}); 
     }
 
-    handleShow = () => {
-        this.setState({showModal: true});
+    handleShowAbout = () => {
+        this.setState({showModalAbout: true});
+    }
+
+    handleShowHelp = () => {
+        this.setState({showModalHelp: true}); 
+    }
+
+    handleCloseHelp = () => {
+        this.setState({showModalHelp: false});
     }
 
     render() { 
         const {mode} = this.props; 
-        var innerText; 
         var subHeading; 
         if (mode === "graph") {
-            innerText = `A user first selects an area of interest to query the database. This is performed by the user 'clicking' on the map twice - to represent the extents of the area of interest (e.g.: upper left corner and lower right corner). 
-            This extent will then show up on the screen. Users can re-select the extent by selecting 'Reset Map' and clicking on the screen. The buttons on the right provide information in the window which summarizes the database data in the selected area. As well, a Graph is created, either bar chart or histogram, to visually represent this data. It opens as a Tab at the top of the map.`
             subHeading = "Click on Map to Set Extent and Filter"
         }
         else {
-            innerText = `This interactive map allows a user to visualize and query available able data in the database based on the selected category. Fields with the name “Heatmap’ contain thematic maps, with the values from the associated records grouped by numeric ranges and coloured. Fields/Labels with the name “Map’ contain datasets with multiple categories. These are coloured by the number of records in each area. Click on any of the areas which are coloured to view a pie chart which illustrates the distribution of data of categories in this polygon. Users can view the individual footprints of the stored maps (where available by clicking on the button). In addition, a csv file can be downloaded which contains all the attribute fields. The age of mapping shown is the mean rounded to the nearest decade. The total drainage area mapped is generated from grouping CAs into five equally spaced intervals determined by the CA with the maximum area mapped.`
             subHeading = "View Data By";
         }
 
         return (
             <React.Fragment>
-                <p><h1>Flood Hazard Mapping Analytics <a href="#" onClick={this.handleShow} style={{fontSize: "14px"}}>About</a></h1></p>
-                <p><h4>{subHeading}</h4></p>
+                <div><h1>Flood Hazard Mapping Analytics <a href="#about" onClick={this.handleShowAbout} style={{fontSize: "14px"}}>About</a>
+                    <a href="#help" onClick={this.handleShowHelp} style={{fontSize: "14px", marginLeft: "1em"}}>Help</a></h1></div>
+                <h4>{subHeading}</h4>
 
-                <Modal show={this.state.showModal} onHide={this.handleClose}>
+                <Modal show={this.state.showModalAbout} onHide={this.handleCloseAbout}>
                     <Modal.Header closeButton>
                         <Modal.Title>About</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {innerText}  
+                    This page presents information collected from the metadata portal data entry page. You can view the data by polygons or by selecting an area from the map, see Help on how to toggle between these views. The information can be visualized by heatmaps, graphs and charts. In addition, you can perform queries under the <em> Advanced </em>  button, to narrow down the information presented based on your selected criteria. 
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={this.handleClose}>
+                        <Button variant="primary" onClick={this.handleCloseAbout}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.showModalHelp} onHide={this.handleCloseHelp}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Help</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    This page has two maps to query and visualize information. You can toggle between the two of them by clicking on the green button at the top right of the page, "Map by Polygons" / "Map by Selected Area". The <em> Map by Polygons </em> are loaded with the application via  a JSON file of the user defined regions of interest. The <em> Map by Selected Area </em> is user defined by clicking on the map. To define the Selected area, you must click twice, once at the top-left corner of your area of interest, and a second time at the bottom-left corner. You can re-select the area of interest by selecting 'Reset Map'.  
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.handleCloseHelp}>
                             Close
                         </Button>
                     </Modal.Footer>

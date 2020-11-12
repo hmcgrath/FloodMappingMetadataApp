@@ -28,7 +28,7 @@ class CategoryList extends Component {
     render() { 
         return (
             <ListGroup style={{height: "100%"}}>
-                    {this.state.categories.filter(category => category.type != "searchable").map(category => 
+                    {this.state.categories.filter(category => category.type !== "searchable").map(category => 
                         <Category categoryName={category.name}
                                 categoryId={category.categoryId}
                                 type={category.type}
@@ -37,7 +37,7 @@ class CategoryList extends Component {
                                 {this.renderList(category)}
                         </Category>
                     )}
-                    {this.state.categories.filter(category => category.type == "searchable").map(category => 
+                    {this.state.categories.filter(category => category.type === "searchable").map(category => 
                         <Category categoryName={category.name}
                                     categoryId={category.categoryId}
                                     type={category.type}

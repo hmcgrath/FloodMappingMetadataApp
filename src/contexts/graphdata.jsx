@@ -49,7 +49,7 @@ class DataProvider extends Component {
         addGraphTab: (graphName, graphId, graphType) => {
             var newGraphTabs = this.state.graphTabs; 
             //prevent duplicate tabs
-            if (newGraphTabs.filter(graphtab => graphtab.graphId == graphId).length === 0) {
+            if (newGraphTabs.filter(graphtab => graphtab.graphId === graphId).length === 0) {
                 newGraphTabs.push({graphName: graphName, graphId: graphId, graphType: graphType});
                 this.setState({graphTabs: newGraphTabs}); 
             }
@@ -67,7 +67,7 @@ class DataProvider extends Component {
     //handles all communication between iframe and app
     handleIframeMessage = (e) => {
         //implement source url checking once this is up on a server
-        if (e.data.includes('coordinates selected')) {
+        if (e.data && typeof(e.data) == "string" && e.data.includes('coordinates selected')) {
             var boundingbox = e.data.replace("coordinates selected ", "");
             //axios call to local api
             axios.get('/api', 

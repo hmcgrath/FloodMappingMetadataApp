@@ -74,8 +74,8 @@
             <div class="row">
                 <div class="col-lg-6 col-md-12 col-sm-12"> 
                     <div class="form-group">
-                        <label for="projectID">Project ID</label>
-                        <input type="text" maxlength="20" class="form-control" id="projectID" placeholder="Enter Project ID">
+                        <label for="username">User ID</label>
+                        <input type="text" maxlength="50" class="form-control" id="username" placeholder="your_email_address@email.ca">
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-12 col-sm-12"> 
@@ -233,8 +233,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="extentmap">Extent</label>
-                        <p>Click on map to add a coordinate. Select or enter 2 coordinates or upload a SHP zip.</p>
+                        <label for="extentmap">Coordinates / Extent of Area for this Record:</label>
+                        <p>Add information about the <b> extent of the area </b>  covered by this record. </p>
                     </div>
                 </div>
             </div>
@@ -305,7 +305,7 @@
     
                 <div class="col-lg-6 col-md-12 col-sm-12">
                     <div class="form-group">
-                        <label for="watershed">Watershed Name</label>
+                        <label for="watershed">Watershed Name  (optional)</label>
                         <input type="text" class="form-control optional" id="watershed" placeholder="Enter Watershed Name">
                     </div>
                 </div> 
@@ -314,7 +314,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <label for="localwcname">Local Watercourse Name</label>
+                        <label for="localwcname">Local Watercourse Name (optional)</label>
                         <input type="text" maxlength="100" id="localwcname" class="form-control optional">
                     </div>
                 </div>
@@ -330,10 +330,10 @@
                 <div class="col-lg-12">
                     <div class="form-group">
                         <label for="munundertaking">Financially Supported By</label>
+                        <div style="margin-bottom: 8px;">Municipal:</div>
                         <select class="browser-default custom-select" id="munundertaking">
-                            <option value = "" disabled selected>Municipal</option>
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                     </div> 
                 </div>
@@ -342,10 +342,10 @@
             <div class="row">
                   <div class="col-lg-12">
                     <div class="form-group">
+                        <div style="margin-bottom: 8px;">Conservation Authority:</div>
                         <select class="browser-default custom-select" id="caundertaking">
-                            <option value = "" disabled selected>Conservation Authority</option>
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                     </div> 
                   </div>
@@ -354,11 +354,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
+                        <div style="margin-bottom: 8px;">Federal:</div>
                         <select class="browser-default custom-select" id="fedundertaking">
-                            <option value = "" disabled selected>Federal</option>
                             <option value="fdrp">FDRP</option>
                             <option value="ndmp">NDMP</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                     </div> 
                 </div>
@@ -368,15 +368,16 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <select class="browser-default custom-select" id="privundertaking" onchange="checkYesNoPriv(this);">
-                            <option value = "" disabled selected>Private</option>
+                        <div style="margin-bottom: 8px;">Private:</div>
+                        <select class="browser-default custom-select" id="privundertaking" onchange="checkYesNoPriv(this);"
+                            style="margin-bottom: 8px;">
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                         <!--Initially hidden component-->
-                        <div id="ifYesPriv" style="display: none;">
+                        <div id="ifYesPriv" style="display: none; padding-left: 20px;">
                             <label for="privateundertaking">Name of Organization</label>
-                            <input type="text" id="privateundertakingname" name="privateundertaking" class="form-control">
+                            <input type="text" id="privateundertakingname" name="privateundertaking" class="optional form-control">
                         </div>
                     </div> 
                 </div> 
@@ -386,15 +387,16 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="form-group">
-                        <select class="browser-default custom-select" id="otherundertaking" onchange="checkYesNoOther(this);">
-                            <option value = "" disabled selected>Other</option>
+                        <div style="margin-bottom: 8px;">Other:</div>
+                        <select class="browser-default custom-select" id="otherundertaking" onchange="checkYesNoOther(this);"
+                            style="margin-bottom: 8px;">
                             <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="no" selected>No</option>
                         </select>
                         <!--Initially hidden component-->
-                        <div id="ifYesOther" style="display: none;">
+                        <div id="ifYesOther" class="optional" style="display: none; padding-left: 20px;">
                             <label for="otherundertaking">Name of Organization</label>
-                            <input type="text" id="otherundertakingname" name="otherundertaking" class="form-control">
+                            <input type="text" id="otherundertakingname" name="otherundertaking" class="optional form-control">
                         </div>
                     </div> 
                 </div> 
@@ -1273,20 +1275,56 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-lg-6 col-md-12 col-sm-12">
+            <label for="elevsource">
+                Elevation Source
+            </label>
+            <div class="row checkboxes" id="elevsource">
+                <div class="col-lg-4 col-md-12 col-sm-12">             
                     <div class="form-group">
-                        <label for="elevsource">Elevation Source</label>
-                        <select class="browser-default custom-select" id="elevsource">
-                            <option value="" disabled selected>----</option>
-                            <option>Ground Survey - GPS</option>
-                            <option>Ground Survey - Total Station</option>
-                            <option>Leveling</option>
-                            <option>Base Elevation</option>
-                            <option>Other</option>
-                        </select>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="gps" id="gps">
+                            <label class="form-check-label" for="gps">
+                                Ground Survey - GPS
+                            </label>
+                        </div>
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="totalStation" id="totalStation">
+                            <label class="form-check-label" for="totalStation">
+                                Ground Survey - Total Station
+                            </label>
+                        </div> 
                     </div>
                 </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="leveling" id="leveling">
+                            <label class="form-check-label" for="leveling">
+                                Leveling
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="baseElev" id="baseElev">
+                            <label class="form-check-label" for="baseElev">
+                                Base Elevation
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="otherElevation" id="otherElevation">
+                            <label class="form-check-label" for="otherElevation">
+                                Other
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-6 col-md-12 col-sm-12">
                     <div class="form-group">
                         <label for="hydrapeerreview">Peer Reviewed</label>
@@ -1393,7 +1431,7 @@
 
     <div class="help-links" style="display:none">
 
-        <p id="projectIDh">Used as a unique identifier to link the projects to a spatial database.</p>
+        <p id="usernameh">Enter your organization email address: e.g: joe.smith@conservationarea.ca</p>
 
         <p id="projectNameh">Unique name given to each project.</p>
 
@@ -1407,7 +1445,7 @@
 
         <p id="floodHzdStdh">The regulatory zone and standard applied to a particular project.</p>
 
-        <p id="extentmaph">Enter or select the extent that was mapped. Enter coordinates, or select on the map, or upload a shapefile. </p>
+        <p id="extentmaph">You can enter the extent, using one of these methods: (i) clicking on the map (two diagonal corners), (ii) entering them into the text box, or (iii) uploading a shapefile of the extent. Alternatively, if you have a shapefile of the flood polygon, you can also load this file. (the application will automatically calculate the extent, and will store both the flood polygon and the extent. </p>
 
         <p id="officialWCNameh">The name of the primary watercourse or waterbody.</p>
 
