@@ -546,6 +546,9 @@ window.heatmap = {
                         this.downloadCSV(data, projectid); 
                     }
 
+                } else if (Object.keys(e.data).includes("showList")) {
+                    console.log(this.alldata);
+                    //
                 }
             }
             else {

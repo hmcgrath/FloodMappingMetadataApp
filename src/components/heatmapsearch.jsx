@@ -30,26 +30,46 @@ class HeatmapSearch extends Component {
 
     categoryChanged(i) {         
         var column = document.getElementById(`searchCategory${i}`).value;
-        this.removeOptions(document.getElementById(`searchTerm${i}`));
-        var added = [];
-        for (let j = 0; j < this.context.data.length; j++) {
-            var inList = false;
-            for (let k = 0; k < added.length; k++) {
-                if (JSON.stringify(added[k]) === JSON.stringify(this.context.data[j][column])) {
-                    inList = true;
-                    break;
+        var number = false;
+        console.log(this.state);
+        for (let j = 0; j < this.state.data.rows.length; j++) {
+            //console.log(this.state.data.rows[j].data_type);
+            if (this.state.data.rows[j].column_name === column) {
+                if (this.state.data.rows[j].data_type === "numeric" ||
+                    this.state.data.rows[j].data_type === "integer" ||
+                    this.state.data.rows[j].data_type === "smallint") {
+                        number = true;
                 }
+                break;
             }
-            if (this.context.data[j][column] && !inList) {
-                var option = document.createElement("option");
-                option.value = this.context.data[j][column];
-                option.text = this.context.data[j][column];
-                option.key = j;
-                added.push(this.context.data[j][column]);
-                console.log(this.context.data[j][column]);
-                document.getElementById(`searchTerm${i}`).add(option);
-            }
-        }    
+        }
+
+        if (number) {
+            document.getElementById(`searchTerm${i}`).classList.add("d-none");
+            document.getElementById(`modalNumericFilter${i}`).classList.remove("d-none");
+        } else {
+            document.getElementById(`searchTerm${i}`).classList.remove("d-none");
+            document.getElementById(`modalNumericFilter${i}`).classList.add("d-none");
+            this.removeOptions(document.getElementById(`searchTerm${i}`));
+            var added = [];
+            for (let j = 0; j < this.context.data.length; j++) {
+                var inList = false;
+                for (let k = 0; k < added.length; k++) {
+                    if (JSON.stringify(added[k]) === JSON.stringify(this.context.data[j][column])) {
+                        inList = true;
+                        break;
+                    }
+                }
+                if (this.context.data[j][column] && !inList) {
+                    var option = document.createElement("option");
+                    option.value = this.context.data[j][column];
+                    option.text = this.context.data[j][column];
+                    option.key = j;
+                    added.push(this.context.data[j][column]);
+                    document.getElementById(`searchTerm${i}`).add(option);
+                }
+            }   
+        } 
     }
 
     addColumn() {
@@ -102,14 +122,45 @@ class HeatmapSearch extends Component {
             <ListGroup.Item key={listIndex}>
                 <div className="row">
                     {columnSel}
-                    {listFilter}
-                    {numericFilter}
+                    {listFilter}                    
                     {closeButton}
+                    {numericFilter}
                 </div>
             </ListGroup.Item>);
-        this.setState({list: temp});
+        this.setState({list: temp}, () => {this.categoryChanged(listIndex)});
     
         
+    }
+
+    formatReturn() {
+        var alldata = this.context.data;
+        for (let i = 0; i < this.state.list.length; i++) {
+            if (this.state.removed.indexOf(i.toString()) === -1 ) {
+                var col = document.getElementById(`searchCategory${i}`).value;
+                var numeric = document.getElementById(`searchTerm${i}`).classList.contains("d-none");
+                if (numeric) {
+                    var min = document.getElementById(`searchMin${i}`).value;
+                    var max = document.getElementById(`searchMax${i}`).value;
+                    for (let j = 0; j < alldata.length; j++) {
+                        if (alldata[j][col] < min || alldata[j][col] > max) {
+                            alldata.splice(j, 1);
+                            j--;
+                        }
+                    }
+                } else {
+                    var colValue = document.getElementById(`searchTerm${i}`).value;
+                    for (let j = 0; j < alldata.length; j++) {
+                        if (alldata[j][col] !== colValue) {
+                            alldata.splice(j, 1);
+                            j--;
+                        }
+                    }
+                }
+               
+            }
+        }
+        this.context.advancedSearch(alldata);
+        this.props.handleSearchClose();
     }
     
     render() {
@@ -137,7 +188,7 @@ class HeatmapSearch extends Component {
                     <Button variant="secondary" onClick={this.props.handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={this.props.handleSearchClose}>
+                    <Button variant="primary" onClick={this.formatReturn.bind(this)}>
                         Search
                     </Button>
                 </Modal.Footer>

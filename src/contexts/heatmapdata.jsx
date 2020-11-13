@@ -58,6 +58,11 @@ class HeatmapDataProvider extends Component {
             var map = document.getElementById("FGPVheatmap"); 
             map.contentWindow.postMessage({"show": [categoryId, option]}, "*");
             this.setState({categories: newCategories}); 
+        },
+        advancedSearch: (e) => {
+            console.log(e, this.state.data);
+            var map = document.getElementById("FGPVheatmap"); 
+            map.contentWindow.postMessage({"showList": "test"}, "*");
         }
 
 
