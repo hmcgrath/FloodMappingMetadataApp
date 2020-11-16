@@ -9,23 +9,16 @@ class HeatmapCategoryList extends Component {
 
     state = {
         categories: this.context.categories,
-        show: false
+        mode: "normal"
     };
 
-    
+    toggleMode = () => this.setState({mode: this.state.mode === "normal" ? "advanced" : "normal"});
 
-    handleClose = () => this.setState({show: false});
-    handleShow = () => this.setState({show: true});
-
-    handleSearchClose = (e) => {
-        console.log(e);
-        this.setState({show: false});
-    }
 
     render() { 
         return (
             <div>
-                <ListGroup style={{height: "100%"}}>
+                {this.state.mode === "normal" ? <ListGroup style={{height: "100%"}}>
                     {this.state.categories.map(category =>
                         <HeatmapCategory categoryName={category.name}
                                         categoryId={category.categoryId}
@@ -39,14 +32,17 @@ class HeatmapCategoryList extends Component {
                     )}
                     <ListGroup.Item>
                         <div className="row">                            
-                            <button type="button" className="btn btn-primary btn-block" onClick={this.handleShow}>Advanced</button>                            
+                            <button type="button" className="btn btn-primary btn-block" onClick={this.toggleMode}>Filter View</button>                            
                         </div>
                     </ListGroup.Item>
                 </ListGroup>
-
-                <HeatmapSearch show={this.state.show}
-                    handleClose={this.handleClose.bind(this)}
-                    handleSearchClose={this.handleSearchClose.bind(this)}></HeatmapSearch>
+                :
+                <div>
+                    <HeatmapSearch></HeatmapSearch>
+                    <div className="row">                            
+                        <button type="button" className="btn btn-primary btn-block" onClick={this.toggleMode} style={{marginTop: "10px"}}>Normal View</button>                            
+                    </div>
+                </div>}
             </div>
         );
     }

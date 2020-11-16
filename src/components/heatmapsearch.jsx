@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import HeatmapDataContext from '../contexts/heatmapdata';
 import { ListGroup } from 'react-bootstrap';
-import {Modal, Button} from 'react-bootstrap'; 
+import { Button} from 'react-bootstrap'; 
 
 class HeatmapSearch extends Component {
     static contextType = HeatmapDataContext; 
@@ -136,7 +136,6 @@ class HeatmapSearch extends Component {
 
     formatReturn() {
         var returnData = [];
-        console.log(this.context.data);
         for (let i = 0; i < this.state.list.length; i++) {            
             if (this.state.removed.indexOf(i.toString()) === -1 ) {
                 returnData[i] = [];
@@ -225,12 +224,10 @@ class HeatmapSearch extends Component {
             }
         }
         
-        console.log(finalData);
         this.context.advancedSearch(finalData);
 
         //Clear query
-        this.setState({removed: [], list: []});
-        this.props.handleSearchClose();
+        //this.setState({removed: [], list: []});
     }
 
     queryMode() {
@@ -246,33 +243,31 @@ class HeatmapSearch extends Component {
             }
         }
         return (
-            <Modal show={this.props.show} onHide={this.props.handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Advanced Search</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+            <div>
+                <header>
+                    <h3>Advanced Search</h3>
+                </header>
                 <div>
                 {temp.length > 0 ? "Note: To select multiple values, hold control and click or click and drag" : ""}
                     <ListGroup>
                         {temp}
                     </ListGroup>                    
                 </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={this.addColumn.bind(this)}
-                        className="mr-auto">Add Row</Button>
-                    <div className="custom-control custom-switch">
+                <footer>                    
+                    <div className="custom-control custom-switch row">
                         <input type="checkbox" className="custom-control-input" id="andSwitch" onChange={this.queryMode.bind(this)}></input>
                         <label className="custom-control-label" htmlFor="andSwitch" style={{width: "181px"}}>Results meet <b>ANY</b> criteria</label>
                     </div>
-                    <Button variant="secondary" onClick={this.props.handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={this.formatReturn.bind(this)}>
-                        Search
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                    <div className="row">
+                        <div className="col-6">
+                            <Button variant="primary" onClick={this.addColumn.bind(this)}>Add Row</Button>
+                        </div>
+                        <div className="col-6">
+                            <Button variant="primary" onClick={this.formatReturn.bind(this)}>Search</Button>
+                        </div>
+                    </div>
+                </footer>
+            </div>
             
         )
     }
