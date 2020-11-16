@@ -65,6 +65,7 @@ class HeatmapSearch extends Component {
                     option.value = this.context.data[j][column];
                     option.text = this.context.data[j][column];
                     option.key = j;
+                    option.title = this.context.data[j][column];
                     added.push(this.context.data[j][column]);
                     document.getElementById(`searchTerm${i}`).add(option);
                 }
@@ -80,11 +81,12 @@ class HeatmapSearch extends Component {
             <div id={`modalColumnSel${listIndex}`} className="col-lg-5 col-md-12 col-sm-12">
                 <select defaultValue="Filter Column..." id={`searchCategory${listIndex}`} 
                     onChange={() => {this.categoryChanged(listIndex);}} 
+                    className="browser-default custom-select"
                     style={{overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%"}}>
                     <option value="Filter Column...." disabled>Filter Column....</option>
                     {this.state.data.rows.map((value, index) => 
                     ( 
-                        <option key={index} value={value.column_name}>{value.column_name}</option>
+                        <option key={index} title={value.column_name} value={value.column_name}>{value.column_name}</option>
                     ))}
                 </select>  
             </div>
@@ -98,8 +100,8 @@ class HeatmapSearch extends Component {
         );
         let listFilter = (
             <div id={`modalListFiler${listIndex}`} className="col-lg-6 col-md-12 col-sm-12">
-                <select defaultValue="Filter Value..." id={`searchTerm${listIndex}`} 
-                    style={{overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%"}}>                        
+                <select id={`searchTerm${listIndex}`} 
+                    style={{maxWidth: "100%"}} multiple>                        
                     <option value="Filter Value...." disabled>Filter Value....</option>
                 </select>
             </div>
@@ -133,34 +135,107 @@ class HeatmapSearch extends Component {
     }
 
     formatReturn() {
-        var alldata = this.context.data;
-        for (let i = 0; i < this.state.list.length; i++) {
+        var returnData = [];
+        console.log(this.context.data);
+        for (let i = 0; i < this.state.list.length; i++) {            
             if (this.state.removed.indexOf(i.toString()) === -1 ) {
+                returnData[i] = [];
                 var col = document.getElementById(`searchCategory${i}`).value;
                 var numeric = document.getElementById(`searchTerm${i}`).classList.contains("d-none");
                 if (numeric) {
                     var min = document.getElementById(`searchMin${i}`).value;
                     var max = document.getElementById(`searchMax${i}`).value;
-                    for (let j = 0; j < alldata.length; j++) {
-                        if (alldata[j][col] < min || alldata[j][col] > max) {
-                            alldata.splice(j, 1);
-                            j--;
+                    console.log(max);
+                    if (min === "") {
+                        min = null;
+                    } else {
+                        min = Number(min);
+                    }
+                    if (max === "") {
+                        max = null;
+                    } else {
+                        max = Number(max);
+                    }
+                    for (let j = 0; j < this.context.data.length; j++) {
+                        if (min && max) {
+                            if (this.context.data[j][col] >= min && this.context.data[j][col] <= max) {
+                                console.log(typeof(this.context.data[j][col]), typeof(max));
+                                if (returnData[i].indexOf(this.context.data[j]) === -1) {
+                                    returnData[i].push(this.context.data[j]);
+                                }
+                            }
+                        } else if (min) {
+                            if (this.context.data[j][col] >= min) {
+                                if (returnData[i].indexOf(this.context.data[j]) === -1) {
+                                    returnData[i].push(this.context.data[j]);
+                                }
+                            }
+                        } else if (max) {
+                            if (this.context.data[j][col] <= max) {
+                                if (returnData[i].indexOf(this.context.data[j]) === -1) {
+                                    returnData[i].push(this.context.data[j]);
+                                }
+                            }
+                        } else {
+                            if (returnData[i].indexOf(this.context.data[j]) === -1) {
+                                returnData[i].push(this.context.data[j]);
+                            }
                         }
                     }
                 } else {
-                    var colValue = document.getElementById(`searchTerm${i}`).value;
-                    for (let j = 0; j < alldata.length; j++) {
-                        if (alldata[j][col] !== colValue) {
-                            alldata.splice(j, 1);
-                            j--;
+                    //var colValue = document.getElementById(`searchTerm${i}`).value;
+                    var select1 = document.getElementById(`searchTerm${i}`);
+                    var selected1 = [];
+                    for (var k = 0; k < select1.length; k++) {
+                        if (select1.options[k].selected) selected1.push(select1.options[k].value);
+                    }
+                    for (let j = 0; j < this.context.data.length; j++) {
+                        if (selected1.indexOf(this.context.data[j][col]) !== -1) {
+                            if (returnData[i].indexOf(this.context.data[j]) === -1) {
+                                returnData[i].push(this.context.data[j]);
+                            }
                         }
                     }
                 }
                
             }
         }
-        this.context.advancedSearch(alldata);
+        var finalData = [];
+        var mode = document.getElementById("andSwitch").checked ? "AND" : "OR";
+        if (mode === "OR") {
+            for (let i = 0; i < returnData.length; i++) {
+                for (let j = 0; j < returnData[i].length; j++) {
+                    if (finalData.indexOf(returnData[i][j]) === -1) {
+                        finalData.push(returnData[i][j]);
+                    }
+                }
+            }
+        } else {
+            var minLengthIndex = 0;
+            for (let i = 0; i < returnData.length; i++) {
+                if (returnData[i].length < returnData[minLengthIndex].length) {
+                    minLengthIndex = i;
+                }
+            }
+            finalData = returnData[minLengthIndex];
+            for (let i = 0; i < returnData.length; i++) {
+                if (i !== minLengthIndex) {
+                    finalData = finalData.filter(value => returnData[i].includes(value));
+                }
+            }
+        }
+        
+        console.log(finalData);
+        this.context.advancedSearch(finalData);
+
+        //Clear query
+        this.setState({removed: [], list: []});
         this.props.handleSearchClose();
+    }
+
+    queryMode() {
+        var x = document.getElementById("andSwitch");
+        x.labels[0].innerHTML = x.checked ? "Results meet <b>ALL</b> criteria" : "Results meet <b>ANY</b> criteria";
     }
     
     render() {
@@ -177,6 +252,7 @@ class HeatmapSearch extends Component {
                 </Modal.Header>
                 <Modal.Body>
                 <div>
+                {temp.length > 0 ? "Note: To select multiple values, hold control and click or click and drag" : ""}
                     <ListGroup>
                         {temp}
                     </ListGroup>                    
@@ -185,6 +261,10 @@ class HeatmapSearch extends Component {
                 <Modal.Footer>
                     <Button variant="primary" onClick={this.addColumn.bind(this)}
                         className="mr-auto">Add Row</Button>
+                    <div className="custom-control custom-switch">
+                        <input type="checkbox" className="custom-control-input" id="andSwitch" onChange={this.queryMode.bind(this)}></input>
+                        <label className="custom-control-label" htmlFor="andSwitch" style={{width: "181px"}}>Results meet <b>ANY</b> criteria</label>
+                    </div>
                     <Button variant="secondary" onClick={this.props.handleClose}>
                         Close
                     </Button>

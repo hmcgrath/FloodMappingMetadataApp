@@ -59,10 +59,9 @@ class HeatmapDataProvider extends Component {
             map.contentWindow.postMessage({"show": [categoryId, option]}, "*");
             this.setState({categories: newCategories}); 
         },
-        advancedSearch: (e) => {
-            console.log(e, this.state.data);
+        advancedSearch: (data) => {            
             var map = document.getElementById("FGPVheatmap"); 
-            map.contentWindow.postMessage({"showList": "test"}, "*");
+            map.contentWindow.postMessage({"showList": data}, "*");
         }
 
 

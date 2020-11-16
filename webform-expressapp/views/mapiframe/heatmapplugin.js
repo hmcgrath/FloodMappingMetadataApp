@@ -505,12 +505,23 @@ window.heatmap = {
             else if (typeof(e.data) === "object"){
                 //clear any existing geometry
                 recordLayer.removeGeometry(); 
-                if (Object.keys(e.data).includes("show")) {
+                if (Object.keys(e.data).includes("show") || Object.keys(e.data).includes("showList")) {
+                    var data = [];
+                    if (Object.keys(e.data).includes("show")) {
+                        data = this.alldata;
+                    } else {
+                        data = e.data["showList"];
+                    }
                     caLayer.esriLayer.setVisibility(false); 
                     this.api.esriMap.infoWindow.hide();  
-                    const categoryId = e.data["show"][0]; 
-                    const categoryVal = e.data["show"][1]; 
-                    const displayRecords = this.alldata.filter((record) => record[categoryId] === categoryVal); 
+                    var displayRecords;
+                    if (Object.keys(e.data).includes("show")) {
+                        const categoryId = e.data["show"][0]; 
+                        const categoryVal = e.data["show"][1]; 
+                        displayRecords = data.filter((record) => record[categoryId] === categoryVal); 
+                    } else {
+                        displayRecords = data;
+                    }
                     
                     for (const record of displayRecords) {
                         var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
@@ -525,15 +536,18 @@ window.heatmap = {
                         recordLayer.addGeometry(recordbox); 
                     }
                     var recordextent = this.esriApi.graphicsUtils.graphicsExtent(recordLayer.esriLayer.graphics);
-                    this.api.esriMap.setExtent(recordextent); 
+                    if (recordextent) {
+                        this.api.esriMap.setExtent(recordextent); 
+                    }
+                   
 
                     for (const record of recordLayer.esriLayer.graphics) {                        
                         var infoPopup = new this.bundle.InfoTemplate(); 
-                        const recdata = this.alldata.filter((rec) => rec.submissionid === parseInt(record.geometry.apiId))[0];
+                        const recdata = data.filter((rec) => rec.submissionid === parseInt(record.geometry.apiId))[0];
                         infoPopup.setTitle(recdata.projectid); 
                         infoPopup.setContent(`Age of Mapping: ${recdata.lastprojupdate}</br>
                                             Flood Hazard Standard: ${recdata.floodhzdstd}</br>
-                                            Project ID: ${recdata.projectid}</br>
+                                            Username: ${recdata.username}</br>
                                             Project Name: ${recdata.projectname}</br>
                                             Official WC Name: ${recdata.officialwcname}</br>
                                             Local WC Name: ${recdata.localwcname}</br>
@@ -541,15 +555,22 @@ window.heatmap = {
                         record.setInfoTemplate(infoPopup); 
                     }
 
-                    _downloadCSV = (projectid) => {
+                    _downloadCSV = () => {
                         var data = displayRecords; 
-                        this.downloadCSV(data, projectid); 
+                        this.downloadCSV(data, "records"); 
                     }
 
-                } else if (Object.keys(e.data).includes("showList")) {
-                    console.log(this.alldata);
-                    //
-                }
+                    zoomToLayer = () => {
+                        this.api.esriMap.setExtent(recordextent);
+                    }
+
+                    var panelTitle = `<span>Query Results</span>`; 
+                    var panelBody = `<p>Query returned <b>${displayRecords.length}</b> records</p><br><br>
+                                    ${recordextent ? `<button type="button" onClick=zoomToLayer()>Zoom To Extent</button>` : ""}`;
+                    //load legend panel
+                    this.loadLegendPanel(panelTitle, panelBody); 
+
+                } 
             }
             else {
                 return; 
