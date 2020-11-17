@@ -226,6 +226,7 @@ window.heatmap = {
     setDrainageAreaHeatmap() {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         var totalDrainageAreas = {}; 
+        console.log(this.cadata);
         for (const key of Object.keys(this.cadata)) {
             let totaldrainagearea = 0; 
             for (const record of this.cadata[key]) {
@@ -492,7 +493,11 @@ window.heatmap = {
             } 
             //make sure the layer is visible again
             else if (e.data === "reset map") {
-                this.resetMap();         
+                this.resetMap();  
+                var recordextent = this.esriApi.graphicsUtils.graphicsExtent(caLayer.esriLayer.graphics);
+                if (recordextent) {
+                    this.api.esriMap.setExtent(recordextent); 
+                }      
             }
             else if (e.data === "Age of Mapping") {
                 this.resetMap(); 
@@ -525,10 +530,11 @@ window.heatmap = {
                     
                     for (const record of displayRecords) {
                         var stringlist = record.fullbox.split("(").join("").split(")").join("").split(",");
-                        var boxlist = []; 
+                        var boxlist = [];                         
                         for (var i = 0; i < stringlist.length; i+= 2) {
                             boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
                         } 
+                        console.log(boxlist, stringlist);
                         var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { outlineColor: [255, 130, 0], 
                             outlineWidth: 3, fillColor: [255, 130, 0], fillOpacity: 0.8 }); 
                         //create the info window
@@ -555,6 +561,109 @@ window.heatmap = {
                         record.setInfoTemplate(infoPopup); 
                     }
 
+                    for (const record of displayRecords) {
+                        console.log(record.extent);
+                        if (record.extent) {
+                            var stringlist = record.extent.split("(").join("").split(")").join("").split(",");
+                            var boxlist = []; 
+                            for (var i = 0; i < stringlist.length; i+= 2) {
+                                boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
+                            } 
+                            var recordbox = new RAMP.GEO.Polygon(record.submissionid+"p", boxlist, { outlineColor: [22, 152, 214], 
+                                outlineWidth: 3, fillColor: [22, 152, 214], fillOpacity: 0.7 }); 
+                            //create the info window
+                            
+                            recordLayer.addGeometry(recordbox); 
+                        }
+                    }
+
+                    //heatmap, only for filter option
+                    if (Object.keys(e.data).includes("showList")) {
+                        caLayer.esriLayer.setVisibility(true); 
+
+                        var filterCounts = {}; 
+                        var maxCount = 0;
+                        var submissionIdList = data.map(value => value.submissionid);
+                        for (const key of Object.keys(this.cadata)) {
+                            let resultCount = 0; 
+                            for (const record of this.cadata[key]) {                                                                                    
+                                if (submissionIdList.includes(record.submissionid)) {
+                                    resultCount += 1;
+                                }                    
+                            }
+                            filterCounts[key] = resultCount; 
+                            if (resultCount > maxCount) maxCount = resultCount;
+                        }
+                                            
+                        //round up to the nearest five 
+                        maxCount += (5 - (maxCount % 5));
+                        //get the size of each interval  
+                        var intervalSize = maxCount / 5; 
+                        //enum of polygon colors
+                        const colors = {
+                            //NOTE: WE TREAT ZERO AS A SEPARATE INTERVAL
+                            "-1": [237, 81, 81],
+                            0: [20, 158, 206],
+                            1: [167, 198, 54],
+                            2: [158, 85, 156],
+                            3: [252, 146, 41],
+                            4: [255, 222, 62]
+                        }
+                        var intervals = [["Zero", "(237,81,81)", false]];  
+
+                        //get interval strings (for legend)
+                        for (var i = 1, j = 0; i <= maxCount; i+= intervalSize, j++) {
+                            let intervalString = i.toString() + "-" + (i + intervalSize - 1).toString(); 
+                            let intervalSame = i.toString() === (i + intervalSize - 1).toString();
+                            let colorString = colors[j].join(","); 
+                            colorString = "(" + colorString + ")"; 
+                            intervals.push([intervalString, colorString, intervalSame]); 
+                        }
+                        
+                        //create the legend panel                    
+                        var panelList = $("<md-list>");
+                        for (const interval of intervals) {
+                            $(panelList).append(
+                                `<md-list-item style="min-height:20px">\
+                                    <div style="width:10px;height:10px;border-style:solid;border-color:black;border-width:0.5px;background-color:rgb${interval[1]}"></div>\
+                                    <span style="padding-left:10px">${interval[2] ? interval[0].substring(interval[0].indexOf("-")+1) : interval[0]}</span>\
+                                </md-list-item>`); 
+                        }
+                        var panelBody = $("<div>");
+                        panelBody.append(panelList);
+                        if (recordextent) {
+                            panelBody.append(`<button type="button" onClick=zoomToLayer()>Zoom To Extent</button>`);
+                        }
+                        //append the legend panel
+                        var panelTitle = `<p>Query returned <b>${displayRecords.length}</b> records</p>`;
+                        this.loadLegendPanel(panelTitle, panelBody); 
+                        console.log(intervals);
+                        for (const ca of caLayer.esriLayer.graphics) {
+                            var intervalNum = Math.floor((filterCounts[ca.geometry.apiId] - 1)/(intervalSize)); 
+                            console.log(intervalNum);
+                            const color = colors[intervalNum];
+                            //set opacity of 0.7 for polygon fill 
+                            color.push(0.7); 
+                            var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
+                                new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
+                                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(color)
+                            ); 
+                            ca.setSymbol(symbol);                            
+                            var popupTemplate = new this.bundle.PopupTemplate({
+                                title: ca.geometry.apiId,                                   
+                            });
+                            ca.setInfoTemplate(popupTemplate); 
+                    
+                        }
+                    } else {
+                        var panelBody = "";
+                        if (recordextent) {
+                            panelBody = `<button type="button" onClick=zoomToLayer()>Zoom To Extent</button>`;
+                        }
+                        //append the legend panel
+                        var panelTitle = `<p>Query returned <b>${displayRecords.length}</b> records</p>`;
+                        this.loadLegendPanel(panelTitle, panelBody); 
+                    }
                     _downloadCSV = () => {
                         var data = displayRecords; 
                         this.downloadCSV(data, "records"); 
@@ -563,13 +672,6 @@ window.heatmap = {
                     zoomToLayer = () => {
                         this.api.esriMap.setExtent(recordextent);
                     }
-
-                    var panelTitle = `<span>Query Results</span>`; 
-                    var panelBody = `<p>Query returned <b>${displayRecords.length}</b> records</p><br><br>
-                                    ${recordextent ? `<button type="button" onClick=zoomToLayer()>Zoom To Extent</button>` : ""}`;
-                    //load legend panel
-                    this.loadLegendPanel(panelTitle, panelBody); 
-
                 } 
             }
             else {
