@@ -3,10 +3,12 @@ import axios from 'axios';
 import HeatmapDataContext from '../contexts/heatmapdata';
 import { ListGroup } from 'react-bootstrap';
 import { Button} from 'react-bootstrap'; 
+import aliasMap from '../columnNames.js';
 
 class HeatmapSearch extends Component {
     static contextType = HeatmapDataContext; 
     state = { removed: [], data: {rows: []}, list: [] };
+
 
     componentDidMount() {    
         axios.get('api/columns')
@@ -86,7 +88,7 @@ class HeatmapSearch extends Component {
                     <option value="Filter Column...." disabled>Filter Column....</option>
                     {this.state.data.rows.map((value, index) => 
                     ( 
-                        <option key={index} title={value.column_name} value={value.column_name}>{value.column_name}</option>
+                        <option key={index} title={value.column_name} value={value.column_name}>{aliasMap[value.column_name]}</option>
                     ))}
                 </select>  
             </div>
