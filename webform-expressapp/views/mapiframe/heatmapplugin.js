@@ -565,18 +565,14 @@ window.heatmap = {
                     }
 
                     for (const record of displayRecords) {
-                        console.log(record.extent);
                         if (record.extent) {
-                            var stringlist = record.extent.split("(").join("").split(")").join("").split(",");
-                            var boxlist = []; 
-                            for (var i = 0; i < stringlist.length; i+= 2) {
-                                boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
-                            } 
-                            var recordbox = new RAMP.GEO.Polygon(record.submissionid+"p", boxlist, { outlineColor: [22, 152, 214], 
-                                outlineWidth: 3, fillColor: [22, 152, 214], fillOpacity: 0.7 }); 
-                            //create the info window
-                            
-                            recordLayer.addGeometry(recordbox); 
+                            for (let i = 0; i < record.extent.length; i++) {
+                                console.log(record.extent[i]);
+                                var recordbox = new RAMP.GEO.Polygon(record.submissionid+`p${i}`, record.extent[i].map(item => [item[1], item[0]]), { outlineColor: [3,2,223], 
+                                    outlineWidth: 3, fillColor: [3,2,223], fillOpacity: 0.7 });                                     
+                                //create the info window                                
+                                recordLayer.addGeometry(recordbox); 
+                            }
                         }
                     }
 
@@ -642,10 +638,8 @@ window.heatmap = {
                         //append the legend panel
                         var panelTitle = `<p>Query returned <b>${displayRecords.length}</b> records</p>`;
                         this.loadLegendPanel(panelTitle, panelBody); 
-                        console.log(intervals);
                         for (const ca of caLayer.esriLayer.graphics) {
                             var intervalNum = Math.floor((filterCounts[ca.geometry.apiId] - 1)/(intervalSize)); 
-                            console.log(intervalNum, ca);
                             const color = colors[intervalNum];
                             //set opacity of 0.7 for polygon fill 
                             if (intervalNum != -1) {
