@@ -132,7 +132,7 @@ app.get("/api", function(req, res) {
 });
 
 app.get("/api/columns", function(req, res) {
-    const sql = "select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME=\'hazarddata\'";
+    const sql = "select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME=\'hazarddata\' order by ordinal_position";
     client.query(sql, function(err, result) {
         if (err) {
             res.send("Error: cannot fetch rows");

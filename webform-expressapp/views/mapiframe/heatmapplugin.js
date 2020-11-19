@@ -456,6 +456,9 @@ window.heatmap = {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         const recordLayer = this.api.layers.getLayersById("recordlayer")[0];
         caLayer.esriLayer.setVisibility(true); 
+        for (const ca of caLayer.esriLayer.graphics) {
+            ca.visible = true;
+        }
         recordLayer.removeGeometry(); 
         this.api.esriMap.infoWindow.hide();  
         this.api.esriMap.infoWindow.resize(250, 250); 
@@ -623,11 +626,13 @@ window.heatmap = {
                         //create the legend panel                    
                         var panelList = $("<md-list>");
                         for (const interval of intervals) {
-                            $(panelList).append(
-                                `<md-list-item style="min-height:20px">\
-                                    <div style="width:10px;height:10px;border-style:solid;border-color:black;border-width:0.5px;background-color:rgb${interval[1]}"></div>\
-                                    <span style="padding-left:10px">${interval[2] ? interval[0].substring(interval[0].indexOf("-")+1) : interval[0]}</span>\
-                                </md-list-item>`); 
+                            if (interval[0] !== "Zero") {
+                                $(panelList).append(
+                                    `<md-list-item style="min-height:20px">\
+                                        <div style="width:10px;height:10px;border-style:solid;border-color:black;border-width:0.5px;background-color:rgb${interval[1]}"></div>\
+                                        <span style="padding-left:10px">${interval[2] ? interval[0].substring(interval[0].indexOf("-")+1) : interval[0]}</span>\
+                                    </md-list-item>`); 
+                            }
                         }
                         var panelBody = $("<div>");
                         panelBody.append(panelList);
@@ -640,20 +645,25 @@ window.heatmap = {
                         console.log(intervals);
                         for (const ca of caLayer.esriLayer.graphics) {
                             var intervalNum = Math.floor((filterCounts[ca.geometry.apiId] - 1)/(intervalSize)); 
-                            console.log(intervalNum);
+                            console.log(intervalNum, ca);
                             const color = colors[intervalNum];
                             //set opacity of 0.7 for polygon fill 
-                            color.push(0.7); 
-                            var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
-                                new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
-                                new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(color)
-                            ); 
-                            ca.setSymbol(symbol);                            
-                            var popupTemplate = new this.bundle.PopupTemplate({
-                                title: ca.geometry.apiId,                                   
-                            });
-                            ca.setInfoTemplate(popupTemplate); 
-                    
+                            if (intervalNum != -1) {
+                                ca.visible = true;
+                                color.push(0.7); 
+                                var symbol = new this.esriApi.SimpleFillSymbol(this.esriApi.SimpleFillSymbol.STYLE_SOLID, 
+                                    new this.esriApi.SimpleLineSymbol(this.esriApi.SimpleLineSymbol.STYLE_SOLID,
+                                    new this.esriApi.Color([220,5,0]), 2), new this.esriApi.Color(color)
+                                ); 
+                                ca.setSymbol(symbol);                            
+                                var popupTemplate = new this.bundle.PopupTemplate({
+                                    title: ca.geometry.apiId,   
+                                    description: `${filterCounts[ca.geometry.apiId]} results`          
+                                });
+                                ca.setInfoTemplate(popupTemplate); 
+                            } else {                                
+                                ca.visible = false;
+                            }
                         }
                     } else {
                         var panelBody = "";
