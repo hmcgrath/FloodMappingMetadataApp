@@ -119,8 +119,8 @@ window.heatmap = {
                     for (var i = 0; i < stringlist.length; i+= 2) {
                         boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
                     } 
-                    var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { outlineColor: [255, 130, 0], 
-                        outlineWidth: 3 }); 
+                    var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { fillColor: [255, 130, 0], outlineColor: [255, 130, 0], 
+                        outlineWidth: 3, fillOpacity: 0.8 }); 
                     recordLayer.addGeometry(recordbox); 
                 }
                 var extent = this.esriApi.graphicsUtils.graphicsExtent(recordLayer.esriLayer.graphics);
@@ -141,12 +141,17 @@ window.heatmap = {
             //write the fields first
             var fieldsRow = Object.keys(data[0]).join(","); 
             csvContent += fieldsRow + "\r\n";
-            for (const record of data){
+            for (const record of data) {
                 for (const entry of Object.values(record)) {
+                    
                     let content = entry; 
                     if (typeof(content) === "string" && content.includes(",")) {
                         content = "\"" + content + "\""; 
+                    } else if (typeof(content) == "object") {
+                        content = "\"" + JSON.stringify(entry).replace(/\"/g, "") + "\""; 
+                        if (content.length > 1000) content = "";
                     }
+                    console.log(content);                
                     csvContent += content + ","
                 }
                 //let contentRow = Object.values(record).join(","); 
