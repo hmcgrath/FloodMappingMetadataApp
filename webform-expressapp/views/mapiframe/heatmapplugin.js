@@ -150,8 +150,7 @@ window.heatmap = {
                     } else if (typeof(content) == "object") {
                         content = "\"" + JSON.stringify(entry).replace(/\"/g, "") + "\""; 
                         if (content.length > 1000) content = "";
-                    }
-                    console.log(content);                
+                    }            
                     csvContent += content + ","
                 }
                 //let contentRow = Object.values(record).join(","); 

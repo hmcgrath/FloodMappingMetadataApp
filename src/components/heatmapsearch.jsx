@@ -78,7 +78,7 @@ class HeatmapSearch extends Component {
     addColumn() {
         console.log(this.state.data.rows);
         var temp = this.state.list;
-        let listIndex = temp.length;
+        let listIndex = temp.length;       
         let columnSel = (
             <div id={`modalColumnSel${listIndex}`} className="col-lg-5 col-md-12 col-sm-12">
                 <select defaultValue="Filter Column..." id={`searchCategory${listIndex}`} 
@@ -89,7 +89,23 @@ class HeatmapSearch extends Component {
                     {this.state.data.rows.map((value, index) => 
                     ( 
                         <option key={index} title={value.column_name} value={value.column_name}>{aliasMap[value.column_name]}</option>
-                    ))}
+                    )).sort((a,b) => {
+                        if(aliasMap[a.props.value] === aliasMap[b.props.value]) {
+                            return 0;
+                        }
+                        if (aliasMap[a.props.value] > aliasMap[b.props.value]) {
+                            return 1;
+                        }
+                        return -1;}
+                    ).sort((a,b) => {
+                        if(aliasMap[a.props.value][0] === aliasMap[b.props.value][0]) {
+                            return 0;
+                        }
+                        if (aliasMap[a.props.value][0] === "(" && aliasMap[b.props.value][0] !== "(") {
+                            return 1;
+                        }
+                        return -1;
+                    })}
                 </select>  
             </div>
         );

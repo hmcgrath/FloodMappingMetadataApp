@@ -18,7 +18,13 @@ class HeatmapCategoryList extends Component {
     render() { 
         return (
             <div>
-                {this.state.mode === "normal" ? <ListGroup style={{height: "100%"}}>
+                {this.state.mode === "normal" ? 
+                <ListGroup style={{height: "100%"}}>                    
+                    <ListGroup.Item>
+                        <div className="row">                            
+                            <button type="button" className="btn btn-primary btn-block" onClick={this.toggleMode}>Filter View</button>                            
+                        </div>
+                    </ListGroup.Item>
                     {this.state.categories.map(category =>
                         <HeatmapCategory categoryName={category.name}
                                         categoryId={category.categoryId}
@@ -30,18 +36,14 @@ class HeatmapCategoryList extends Component {
                                         value={category.value}>
                         </HeatmapCategory>
                     )}
-                    <ListGroup.Item>
-                        <div className="row">                            
-                            <button type="button" className="btn btn-primary btn-block" onClick={this.toggleMode}>Filter View</button>                            
-                        </div>
-                    </ListGroup.Item>
                 </ListGroup>
                 :
                 <div>
-                    <HeatmapSearch></HeatmapSearch>
                     <div className="row">                            
-                        <button type="button" className="btn btn-primary btn-block" onClick={this.toggleMode} style={{marginTop: "10px"}}>Normal View</button>                            
+                        <button type="button" className="btn btn-primary btn-block" onClick={this.toggleMode} 
+                            style={{marginTop: "10px", marginBottom: "10px", marginRight: "15px"}}>Normal View</button>                            
                     </div>
+                    <HeatmapSearch></HeatmapSearch>                    
                 </div>}
             </div>
         );
