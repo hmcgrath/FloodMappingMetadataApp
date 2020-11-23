@@ -302,6 +302,8 @@ app.post("/submit/:action?", function (req,res) {
 
     var elevationSources = ["gps", "totalStation", "leveling", "baseElev", "otherElevation"];
 
+    if (req.body.polycoordinates === '') req.body.polycoordinates = null;
+
     var values = [req.body.username, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(floodhzdstd, req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
                     req.body.otherundertakingname, req.body.datasetStatus, req.body.lastprojupdate, req.body.partupdate, req.body.updatepurp, req.body.drainagearea, 
@@ -314,7 +316,7 @@ app.post("/submit/:action?", function (req,res) {
                     req.body.smincorporated, req.body.volreduction, req.body.catdiscretized, req.body.hydrosupportingdoc, req.body.ccconsidered, req.body.hydropeerreview, 
                     req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, 
                     req.body.hydrainputparamquality, req.body.hydrainputcomments, req.body.floodlineestimated, req.body.hydrasupportingdoc, getCheckboxes(elevationSources, req.body), req.body.hydrapeerreview, 
-                    req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.polycoordinates, req.body.climatechangecomments, req.body.otherfloodhzd]; 
+                    req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.polycoordinates, req.body.climatechangecomments, req.body.otherfloodhzd];     
     
     //replace any empty strings with null
     for (var val of values) {

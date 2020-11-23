@@ -33,7 +33,6 @@ class HeatmapSearch extends Component {
     categoryChanged(i) {         
         var column = document.getElementById(`searchCategory${i}`).value;
         var number = false;
-        console.log(this.state);
         for (let j = 0; j < this.state.data.rows.length; j++) {
             //console.log(this.state.data.rows[j].data_type);
             if (this.state.data.rows[j].column_name === column) {
@@ -156,13 +155,12 @@ class HeatmapSearch extends Component {
         var returnData = [];
         for (let i = 0; i < this.state.list.length; i++) {            
             if (this.state.removed.indexOf(i.toString()) === -1 ) {
-                returnData[i] = [];
+                returnData.push([]);
                 var col = document.getElementById(`searchCategory${i}`).value;
                 var numeric = document.getElementById(`searchTerm${i}`).classList.contains("d-none");
                 if (numeric) {
                     var min = document.getElementById(`searchMin${i}`).value;
                     var max = document.getElementById(`searchMax${i}`).value;
-                    console.log(max);
                     if (min === "") {
                         min = null;
                     } else {
@@ -176,26 +174,25 @@ class HeatmapSearch extends Component {
                     for (let j = 0; j < this.context.data.length; j++) {
                         if (min && max) {
                             if (this.context.data[j][col] >= min && this.context.data[j][col] <= max) {
-                                console.log(typeof(this.context.data[j][col]), typeof(max));
-                                if (returnData[i].indexOf(this.context.data[j]) === -1) {
-                                    returnData[i].push(this.context.data[j]);
+                                if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                    returnData[returnData.length-1].push(this.context.data[j]);
                                 }
                             }
                         } else if (min) {
                             if (this.context.data[j][col] >= min) {
-                                if (returnData[i].indexOf(this.context.data[j]) === -1) {
-                                    returnData[i].push(this.context.data[j]);
+                                if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                    returnData[returnData.length-1].push(this.context.data[j]);
                                 }
                             }
                         } else if (max) {
                             if (this.context.data[j][col] <= max) {
-                                if (returnData[i].indexOf(this.context.data[j]) === -1) {
-                                    returnData[i].push(this.context.data[j]);
+                                if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                    returnData[returnData.length-1].push(this.context.data[j]);
                                 }
                             }
                         } else {
-                            if (returnData[i].indexOf(this.context.data[j]) === -1) {
-                                returnData[i].push(this.context.data[j]);
+                            if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                returnData[returnData.length-1].push(this.context.data[j]);
                             }
                         }
                     }
@@ -207,9 +204,21 @@ class HeatmapSearch extends Component {
                         if (select1.options[k].selected) selected1.push(select1.options[k].value);
                     }
                     for (let j = 0; j < this.context.data.length; j++) {
+                        if (Array.isArray(this.context.data[j][col])) {
+                            for (let k = 0; k < selected1.length; k++) {
+                                var tempString = selected1[k] + '';
+                                selected1[k] = tempString.split(",");
+                            }
+                            if (selected1.map(value => JSON.stringify(value)).indexOf(JSON.stringify(this.context.data[j][col])) !== -1) {
+                                if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                    returnData[returnData.length-1].push(this.context.data[j]);
+                                    continue;
+                                }
+                            }
+                        }                        
                         if (selected1.indexOf(this.context.data[j][col]) !== -1) {
-                            if (returnData[i].indexOf(this.context.data[j]) === -1) {
-                                returnData[i].push(this.context.data[j]);
+                            if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                returnData[returnData.length-1].push(this.context.data[j]);
                             }
                         }
                     }
@@ -221,7 +230,7 @@ class HeatmapSearch extends Component {
         var mode = document.getElementById("andSwitch").checked ? "AND" : "OR";
         if (mode === "OR") {
             for (let i = 0; i < returnData.length; i++) {
-                for (let j = 0; j < returnData[i].length; j++) {
+                for (let j = 0; j < returnData[i].length; j++) {                    
                     if (finalData.indexOf(returnData[i][j]) === -1) {
                         finalData.push(returnData[i][j]);
                     }

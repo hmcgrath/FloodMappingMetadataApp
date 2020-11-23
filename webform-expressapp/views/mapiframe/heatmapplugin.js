@@ -230,7 +230,6 @@ window.heatmap = {
     setDrainageAreaHeatmap() {
         const caLayer = this.api.layers.getLayersById("calayer")[0];
         var totalDrainageAreas = {}; 
-        console.log(this.cadata);
         for (const key of Object.keys(this.cadata)) {
             let totaldrainagearea = 0; 
             for (const record of this.cadata[key]) {
@@ -483,7 +482,6 @@ window.heatmap = {
         this.api.esriMap.setExtent(extent); 
 
         window.addEventListener("message", (e) => {
-            console.log(e);
             //mapping the full category names to the abbreviated database column names
             const graphCategories = {
                 "Project Category": "projectcat", 
@@ -541,7 +539,6 @@ window.heatmap = {
                         for (var i = 0; i < stringlist.length; i+= 2) {
                             boxlist.push([parseFloat(stringlist[i + 1]), parseFloat(stringlist[i])]); 
                         } 
-                        console.log(boxlist, stringlist);
                         var recordbox = new RAMP.GEO.Polygon(record.submissionid, boxlist, { outlineColor: [255, 130, 0], 
                             outlineWidth: 3, fillColor: [255, 130, 0], fillOpacity: 0.8 }); 
                         //create the info window
@@ -571,7 +568,6 @@ window.heatmap = {
                     for (const record of displayRecords) {
                         if (record.extent) {
                             for (let i = 0; i < record.extent.length; i++) {
-                                console.log(record.extent[i]);
                                 var recordbox = new RAMP.GEO.Polygon(record.submissionid+`p${i}`, record.extent[i].map(item => [item[1], item[0]]), { outlineColor: [3,2,223], 
                                     outlineWidth: 3, fillColor: [3,2,223], fillOpacity: 0.7 });                                     
                                 //create the info window                                

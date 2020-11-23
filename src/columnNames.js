@@ -99,6 +99,7 @@ privateundertakingname: "Private Undertaking Name",
 otherundertakingname: "Other Undertaking Name",
 submissionid: "Submission ID",
 climatechangecomments: "(Hydrology) Climate Change Comments",
-otherfloodhzd: "Other Flood Hazard Event"};
+otherfloodhzd: "Other Flood Hazard Event",
+createdtime: "Created Timestamp"};
 
 export default aliasMap;
