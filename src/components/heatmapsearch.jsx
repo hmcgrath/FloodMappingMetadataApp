@@ -61,8 +61,16 @@ class HeatmapSearch extends Component {
                         break;
                     }
                 }
-                if (this.context.data[j][column] && !inList) {
-                    var option = document.createElement("option");
+                if (!inList && typeof(this.context.data[j][column]) === "boolean") {
+                    let option = document.createElement("option");                    
+                    option.value = this.context.data[j][column].toString();
+                    option.text = this.context.data[j][column].toString();
+                    option.key = j;
+                    option.title = this.context.data[j][column].toString();
+                    added.push(this.context.data[j][column]);
+                    document.getElementById(`searchTerm${i}`).add(option);
+                } else if (!inList && this.context.data[j][column]) {
+                    let option = document.createElement("option");                    
                     option.value = this.context.data[j][column];
                     option.text = this.context.data[j][column];
                     option.key = j;
@@ -204,23 +212,39 @@ class HeatmapSearch extends Component {
                         if (select1.options[k].selected) selected1.push(select1.options[k].value);
                     }
                     for (let j = 0; j < this.context.data.length; j++) {
-                        if (Array.isArray(this.context.data[j][col])) {
+                        if (col === "floodhzdstd") {
                             for (let k = 0; k < selected1.length; k++) {
                                 var tempString = selected1[k] + '';
                                 selected1[k] = tempString.split(",");
-                            }
+                            }                                                    
                             if (selected1.map(value => JSON.stringify(value)).indexOf(JSON.stringify(this.context.data[j][col])) !== -1) {
                                 if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
                                     returnData[returnData.length-1].push(this.context.data[j]);
                                     continue;
                                 }
                             }
-                        }                        
-                        if (selected1.indexOf(this.context.data[j][col]) !== -1) {
-                            if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
-                                returnData[returnData.length-1].push(this.context.data[j]);
+                        } else if (col === "extent") {
+                            if (this.context.data[j][col] && selected1
+                                .indexOf(JSON.stringify(this.context.data[j][col].flat(2)).replace('[', '').replace(']', '')) !== -1) {
+                                if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                    returnData[returnData.length-1].push(this.context.data[j]);
+                                }
                             }
-                        }
+                        } else {
+                            if (typeof(this.context.data[j][col]) === "boolean") {
+                                if (selected1.indexOf(this.context.data[j][col].toString()) !== -1) {
+                                    if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                        returnData[returnData.length-1].push(this.context.data[j]);
+                                    }
+                                }
+                            } else {                            
+                                if (selected1.indexOf(this.context.data[j][col]) !== -1) {
+                                    if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                        returnData[returnData.length-1].push(this.context.data[j]);
+                                    }
+                                }
+                            }
+                        }                        
                     }
                 }
                
