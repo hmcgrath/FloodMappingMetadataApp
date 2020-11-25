@@ -70,6 +70,9 @@ class HeatmapSearch extends Component {
                     added.push(this.context.data[j][column]);
                     document.getElementById(`searchTerm${i}`).add(option);
                 } else if (!inList && this.context.data[j][column]) {
+                    if (column === "elevsource" && this.context.data[j][column].toString() === "") {
+                        continue;
+                    }
                     let option = document.createElement("option");                    
                     option.value = this.context.data[j][column];
                     option.text = this.context.data[j][column];
@@ -180,27 +183,29 @@ class HeatmapSearch extends Component {
                         max = Number(max);
                     }
                     for (let j = 0; j < this.context.data.length; j++) {
-                        if (min && max) {
-                            if (this.context.data[j][col] >= min && this.context.data[j][col] <= max) {
+                        if (this.context.data[j][col] !== null) {
+                            if (min && max) {
+                                if (this.context.data[j][col] >= min && this.context.data[j][col] <= max) {
+                                    if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                        returnData[returnData.length-1].push(this.context.data[j]);
+                                    }
+                                }
+                            } else if (min) {
+                                if (this.context.data[j][col] >= min) {
+                                    if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                        returnData[returnData.length-1].push(this.context.data[j]);
+                                    }
+                                }
+                            } else if (max) {
+                                if (this.context.data[j][col] <= max) {
+                                    if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                        returnData[returnData.length-1].push(this.context.data[j]);
+                                    }
+                                }
+                            } else {
                                 if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
                                     returnData[returnData.length-1].push(this.context.data[j]);
                                 }
-                            }
-                        } else if (min) {
-                            if (this.context.data[j][col] >= min) {
-                                if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
-                                    returnData[returnData.length-1].push(this.context.data[j]);
-                                }
-                            }
-                        } else if (max) {
-                            if (this.context.data[j][col] <= max) {
-                                if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
-                                    returnData[returnData.length-1].push(this.context.data[j]);
-                                }
-                            }
-                        } else {
-                            if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
-                                returnData[returnData.length-1].push(this.context.data[j]);
                             }
                         }
                     }
@@ -226,6 +231,12 @@ class HeatmapSearch extends Component {
                         } else if (col === "extent") {
                             if (this.context.data[j][col] && selected1
                                 .indexOf(JSON.stringify(this.context.data[j][col].flat(2)).replace('[', '').replace(']', '')) !== -1) {
+                                if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
+                                    returnData[returnData.length-1].push(this.context.data[j]);
+                                }
+                            }
+                        } else if (col === "elevsource") {
+                            if (this.context.data[j][col] && selected1.indexOf(this.context.data[j][col].toString()) !== -1) {
                                 if (returnData[returnData.length-1].indexOf(this.context.data[j]) === -1) {
                                     returnData[returnData.length-1].push(this.context.data[j]);
                                 }

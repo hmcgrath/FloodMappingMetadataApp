@@ -21,7 +21,7 @@ class HeatmapDataProvider extends Component {
             {name: "Age of Mapping", categoryId:"lastprojupdate", type:"heatmappable", graphType:"none"}, 
             {name: "Summary Report Available", categoryId:"summreportavail", type:"graphable", graphType:"pie"}, 
             {name: "Updated Since Original", categoryId:"updatesinceorig", type:"graphable", graphType:"pie"},
-            {name: "Project ID", categoryId: "projectid", type:"searchable", graphType:"none", disabled: false, value: ""},
+            {name: "Username", categoryId: "username", type:"searchable", graphType:"none", disabled: false, value: ""},
             {name: "Project Name", categoryId: "projectname", type:"searchable", graphType:"none", disabled: false, value: ""},
             {name: "Official Watercourse Name", categoryId:"officialwcname", type:"searchable", graphType:"none", disabled: false, value: ""}, 
             {name: "Local Watercourse Name", categoryId:"localwcname", type:"searchable", graphType:"none", disabled: false, value: ""}
