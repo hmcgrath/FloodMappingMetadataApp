@@ -18,14 +18,23 @@ const client = new Client({
     port: config.database.port
 });
 
-client.connect(function(err, res) {
-    if (err) {
-        console.log(err.stack); 
+const connect = async () => { 
+    let retries = 5;
+    while (retries) {
+        try {
+            //wait to give database time to start up
+            await new Promise(res => setTimeout(res, 5000));
+            client.connect();
+            console.log("succesfully connected to database"); 
+            break;
+        } catch (err) {
+            console.log(err.stack); 
+            retries -= 1;
+            console.log(`retries left: ${retries}`);            
+        }        
     }
-    else {
-        console.log("succesfully connected to database"); 
-    }
-}); 
+}
+connect();
 
 
 app.set("view engine", "ejs"); 

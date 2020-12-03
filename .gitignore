@@ -2,12 +2,12 @@
 
 # dependencies
 /node_modules
+/pgdata
 /.pnp
 .pnp.js
 apitest.js
 conservation-authority-info.js
 webform-expressapp/views/mapiframe/conservation-layers.json
-config-dev.json
 /retired
 /.vscode
 # testing
@@ -31,3 +31,6 @@ yarn-debug.log*
 yarn-error.log*
 
 
+dockerfile.dat
+Dockerfile
+init.sql

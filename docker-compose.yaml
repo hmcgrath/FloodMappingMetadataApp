@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+    db:
+        image: postgres
+        #environment variable
+        environment:
+            POSTGRES_PASSWORD: floodmappingadm4dev
+            POSTGRES_USER: floodmapping_admin
+            POSTGRES_DB: floodmapping_dev
+        #setup the file pgdata for the database data
+        #- ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        volumes:
+            - ./pgdata:/var/lib/postgresql/data          
+        #ports for access to the DB
+        ports:
+            - '35432:5432'
+        # restore or recreate database
+        #command: sh -c "pg_restore -U floodmapping_admin -d floodmapping_dev /var/lib/postgresql/data/<path_to_dump>"
+        
+    web:
+        #create the docker image for the app with the dockerfile
+        build:
+            context: ./
+            dockerfile: Dockerfile.prod
+        depends_on:
+            - db
+        ports:
+            - "4000:8080"
+        environment: 
+            PORT: 8080

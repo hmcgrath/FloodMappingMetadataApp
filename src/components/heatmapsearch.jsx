@@ -103,7 +103,7 @@ class HeatmapSearch extends Component {
                         if(aliasMap[a.props.value] === aliasMap[b.props.value]) {
                             return 0;
                         }
-                        if (aliasMap[a.props.value] > aliasMap[b.props.value]) {
+                        if (aliasMap[a.props.value] < aliasMap[b.props.value]) {
                             return 1;
                         }
                         return -1;}

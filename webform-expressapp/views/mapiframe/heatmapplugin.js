@@ -512,7 +512,7 @@ window.heatmap = {
                 this.resetMap(); 
                 this.loadInfoPanel(graphCategories[e.data]);
             }
-            else if (typeof(e.data) === "object"){
+            else if (typeof(e.data) === "object") {
                 //clear any existing geometry
                 recordLayer.removeGeometry(); 
                 if (Object.keys(e.data).includes("show") || Object.keys(e.data).includes("showList")) {

@@ -1,0 +1,11 @@
+{
+    "database": {
+        "user": "floodmapping_admin", 
+        "host": "db", 
+        "database": "floodmapping_dev", 
+        "password": "floodmappingadm4dev", 
+        "port": 5432
+    },
+
+    "geoJSON": "CA_Simple_JSON6.json"
+}
