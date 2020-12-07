@@ -10,7 +10,7 @@ const {Pool, Client} = require("pg");
 
 //new connection up and running
 
-const client = new Client({
+var client = new Client({
     user: config.database.user,
     host: config.database.host, 
     database: config.database.database, 
@@ -23,14 +23,22 @@ const connect = async () => {
     while (retries) {
         try {
             //wait to give database time to start up
-            await new Promise(res => setTimeout(res, 5000));
-            client.connect();
+            await client.connect();
             console.log("succesfully connected to database"); 
             break;
         } catch (err) {
             console.log(err.stack); 
-            retries -= 1;
-            console.log(`retries left: ${retries}`);            
+            retries -= 1;            
+            console.log(`retries left: ${retries}`);        
+            client.end();
+            client = new Client({
+                user: config.database.user,
+                host: config.database.host, 
+                database: config.database.database, 
+                password: config.database.password, 
+                port: config.database.port
+            });        
+            await new Promise(res => setTimeout(res, 5000));    
         }        
     }
 }
