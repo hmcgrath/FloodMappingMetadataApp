@@ -19,7 +19,7 @@ var client = new Client({
 });
 
 const connect = async () => { 
-    let retries = 5;
+    let retries = 8;
     while (retries) {
         try {
             //wait to give database time to start up
@@ -38,7 +38,7 @@ const connect = async () => {
                 password: config.database.password, 
                 port: config.database.port
             });        
-            await new Promise(res => setTimeout(res, 5000));    
+            await new Promise(res => setTimeout(res, 10000));    
         }        
     }
 }

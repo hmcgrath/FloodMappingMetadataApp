@@ -10,6 +10,7 @@ services:
         #setup the file pgdata for the database data
         #- ./init.sql:/docker-entrypoint-initdb.d/init.sql
         volumes:
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
             - ./pgdata:/var/lib/postgresql/data          
         #ports for access to the DB
         ports:
