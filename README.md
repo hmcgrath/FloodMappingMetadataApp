@@ -1,13 +1,19 @@
+## Conservation Areas Config
 In the mapping/analytics page, users can change the geographic extents for which the results are aggregated. 
 The default name for the file is conservation-layers.json, and can be found in the root folder. 
 The recommended format is a formatted JSON file. The example in the directory was created in Esri ArcMap, using the Feature to JSON tool, with the 'Formatted' option selection from a Shapefile. 
 
 ## Updating Database Credentials
-See the config.json file to change the databse credentials, or to change the name of the geoJSON file containing the geographic features you wish to display.
+See the config-dev.json file to change the databse credentials, or to change the name of the geoJSON file containing the geographic features you wish to display.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Development
+Run **node router.js** to start the node server, then **npm start** to refresh as updates to react app are made.
+
+## Docker
+This project can be used in a Docker container using docker-compose. Run **docker-compose build** to build the container, and then **docker-compose up** to start the container or start the container from the Docker Desktop GUI. Ports and more can be configured in **docker-compose.yaml**.
 
 ## Available Scripts
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 In the project directory, you can run:
 

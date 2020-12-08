@@ -143,10 +143,15 @@ var plotFile = function() {
                 //IMPORTANT!!! WAIT FOR THE DATA TO BE LOADED...
                 polygon.on("data:loaded", function() {
                     //populate our polygon coordinates array 
-                    polygon._layers[polygon._leaflet_id + 1]._latlngs[0].forEach(function(element) {
-                        polycoordinates.push([element.lat, element.lng]); 
-                    });
-                    $("#polycoordinates").val(polycoordinates); 
+                    for (const key in polygon._layers) {
+                        temp = [];
+                        polygon._layers[key]._latlngs[0].forEach(function(element) {
+                            temp.push([element.lat, element.lng]); 
+                        });
+                        polycoordinates.push(temp);
+                    }
+                    
+                    $("#polycoordinates").val(JSON.stringify(polycoordinates)); 
                     unformattedcoords[0] = [polygon.getBounds().getNorthEast().lat, polygon.getBounds().getNorthEast().lng];
                     unformattedcoords[1] = [polygon.getBounds().getSouthWest().lat, polygon.getBounds().getSouthWest().lng]; 
                     

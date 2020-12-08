@@ -10,9 +10,15 @@ class FGPVmap extends Component {
     };
 
     render() { 
+        var apiURL = window.location.href;
+        if (apiURL.indexOf("analytics") !== -1) {
+            apiURL = apiURL = apiURL.substring(0, apiURL.indexOf("analytics")) + "embed";
+        } else {
+            apiURL = "http://localhost:8080/embed";
+        }
         return (
             <React.Fragment>
-                <iframe src="http://localhost:8080/embed" title="FGPV" id="FGPV"
+                <iframe src={apiURL} title="FGPV" id="FGPV"
                     height="600px" width="100%" allowFullScreen={false}/>
                 <div className="row">
                     <br></br>

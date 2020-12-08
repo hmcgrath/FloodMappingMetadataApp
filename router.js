@@ -10,7 +10,7 @@ const {Pool, Client} = require("pg");
 
 //new connection up and running
 
-const client = new Client({
+var client = new Client({
     user: config.database.user,
     host: config.database.host, 
     database: config.database.database, 
@@ -18,14 +18,31 @@ const client = new Client({
     port: config.database.port
 });
 
-client.connect(function(err, res) {
-    if (err) {
-        console.log(err.stack); 
+const connect = async () => { 
+    let retries = 8;
+    while (retries) {
+        try {
+            //wait to give database time to start up
+            await client.connect();
+            console.log("succesfully connected to database"); 
+            break;
+        } catch (err) {
+            console.log(err.stack); 
+            retries -= 1;            
+            console.log(`retries left: ${retries}`);        
+            client.end();
+            client = new Client({
+                user: config.database.user,
+                host: config.database.host, 
+                database: config.database.database, 
+                password: config.database.password, 
+                port: config.database.port
+            });        
+            await new Promise(res => setTimeout(res, 10000));    
+        }        
     }
-    else {
-        console.log("succesfully connected to database"); 
-    }
-}); 
+}
+connect();
 
 
 app.set("view engine", "ejs"); 
@@ -132,7 +149,7 @@ app.get("/api", function(req, res) {
 });
 
 app.get("/api/columns", function(req, res) {
-    const sql = "select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME=\'hazarddata\'";
+    const sql = "select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME=\'hazarddata\' order by ordinal_position";
     client.query(sql, function(err, result) {
         if (err) {
             res.send("Error: cannot fetch rows");
@@ -287,13 +304,13 @@ app.post("/submit/:action?", function (req,res) {
                                         hydrogeneralcomments, hydraprojid, hydrayear, hydramethod, \
                                         flowcond, hydracalib, \
                                         hydrainputcomments, floodlineestimated, hydrasupportingdoc, \
-                                        elevsource, hydrapeerreview, hydrageneralcomments, boundingbox, climatechangecomments, otherfloodhzd) VALUES \
+                                        elevsource, hydrapeerreview, hydrageneralcomments, boundingbox, extent, climatechangecomments, otherfloodhzd) VALUES \
                                         ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, \
                                         $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, \
                                         $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, \
                                         $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, \
                                         $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72, \
-                                        $73, $74, $75, $76, $77, $78, $79, $80, $81, $82)"; 
+                                        $73, $74, $75, $76, $77, $78, $79, $80, $81, $82, $83)"; 
     
     var floodhzdstd = ["timmins", "1000yr", "500yr", "200yr", "100yr", "50yr", "20yr", "10yr", "5yr", "2yr",
                          "other", "hazel"];
@@ -301,6 +318,8 @@ app.post("/submit/:action?", function (req,res) {
                         "satelite", "uav", "gps", "groundsurvey", "constructiondrawings"]; 
 
     var elevationSources = ["gps", "totalStation", "leveling", "baseElev", "otherElevation"];
+
+    if (req.body.polycoordinates === '') req.body.polycoordinates = null;
 
     var values = [req.body.username, req.body.projectName, req.body.projectcat, req.body.typeofrecord, getCheckboxes(floodhzdstd, req.body), req.body.officialWCName, 
                     req.body.fedundertaking, req.body.caundertaking, req.body.munundertaking, req.body.privundertaking, req.body.privateundertakingname, req.body.otherundertaking,
@@ -314,20 +333,13 @@ app.post("/submit/:action?", function (req,res) {
                     req.body.smincorporated, req.body.volreduction, req.body.catdiscretized, req.body.hydrosupportingdoc, req.body.ccconsidered, req.body.hydropeerreview, 
                     req.body.hydrogeneralcomments, req.body.hydraprojid, req.body.hydrayear, req.body.hydramethod, req.body.flowcond, 
                     req.body.hydrainputparamquality, req.body.hydrainputcomments, req.body.floodlineestimated, req.body.hydrasupportingdoc, getCheckboxes(elevationSources, req.body), req.body.hydrapeerreview, 
-                    req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.climatechangecomments, req.body.otherfloodhzd]; 
+                    req.body.hydrageneralcomments, getBoundingBox(req.body), req.body.polycoordinates, req.body.climatechangecomments, req.body.otherfloodhzd];     
     
     //replace any empty strings with null
     for (var val of values) {
         if (val === '') {
             val = undefined; 
         }
-    }
-    
-    //if an extent file is uploaded
-    if (req.body.polycoordinates !== "") {
-        console.log("Detected an extent"); 
-        sql = sql.replace("boundingbox", "boundingbox, extent").replace("$82", "$82, $83"); 
-        values.push(req.body.polycoordinates); 
     }
 
     client.query(sql, values, function(err, res) {

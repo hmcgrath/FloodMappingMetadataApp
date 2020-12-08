@@ -20,6 +20,50 @@
             <p>
                 The flood mapping metadata portal is an online database to (i) enter and (ii) query metadata related to flood hazard mapping.  This site was created by Natural Resources Canada in collaboration with Conservation Ontario.
             </p>
+            <p>
+                <h4>I will be submitting information on.....</h4>
+            </p>
+            <form id="selectionform" method="post" action="/entry">
+                <div class="form-check-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="general" name="general" checked disabled>
+                        <label class="form-check-label" for="general">
+                            General Data
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="imagery" name="imagery">
+                        <label class="form-check-label" for="imagery">
+                            Imagery Data
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="elevation" name="elevation">
+                        <label class="form-check-label" for="elevation">
+                            Elevation Data
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="hydrology" name="hydrology">
+                        <label class="form-check-label" for="hydrology">
+                            Hydrology Data
+                        </label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="hydraulics" name="hydraulics">
+                        <label class="form-check-label" for="hydraulics">
+                            Hydraulics Data
+                        </label>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Continue</button>
+                </div>
+            </form>
             <h3>Data Entry:</h3>
             <p>
                 This form is intended to collect metadata that describes the data, inputs, and models used to develop flood maps. <br><br>
@@ -60,44 +104,7 @@ In addition to the default data required, users may select any (or all) of the b
                 </ul>
             </p>
 
-            <p>
-                <h4>I will be submitting additional information on.....</h4>
-            </p>
-            <form id="selectionform" method="post" action="/entry">
-                <div class="form-check-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="imagery" name="imagery">
-                        <label class="form-check-label" for="imagery">
-                            Imagery Data
-                        </label>
-                    </div>
-                    
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="elevation" name="elevation">
-                        <label class="form-check-label" for="elevation">
-                            Elevation Data
-                        </label>
-                    </div>
-                    
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="hydrology" name="hydrology">
-                        <label class="form-check-label" for="hydrology">
-                            Hydrology Data
-                        </label>
-                    </div>
-                    
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="hydraulics" name="hydraulics">
-                        <label class="form-check-label" for="hydraulics">
-                            Hydraulics Data
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Continue</button>
-                </div>
-            </form>
+
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
