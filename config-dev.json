@@ -3,7 +3,7 @@
         "user": "floodmapping_admin", 
         "host": "localhost", 
         "database": "floodmapping_dev", 
-        "password": "floodmappingadm4dev", 
+        "password": "", 
         "port": 5432
     },
 
