@@ -3,7 +3,7 @@
         "user": "floodmapping_admin", 
         "host": "v-she-olrik.cits.rncan.gc.ca", 
         "database": "floodmapping_dev", 
-        "password": "floodmappingadm4dev", 
+        "password": "", 
         "port": 14180
     },
 
